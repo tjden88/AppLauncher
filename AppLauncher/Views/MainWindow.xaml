@@ -2,7 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
+        xmlns:views="clr-namespace:AppLauncher.Views"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
@@ -10,8 +13,20 @@
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         Title="MainWindow" Height="450" Width="800" Opacity="0.5">
+
+    <d:Window.DataContext>
+        <viewModels:MainWindowViewModel/>
+    </d:Window.DataContext>
     <Border CornerRadius="10" Background="#72000000">
 
-       
+       <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
+            <ItemsControl ItemsSource="{Binding Groups1Column}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type views:AppGroup}">
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+       </UniformGrid>
     </Border>
 </Window>
