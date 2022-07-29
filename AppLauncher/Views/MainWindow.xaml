@@ -17,16 +17,11 @@
     <d:Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
-    <Border CornerRadius="10" Background="#72000000">
+    <Border CornerRadius="10" Background="#99000000">
 
        <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
-            <ItemsControl ItemsSource="{Binding Groups1Column}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type views:AppGroup}">
-
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding Groups1Column}"/>
+            <ItemsControl ItemsSource="{Binding Groups2Column}"/>
        </UniformGrid>
     </Border>
 </Window>

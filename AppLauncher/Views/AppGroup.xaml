@@ -16,7 +16,7 @@
         <!--Заголовок-->
         <DockPanel >
             <fa5:FontAwesome Icon="Solid_Bars" Margin="10" VerticalAlignment="Center" FontSize="20"/>
-            <TextBox BorderThickness="0" Text="Название группы" FontSize="18" Margin="0,10,10,10"></TextBox>
+            <TextBox Background="Transparent" BorderThickness="0" Text="Название группы" FontSize="18" Margin="0,10,10,10"></TextBox>
         </DockPanel>
     </Grid>
 </UserControl>

@@ -9,6 +9,20 @@ namespace AppLauncher.ViewModels
     internal class MainWindowViewModel : WindowViewModel
     {
 
+        public MainWindowViewModel()
+        {
+            if (IsDesignMode)
+            {
+                AppGroups = new()
+                {
+                    new AppGroup() {ColumnNumber = 1},
+                    new AppGroup() {ColumnNumber = 1},
+                    new AppGroup() {ColumnNumber = 2},
+                };
+            }
+        }
+
+
         #region ColumnsCount : int - Количество колонок
 
         /// <summary>Количество колонок</summary>
