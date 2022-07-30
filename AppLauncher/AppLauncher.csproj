@@ -8,7 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="WPR.MVVM" Version="1.1.0" />
+    <PackageReference Include="WPR.Tools" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
