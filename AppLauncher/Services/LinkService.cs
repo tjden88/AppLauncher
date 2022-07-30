@@ -38,7 +38,7 @@ namespace AppLauncher.Services
             var intCount = 1;
             while (File.Exists(newFileName))
             {
-                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt} ({intCount++}){linkExtension}");
+                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
             }
 
 

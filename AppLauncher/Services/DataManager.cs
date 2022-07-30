@@ -45,12 +45,13 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="Path">Путь к источнику</param>
         /// <param name="GroupId">Id группы</param>
-        public void AddAppLink(string Path, int GroupId)
+        public AppLink AddAppLink(string Path, int GroupId)
         {
             var link = _LinkService.CreateLink(Path);
             link.GroupId = GroupId;
             Data.Links.Add(link);
             SaveData();
+            return link;
         }
 
 

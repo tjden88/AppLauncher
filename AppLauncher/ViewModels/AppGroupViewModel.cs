@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using AppLauncher.Services;
+using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -21,6 +21,21 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     {
         get => _Name;
         set => Set(ref _Name, value);
+    }
+
+    #endregion
+
+
+    #region Id : int - Id группы
+
+    /// <summary>Id группы</summary>
+    private int _Id;
+
+    /// <summary>Id группы</summary>
+    public int Id
+    {
+        get => _Id;
+        set => Set(ref _Id, value);
     }
 
     #endregion
@@ -55,6 +70,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+
     #region Links : ObservableCollection<AppLinkViewModel> - Список ярлыков группы
 
     /// <summary>Список ярлыков группы</summary>
@@ -72,6 +88,32 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
 
     #region Commands
+
+    #region Command LoadLinksCommand - Загрузить ярлыки группы
+
+    /// <summary>Загрузить ярлыки группы</summary>
+    private Command _LoadLinksCommand;
+
+    /// <summary>Загрузить ярлыки группы</summary>
+    public Command LoadLinksCommand => _LoadLinksCommand
+        ??= new Command(OnLoadLinksCommandExecuted, CanLoadLinksCommandExecute, "Загрузить ярлыки группы");
+
+    /// <summary>Проверка возможности выполнения - Загрузить ярлыки группы</summary>
+    private bool CanLoadLinksCommandExecute() => true;
+
+    /// <summary>Логика выполнения - Загрузить ярлыки группы</summary>
+    private void OnLoadLinksCommandExecuted()
+    {
+        var shs = App.ShortcutService;
+        var links = App.DataManager.LoadGroupLinks(Id);
+
+        var vm = links.Select(MapModel);
+
+        Links=new(vm);
+    }
+
+    #endregion
+
 
     #region Command SelectGroupCommand - Выбрать группу
 
@@ -93,6 +135,17 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
+    private AppLinkViewModel MapModel(AppLink Link)
+    {
+       return new AppLinkViewModel
+        {
+            FilePath = Link.Path,
+            Name = Link.Name,
+            Image = App.ShortcutService.GetIconFromShortcut(Link.Path)
+        };
+    }
+
+
     public void DragOver(IDropInfo dropInfo)
     {
         var sourceItem = dropInfo.Data;
@@ -107,6 +160,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         dropInfo.Effects = DragDropEffects.None;
     }
 
+
     public void Drop(IDropInfo dropInfo)
     {
         var sourceItem = dropInfo.Data;
@@ -114,19 +168,12 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         if (sourceItem is not DataObject dataObject ||
             dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
 
+        var dataManager = App.DataManager;
 
-        var links = strArray.Select(str => App.LinkService.CreateLink(str));
-
-        var addedLinks = links.Select(l => new AppLinkViewModel
+        foreach (var str in strArray)
         {
-            Name = l.Name,
-            FilePath = l.Path,
-            Image = new ShortcutService().GetIconFromShortcut(l.Path),
-        });
-
-        foreach (var draggedLink in addedLinks)
-        {
-            Links.Add(draggedLink);
+            var added = dataManager.AddAppLink(str, Id);
+            Links.Add(MapModel(added));
         }
 
     }
