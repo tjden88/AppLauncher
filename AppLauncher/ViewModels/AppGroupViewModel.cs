@@ -1,10 +1,41 @@
 ﻿using System.Collections.ObjectModel;
+using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
     public class AppGroupViewModel : ViewModel
     {
+
+        #region Name : string - Имя группы
+
+        /// <summary>Имя группы</summary>
+        private string _Name = "Новая группа";
+
+        /// <summary>Имя группы</summary>
+        public string Name
+        {
+            get => _Name;
+            set => Set(ref _Name, value);
+        }
+
+        #endregion
+
+
+        #region IsSelected : bool - Выбрана ли группа для редактирования
+
+        /// <summary>Выбрана ли группа для редактирования</summary>
+        private bool _IsSelected;
+
+        /// <summary>Выбрана ли группа для редактирования</summary>
+        public bool IsSelected
+        {
+            get => _IsSelected;
+            set => Set(ref _IsSelected, value);
+        }
+
+        #endregion
+
 
         #region ColumnNumber : int - Номер колонки этой группы
 
@@ -34,6 +65,27 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
+
+
+        #region Commands
+
+        #region Command SelectGroupCommand - Выбрать группу
+
+        /// <summary>Выбрать группу</summary>
+        private Command _SelectGroupCommand;
+
+        /// <summary>Выбрать группу</summary>
+        public Command SelectGroupCommand => _SelectGroupCommand
+            ??= new Command(OnSelectGroupCommandExecuted, CanSelectGroupCommandExecute, "Выбрать группу");
+
+        /// <summary>Проверка возможности выполнения - Выбрать группу</summary>
+        private bool CanSelectGroupCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Выбрать группу</summary>
+        private void OnSelectGroupCommandExecuted() => App.MainWindowViewModel.SelectedGroup = !IsSelected ? this : null;
+
+        #endregion
+
+        #endregion
     }
 }

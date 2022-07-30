@@ -49,11 +49,10 @@ namespace AppLauncher.Views
         [DllImport("user32.dll")]
         internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
 
-        private readonly MainWindowViewModel _ViewModel = new();
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = _ViewModel;
+            DataContext = App.MainWindowViewModel;
         }
 
 

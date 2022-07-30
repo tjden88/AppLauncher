@@ -5,20 +5,27 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
-    internal class MainWindowViewModel : WindowViewModel
+    public class MainWindowViewModel : WindowViewModel
     {
 
         public MainWindowViewModel()
         {
-            if (IsDesignMode)
-            {
-                AppGroupViewModels = new()
+            //if (IsDesignMode)
+            //{
+            //    AppGroupViewModels = new()
+            //    {
+            //        new AppGroupViewModel {ColumnNumber = 1},
+            //        new AppGroupViewModel {ColumnNumber = 1},
+            //        new AppGroupViewModel {ColumnNumber = 2},
+            //    };
+            //}
+
+            AppGroupViewModels = new()
                 {
                     new AppGroupViewModel {ColumnNumber = 1},
                     new AppGroupViewModel {ColumnNumber = 1},
                     new AppGroupViewModel {ColumnNumber = 2},
                 };
-            }
         }
 
 
@@ -50,6 +57,24 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
+
+        #region SelectedGroup : AppGroupViewModel - Выбранная группа
+
+        /// <summary>Выбранная группа</summary>
+        private AppGroupViewModel _SelectedGroup;
+
+        /// <summary>Выбранная группа</summary>
+        public AppGroupViewModel SelectedGroup
+        {
+            get => _SelectedGroup;
+            set => IfSet(ref _SelectedGroup, value)
+                .ThenIf(v=> v!= null, v => v.IsSelected = true)
+                .ThenIfOld(old => old !=null, old => old.IsSelected = false);
+        }
+
+        #endregion
+
+        
 
 
         public IEnumerable<AppGroupViewModel> Groups1Column => AppGroupViewModels.Where(g => g.ColumnNumber == 1);

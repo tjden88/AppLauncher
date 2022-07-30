@@ -7,8 +7,12 @@
              Foreground="White"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
+             xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
+    <UserControl.Resources>
+        <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
+    </UserControl.Resources>
     <d:UserControl.DataContext>
         <viewModels:AppGroupViewModel/>
     </d:UserControl.DataContext>
@@ -20,8 +24,18 @@
         </Grid.RowDefinitions>
         <!--Заголовок-->
         <DockPanel >
-            <fa5:FontAwesome Icon="Solid_Bars" Margin="10" VerticalAlignment="Center" FontSize="20"/>
-            <TextBox Foreground="White" Background="Transparent" BorderThickness="0" Text="Название группы" FontSize="18" Margin="0,10,10,10"></TextBox>
+            <fa5:FontAwesome Icon="Solid_Bars" Margin="10" VerticalAlignment="Center" FontSize="18" Cursor="Hand" Background="Transparent">
+                <fa5:FontAwesome.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding SelectGroupCommand}"/>
+                </fa5:FontAwesome.InputBindings>
+            </fa5:FontAwesome>
+            <TextBox Foreground="White" Background="Transparent" 
+                     CaretBrush="White"
+                     IsHitTestVisible="{Binding IsSelected}"
+                     BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}" 
+                     BorderBrush="White"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="18" Margin="0,10,10,10"></TextBox>
         </DockPanel>
 
         <!--Содержимое-->

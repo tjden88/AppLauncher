@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using AppLauncher.ViewModels;
 
 namespace AppLauncher
 {
@@ -13,5 +8,7 @@ namespace AppLauncher
     /// </summary>
     public partial class App : Application
     {
+        /// <summary> Вьюмодель главного окна </summary>
+        public static MainWindowViewModel MainWindowViewModel { get; } = new();
     }
 }
