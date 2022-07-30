@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using AppLauncher.Services;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -103,7 +104,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         {
             if (fileData is string[] strArray)
             {
-                _DraggedLinks = strArray.Select(AppLinkViewModel.CreateLinkViewModelFromLink);
+                _DraggedLinks = strArray.Select(LinkService.CreateLinkViewModelFromLink);
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Copy;
             }

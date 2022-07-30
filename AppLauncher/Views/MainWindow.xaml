@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
         xmlns:views="clr-namespace:AppLauncher.Views"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
@@ -25,9 +26,20 @@
 
     <Border CornerRadius="10" Background="#99000000">
 
-       <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
-            <ItemsControl ItemsSource="{Binding Groups1Column}"/>
-            <ItemsControl ItemsSource="{Binding Groups2Column}"/>
-       </UniformGrid>
+       <DockPanel>
+           <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                <Button DockPanel.Dock="Right">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_Times"/>
+                    </Button.Content>
+                </Button>
+           </DockPanel>
+
+
+           <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
+               <ItemsControl ItemsSource="{Binding Groups1Column}"/>
+               <ItemsControl ItemsSource="{Binding Groups2Column}"/>
+           </UniformGrid>
+        </DockPanel>
     </Border>
 </Window>
