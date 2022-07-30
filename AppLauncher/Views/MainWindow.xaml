@@ -35,7 +35,7 @@
                         ToolTip="Добавить группу"
                         Command="{Binding AddGroupCommand}" Cursor="Hand">
                     <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_PlusCircle"/>
+                        <fa5:FontAwesome Icon="Solid_Plus"/>
                     </Button.Content>
                 </Button>
 
