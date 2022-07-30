@@ -75,8 +75,24 @@ namespace AppLauncher.Services
         /// Загрузить ярлыки группы
         /// </summary>
         /// <param name="GroupId">Id группы</param>
-        public IEnumerable<AppLink> LoadGroupLinks(int GroupId) =>
-            Data.Links.Where(l => l.GroupId == GroupId);
+        public IEnumerable<AppLink> LoadGroupLinks(int GroupId)
+        {
+            var links = Data.Links
+                .Where(l => l.GroupId == GroupId)
+                .ToArray();
+
+            var existLinks = links
+                .Where(l => File.Exists(l.Path))
+                .ToArray();
+
+            var dist = links.Except(existLinks).ToArray();
+            if (dist.Any()) // Некоторые ярлыки не найдены
+            {
+                foreach (var appLink in dist) Data.Links.Remove(appLink);
+                SaveData();
+            }
+            return existLinks;
+        }
 
 
         /// <summary>

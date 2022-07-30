@@ -89,11 +89,8 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Загрузить ярлыки группы</summary>
     private void OnLoadLinksCommandExecuted()
     {
-        var shs = App.ShortcutService;
-        var links = App.DataManager.LoadGroupLinks(Id);
-
+        var links = App.DataManager.LoadGroupLinks(Id).ToArray();
         var vm = links.Select(MapModel);
-
         Links=new(vm);
     }
 
@@ -126,7 +123,6 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         {
             FilePath = Link.Path,
             Name = Link.Name,
-            Image = App.ShortcutService.GetIconFromShortcut(Link.Path)
         };
     }
 

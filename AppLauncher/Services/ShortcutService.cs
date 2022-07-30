@@ -57,6 +57,12 @@ namespace AppLauncher.Services
         /// <returns>null, если файл или папка не найдена</returns>
         public ImageSource GetIconFromShortcut(string ShortcutFileName)
         {
+
+            if (!File.Exists(ShortcutFileName) && !Directory.Exists(ShortcutFileName))
+            {
+                return null;
+            }
+
             using var sc = WindowsShortcut.Load(ShortcutFileName);
 
             var pathToIconFile = sc.IconLocation.Path;
