@@ -94,34 +94,38 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    private IEnumerable<AppLinkViewModel> _DraggedLinks;
-
     public void DragOver(IDropInfo dropInfo)
     {
         var sourceItem = dropInfo.Data;
 
-        if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is { } fileData)
+        if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
         {
-            if (fileData is string[] strArray)
-            {
-                _DraggedLinks = strArray.Select(LinkService.CreateLinkViewModelFromLink);
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                dropInfo.Effects = DragDropEffects.Copy;
-            }
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+            dropInfo.Effects = DragDropEffects.Copy;
+            return;
+        }
 
-        }
-        else
-        {
-            dropInfo.Effects = DragDropEffects.None;
-            _DraggedLinks = null;
-        }
+        dropInfo.Effects = DragDropEffects.None;
     }
 
     public void Drop(IDropInfo dropInfo)
     {
-        if (_DraggedLinks == null) return;
+        var sourceItem = dropInfo.Data;
 
-        foreach (var draggedLink in _DraggedLinks)
+        if (sourceItem is not DataObject dataObject ||
+            dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
+
+
+        var links = strArray.Select(str => App.LinkService.CreateLink(str));
+
+        var addedLinks = links.Select(l => new AppLinkViewModel()
+        {
+            Name = l.Name,
+            FilePath = l.Path,
+        });
+
+        foreach (var draggedLink in addedLinks)
             Links.Add(draggedLink);
+
     }
 }
