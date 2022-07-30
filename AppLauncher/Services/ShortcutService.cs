@@ -54,58 +54,38 @@ namespace AppLauncher.Services
         /// Получить значок из ярлыка
         /// </summary>
         /// <param name="ShortcutFileName">Путь к ярлыку</param>
+        /// <returns>null, если файл или папка не найдена</returns>
         public ImageSource GetIconFromShortcut(string ShortcutFileName)
         {
-            Icon icon = null;
-
             using var sc = WindowsShortcut.Load(ShortcutFileName);
 
             var pathToIconFile = sc.IconLocation.Path;
             if (string.IsNullOrEmpty(pathToIconFile))
                 pathToIconFile = sc.Path;
 
-            if (pathToIconFile != null)
+            if (File.Exists(pathToIconFile) || Directory.Exists(pathToIconFile))
             {
-                if (File.Exists(pathToIconFile))
-                    icon = Icon.ExtractAssociatedIcon(pathToIconFile);
-
-                if (Directory.Exists(pathToIconFile))
-                {
-
-                }
+                return GetImgFromFileOrFolder(pathToIconFile);
             }
 
-
-            icon ??= new Icon(SystemIcons.Application, 128, 128);
-
-            //return ToImageSource(icon);
-            return Test(pathToIconFile);
+            return null;
         }
 
 
-        private ImageSource ToImageSource(Icon icon) =>
-            Imaging.CreateBitmapSourceFromHIcon(
-                icon.Handle,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
-
-
-        private ImageSource Test(string Path)
+        private ImageSource GetImgFromFileOrFolder(string Path)
         {
             var shinfo = new SHFILEINFO();
 
             //Call function with the path to the folder you want the icon for
-            SHGetFileInfo(
-                Path,
-                0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
+            SHGetFileInfo(Path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
                 SHGFI_ICON | SHGFI_LARGEICON);
 
-            using var i = Icon.FromHandle(shinfo.hIcon);
+            using var icon = Icon.FromHandle(shinfo.hIcon);
 
             //Convert icon to a Bitmap source
             ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
-                i.Handle,
-                new Int32Rect(0, 0, i.Width, i.Height),
+                icon.Handle,
+                new Int32Rect(0, 0, icon.Width, icon.Height),
                 BitmapSizeOptions.FromEmptyOptions());
 
             return img;
