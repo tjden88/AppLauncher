@@ -28,43 +28,35 @@ namespace AppLauncher.Services
         /// <returns>Созданный ярлык, не привязанный к группе</returns>
         public AppLink CreateLink(string FileName)
         {
-            var link = new AppLink();
 
-            //if (Directory.Exists(FileName)) // Папка
-            //{
-            //    link.IsDirectory = true;
-            //    link.Path = FileName;
-            //    link.Name = Path.GetDirectoryName(FileName);
-            //    return link;
-            //}
+            if (!File.Exists(FileName) && !Directory.Exists(FileName))
+                throw new FileNotFoundException(FileName);
 
-            if (File.Exists(FileName)) // Файл
+            const string linkExtension = ".lnk";
+
+            var fileNameNoExt = Path.GetFileNameWithoutExtension(FileName);
+
+            var newFileName = Path.Combine(_LinkPath, fileNameNoExt + linkExtension);
+
+            var intCount = 1;
+            while (File.Exists(newFileName))
             {
-
-                var newFileName = Path.Combine(_LinkPath, FileName);
-                if (File.Exists(newFileName))
-                {
-                    var modifiedFileName = Path.GetFileNameWithoutExtension(FileName) + Guid.NewGuid() + Path.GetExtension(FileName);
-                    newFileName = Path.Combine(_LinkPath, modifiedFileName);
-                }
-
-                var extension = Path.GetExtension(FileName);
-                if (extension == ".lnk")
-                {
-                    File.Copy(FileName, newFileName);
-                }
-                else
-                {
-                    _ShortcutCreator.CreateShortcut(FileName, newFileName);
-                }
-
-                link.Path = newFileName;
-                link.Name = Path.GetFileNameWithoutExtension(FileName);
-
-                return link;
+                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt} ({intCount++}){linkExtension}");
             }
 
-            throw new FileNotFoundException(FileName);
+
+            if (Path.GetExtension(FileName) == linkExtension)
+                File.Copy(FileName, newFileName);
+            else
+                _ShortcutCreator.CreateShortcut(FileName, newFileName);
+
+
+            return new AppLink
+            {
+                Path = newFileName,
+                Name = fileNameNoExt,
+            };
+
         }
 
     }
