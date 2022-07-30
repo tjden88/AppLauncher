@@ -29,9 +29,6 @@ namespace AppLauncher.Services
         public AppLink CreateLink(string FileName)
         {
 
-            if (!File.Exists(FileName) && !Directory.Exists(FileName))
-                throw new FileNotFoundException(FileName);
-
             const string linkExtension = ".lnk";
 
             var fileNameNoExt = Path.GetFileNameWithoutExtension(FileName);
@@ -45,10 +42,7 @@ namespace AppLauncher.Services
             }
 
 
-            if (Path.GetExtension(FileName) == linkExtension)
-                File.Copy(FileName, newFileName);
-            else
-                _ShortcutCreator.CreateShortcut(FileName, newFileName);
+            _ShortcutCreator.CreateShortcut(FileName, newFileName);
 
 
             return new AppLink

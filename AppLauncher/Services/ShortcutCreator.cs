@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-// ReSharper disable SuspiciousTypeConversion.Global
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using WindowsShortcutFactory;
 
 namespace AppLauncher.Services
 {
@@ -13,37 +15,6 @@ namespace AppLauncher.Services
     /// </summary>
     public class ShortcutCreator
     {
-        [ComImport]
-        [Guid("00021401-0000-0000-C000-000000000046")]
-        internal class ShellLink
-        {
-        }
-
-        [ComImport]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        [Guid("000214F9-0000-0000-C000-000000000046")]
-        internal interface IShellLink
-        {
-            void GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cchMaxPath, out IntPtr pfd, int fFlags);
-            void GetIDList(out IntPtr ppidl);
-            void SetIDList(IntPtr pidl);
-            void GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cchMaxName);
-            void SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
-            void GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cchMaxPath);
-            void SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
-            void GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cchMaxPath);
-            void SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
-            void GetHotkey(out short pwHotkey);
-            void SetHotkey(short wHotkey);
-            void GetShowCmd(out int piShowCmd);
-            void SetShowCmd(int iShowCmd);
-            void GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cchIconPath, out int piIcon);
-            void SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
-            void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
-            void Resolve(IntPtr hwnd, int fFlags);
-            void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
-        }
-
 
         /// <summary>
         /// Создать ярлык для файла и сохранить на диске
@@ -53,19 +24,20 @@ namespace AppLauncher.Services
         /// <returns></returns>
         public bool CreateShortcut(string originalFileName, string saveFileName)
         {
+            if (!File.Exists(originalFileName) && !Directory.Exists(originalFileName))
+                throw new FileNotFoundException(originalFileName);
+
             try
             {
-                var link = (IShellLink)new ShellLink();
-
-                // setup shortcut information
-
-                //link.SetDescription("My Description");
-                link.SetPath(originalFileName);
-                link.SetWorkingDirectory(Path.GetDirectoryName(originalFileName));
-
-                // save it
-                var file = (IPersistFile)link;
-                file.Save(saveFileName, false);
+                if (Path.GetExtension(originalFileName) == ".lnk")
+                    File.Copy(originalFileName, saveFileName);
+                else
+                {
+                    using var sc = new WindowsShortcut();
+                    sc.Path = originalFileName;
+                    sc.WorkingDirectory = Path.GetDirectoryName(originalFileName);
+                    sc.Save(saveFileName);
+                }
                 return true;
             }
             catch (Exception e)
@@ -73,6 +45,38 @@ namespace AppLauncher.Services
                 Debug.WriteLine(e);
                 return false;
             }
+
         }
+
+
+        /// <summary>
+        /// Получить значок из ярлыка
+        /// </summary>
+        /// <param name="ShortcutFileName">Путь к ярлыку</param>
+        public ImageSource GetIconFromShortcut(string ShortcutFileName)
+        {
+
+            using var sc = WindowsShortcut.Load(ShortcutFileName);
+
+            var pathToIconFile = sc.IconLocation.Path;
+            if (string.IsNullOrEmpty(pathToIconFile))
+                pathToIconFile = sc.Path;
+
+            Icon icon = null;
+
+            if (pathToIconFile != null && File.Exists(pathToIconFile)) 
+                icon = Icon.ExtractAssociatedIcon(pathToIconFile);
+
+            icon ??= new Icon(SystemIcons.Application, 128, 128);
+
+            return ToImageSource(icon);
+        }
+
+
+        private ImageSource ToImageSource(Icon icon) =>
+            Imaging.CreateBitmapSourceFromHIcon(
+                icon.Handle,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
     }
 }

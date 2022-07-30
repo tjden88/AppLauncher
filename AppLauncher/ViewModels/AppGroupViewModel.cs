@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using AppLauncher.Services;
@@ -118,14 +117,17 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
         var links = strArray.Select(str => App.LinkService.CreateLink(str));
 
-        var addedLinks = links.Select(l => new AppLinkViewModel()
+        var addedLinks = links.Select(l => new AppLinkViewModel
         {
             Name = l.Name,
             FilePath = l.Path,
+            Image = new ShortcutCreator().GetIconFromShortcut(l.Path),
         });
 
         foreach (var draggedLink in addedLinks)
+        {
             Links.Add(draggedLink);
+        }
 
     }
 }

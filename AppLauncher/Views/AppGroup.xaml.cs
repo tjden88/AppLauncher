@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace AppLauncher.Views
+﻿namespace AppLauncher.Views
 {
     /// <summary>
     /// Логика взаимодействия для AppGroup.xaml

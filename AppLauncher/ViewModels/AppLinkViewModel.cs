@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Media;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -61,6 +62,22 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
+
+        #region Image : ImageSource - Изображение ярлыка
+
+        /// <summary>Изображение ярлыка</summary>
+        private ImageSource _Image;
+
+        /// <summary>Изображение ярлыка</summary>
+        public ImageSource Image
+        {
+            get => _Image;
+            set => Set(ref _Image, value);
+        }
+
+        #endregion
+
+        
 
     }
 }

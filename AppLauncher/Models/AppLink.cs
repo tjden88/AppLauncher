@@ -1,6 +1,4 @@
-﻿using System.Windows.Media.Imaging;
-
-namespace AppLauncher.Models
+﻿namespace AppLauncher.Models
 {
     /// <summary>
     /// Ярлык приложения

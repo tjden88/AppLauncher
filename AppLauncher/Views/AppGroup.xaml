@@ -42,6 +42,11 @@
         <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding Links}" dd:DragDrop.IsDragSource="True"
                       dd:DragDrop.IsDropTarget="True"
                       dd:DragDrop.DropHandler="{Binding}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
+                    <Image Width="40" Height="40" Source="{Binding Image}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
