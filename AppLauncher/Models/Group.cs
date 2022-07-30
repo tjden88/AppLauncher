@@ -9,8 +9,6 @@ namespace AppLauncher.Models
     {
         public int Id { get; set; }
 
-        public int ColumnNumber { get; set; }
-
         public string Name { get; set; }
 
         public ICollection<AppLink> Links { get; set; } = new List<AppLink>();

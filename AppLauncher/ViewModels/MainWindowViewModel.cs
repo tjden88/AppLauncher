@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using WPR.MVVM.Commands;
@@ -14,7 +13,7 @@ namespace AppLauncher.ViewModels
         {
             //if (IsDesignMode)
             //{
-            //    AppGroupViewModels = new()
+            //    Groups = new()
             //    {
             //        new AppGroupViewModel {ColumnNumber = 1},
             //        new AppGroupViewModel {ColumnNumber = 1},
@@ -22,7 +21,7 @@ namespace AppLauncher.ViewModels
             //    };
             //}
 
-            AppGroupViewModels = new()
+            Groups = new()
                 {
                     new AppGroupViewModel {ColumnNumber = 1},
                     new AppGroupViewModel {ColumnNumber = 1},
@@ -46,16 +45,16 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region AppGroupViewModels : ObservableCollection<AppGroupViewModel> - Группы с ярлыками приложений
+        #region Groups : ObservableCollection<AppGroupViewModel> - Группы с ярлыками приложений
 
         /// <summary>Группы с ярлыками приложений</summary>
-        private ObservableCollection<AppGroupViewModel> _AppGroupViewModels;
+        private ObservableCollection<AppGroupViewModel> _Groups;
 
         /// <summary>Группы с ярлыками приложений</summary>
-        public ObservableCollection<AppGroupViewModel> AppGroupViewModels
+        public ObservableCollection<AppGroupViewModel> Groups
         {
-            get => _AppGroupViewModels;
-            set => Set(ref _AppGroupViewModels, value);
+            get => _Groups;
+            set => Set(ref _Groups, value);
         }
 
         #endregion
@@ -78,14 +77,6 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        public IEnumerable<AppGroupViewModel> Groups1Column => AppGroupViewModels.Where(g => g.ColumnNumber == 1);
-        public IEnumerable<AppGroupViewModel> Groups2Column => AppGroupViewModels.Where(g => g.ColumnNumber == 2);
-        public IEnumerable<AppGroupViewModel> Groups3Column => AppGroupViewModels.Where(g => g.ColumnNumber == 3);
-        public IEnumerable<AppGroupViewModel> Groups4Column => AppGroupViewModels.Where(g => g.ColumnNumber == 4);
-        public IEnumerable<AppGroupViewModel> Groups5Column => AppGroupViewModels.Where(g => g.ColumnNumber == 5);
-
-
-
         #region Commands
 
 
@@ -104,13 +95,13 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Добавить группу</summary>
         private void OnAddGroupCommandExecuted()
         {
-            var column = AppGroupViewModels
+            var column = Groups
                 .Select(vm => vm.ColumnNumber)
                 .DefaultIfEmpty()
                 .Max();
 
-            var newGroup = App.DataManager.AddGroup("Новая группа", column);
-            //AppGroupViewModels.Add(newGroup);
+            var newGroup = App.DataManager.AddGroup("Новая группа");
+            //Groups.Add(newGroup);
         }
 
         #endregion

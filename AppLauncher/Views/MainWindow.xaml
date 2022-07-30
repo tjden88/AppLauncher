@@ -13,16 +13,10 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1000">
     <d:Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
-
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type viewModels:AppGroupViewModel}">
-            <views:AppGroup DataContext="{Binding}"/>
-        </DataTemplate>
-    </Window.Resources>
 
     <Grid>
         <Border CornerRadius="10" Background="#99000000"/>
@@ -49,11 +43,18 @@
             </DockPanel>
 
             <!--Наполнение-->
-            <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
-                <ItemsControl ItemsSource="{Binding Groups1Column}"/>
-                <ItemsControl ItemsSource="{Binding Groups2Column}"/>
-            </UniformGrid>
+            <ItemsControl Margin="5,0,5,5" ItemsSource="{Binding Groups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:AppGroupViewModel}">
+                        <views:AppGroup Width="300" Margin="5" DataContext="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </DockPanel>
-
     </Grid>
 </Window>
