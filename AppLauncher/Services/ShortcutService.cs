@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -11,9 +12,9 @@ using WindowsShortcutFactory;
 namespace AppLauncher.Services
 {
     /// <summary>
-    /// Создание ярлыков
+    /// Сервис работы с ярлыками
     /// </summary>
-    public class ShortcutCreator
+    public class ShortcutService
     {
 
         /// <summary>
@@ -55,6 +56,7 @@ namespace AppLauncher.Services
         /// <param name="ShortcutFileName">Путь к ярлыку</param>
         public ImageSource GetIconFromShortcut(string ShortcutFileName)
         {
+            Icon icon = null;
 
             using var sc = WindowsShortcut.Load(ShortcutFileName);
 
@@ -62,14 +64,22 @@ namespace AppLauncher.Services
             if (string.IsNullOrEmpty(pathToIconFile))
                 pathToIconFile = sc.Path;
 
-            Icon icon = null;
+            if (pathToIconFile != null)
+            {
+                if (File.Exists(pathToIconFile))
+                    icon = Icon.ExtractAssociatedIcon(pathToIconFile);
 
-            if (pathToIconFile != null && File.Exists(pathToIconFile)) 
-                icon = Icon.ExtractAssociatedIcon(pathToIconFile);
+                if (Directory.Exists(pathToIconFile))
+                {
+
+                }
+            }
+
 
             icon ??= new Icon(SystemIcons.Application, 128, 128);
 
-            return ToImageSource(icon);
+            //return ToImageSource(icon);
+            return Test(pathToIconFile);
         }
 
 
@@ -78,5 +88,55 @@ namespace AppLauncher.Services
                 icon.Handle,
                 Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());
+
+
+        private ImageSource Test(string Path)
+        {
+            var shinfo = new SHFILEINFO();
+
+            //Call function with the path to the folder you want the icon for
+            SHGetFileInfo(
+                Path,
+                0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
+                SHGFI_ICON | SHGFI_LARGEICON);
+
+            using var i = Icon.FromHandle(shinfo.hIcon);
+
+            //Convert icon to a Bitmap source
+            ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
+                i.Handle,
+                new Int32Rect(0, 0, i.Width, i.Height),
+                BitmapSizeOptions.FromEmptyOptions());
+
+            return img;
+        }
+
+
+        #region Interop
+
+        //Struct used by SHGetFileInfo function
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SHFILEINFO
+        {
+            public IntPtr hIcon;
+            public int iIcon;
+            public uint dwAttributes;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szDisplayName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+            public string szTypeName;
+        };
+
+        //Constants flags for SHGetFileInfo 
+        public const uint SHGFI_ICON = 0x100;
+        public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
+
+        //Import SHGetFileInfo functio
+        [DllImport("shell32.dll")]
+        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
+
+        #endregion
+
+
     }
 }

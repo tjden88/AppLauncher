@@ -12,6 +12,6 @@ namespace AppLauncher
         /// <summary> Вьюмодель главного окна </summary>
         public static MainWindowViewModel MainWindowViewModel { get; } = new();
 
-        public static LinkService LinkService { get; } = new (new ShortcutCreator());
+        public static LinkService LinkService { get; } = new (new ShortcutService());
     }
 }

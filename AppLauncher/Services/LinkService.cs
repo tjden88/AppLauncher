@@ -11,13 +11,13 @@ namespace AppLauncher.Services
     /// </summary>
     public class LinkService
     {
-        private readonly ShortcutCreator _ShortcutCreator;
+        private readonly ShortcutService _ShortcutService;
 
         private readonly string _LinkPath = Path.Combine(Environment.CurrentDirectory, "Links");
 
-        public LinkService(ShortcutCreator ShortcutCreator)
+        public LinkService(ShortcutService ShortcutService)
         {
-            _ShortcutCreator = ShortcutCreator;
+            _ShortcutService = ShortcutService;
             Directory.CreateDirectory(_LinkPath);
         }
 
@@ -42,7 +42,7 @@ namespace AppLauncher.Services
             }
 
 
-            _ShortcutCreator.CreateShortcut(FileName, newFileName);
+            _ShortcutService.CreateShortcut(FileName, newFileName);
 
 
             return new AppLink

@@ -121,7 +121,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         {
             Name = l.Name,
             FilePath = l.Path,
-            Image = new ShortcutCreator().GetIconFromShortcut(l.Path),
+            Image = new ShortcutService().GetIconFromShortcut(l.Path),
         });
 
         foreach (var draggedLink in addedLinks)
