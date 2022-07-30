@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using IWshRuntimeLibrary;
+using Shell32;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -72,7 +74,7 @@ namespace AppLauncher.ViewModels
 
             var path = extension switch
             {
-                "lnk" => GetShortcutTarget(Url),
+                ".lnk" => GetShortcutTargetFile2(Url),
                 _ => Url
             };
             return new AppLinkViewModel
@@ -86,61 +88,28 @@ namespace AppLauncher.ViewModels
 
 
 
-        private static string GetShortcutTarget(string file)
+        private static string GetShortcutTargetFile(string shortcutFilename)
         {
-            try
-            {
-                if (System.IO.Path.GetExtension(file).ToLower() != ".lnk")
-                {
-                    throw new Exception("Supplied file must be a .LNK file");
-                }
+            var pathOnly = System.IO.Path.GetDirectoryName(shortcutFilename);
+            var filenameOnly = System.IO.Path.GetFileName(shortcutFilename);
 
-                var fileStream = File.Open(file, FileMode.Open, FileAccess.Read);
-                using var fileReader = new BinaryReader(fileStream);
-                fileStream.Seek(0x14, SeekOrigin.Begin);     // Seek to flags
-                var flags = fileReader.ReadUInt32();        // Read flags
-                if ((flags & 1) == 1)
-                {                      // Bit 1 set means we have to
-                    // skip the shell item ID list
-                    fileStream.Seek(0x4c, SeekOrigin.Begin); // Seek to the end of the header
-                    uint offset = fileReader.ReadUInt16();   // Read the length of the Shell item ID list
-                    fileStream.Seek(offset, SeekOrigin.Current); // Seek past it (to the file locator info)
-                }
+            var shell = new Shell();
+            var folder = shell.NameSpace(pathOnly);
+            var folderItem = folder.ParseName(filenameOnly);
 
-                var fileInfoStartsAt = fileStream.Position; // Store the offset where the file info
-                // structure begins
-                var totalStructLength = fileReader.ReadUInt32(); // read the length of the whole struct
-                fileStream.Seek(0xc, SeekOrigin.Current); // seek to offset to base pathname
-                var fileOffset = fileReader.ReadUInt32(); // read offset to base pathname
-                // the offset is from the beginning of the file info struct (fileInfoStartsAt)
-                fileStream.Seek((fileInfoStartsAt + fileOffset), SeekOrigin.Begin); // Seek to beginning of
-                // base pathname (target)
-                var pathLength = (totalStructLength + fileInfoStartsAt) - fileStream.Position - 2; // read
-                // the base pathname. I don't need the 2 terminating nulls.
-                var linkTarget = fileReader.ReadChars((int)pathLength); // should be unicode safe
-                var link = new string(linkTarget);
+            if (folderItem == null) return string.Empty;
 
-                var begin = link.IndexOf("\0\0", StringComparison.Ordinal);
-                if (begin > -1)
-                {
-                    var end = link.IndexOf("\\\\", begin + 2, StringComparison.Ordinal) + 2;
-                    end = link.IndexOf('\0', end) + 1;
-
-                    var firstPart = link[..begin];
-                    var secondPart = link[end..];
-
-                    return firstPart + secondPart;
-                }
-                else
-                {
-                    return link;
-                }
-            }
-            catch
-            {
-                return "";
-            }
+            var link = (Shell32.ShellLinkObject)folderItem.GetLink;
+            return link.Path;
         }
+
+        private static string GetShortcutTargetFile2(string shortcutFilename)
+        {
+            WshShell shell = new WshShell();
+            WshShortcut shortcut = (WshShortcut)shell.CreateShortcut(@"C:\SomeShortcut.lnk");
+            return shortcut.TargetPath;
+        }
+
 
     }
 }
