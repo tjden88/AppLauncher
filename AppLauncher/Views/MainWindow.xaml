@@ -26,19 +26,29 @@
 
     <Grid>
         <Border CornerRadius="10" Background="#99000000"/>
-
         <DockPanel>
-            <DockPanel DockPanel.Dock="Top" LastChildFill="False" MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown"
-                           Background="Transparent">
-                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2" FontSize="20"
-                            Command="{Binding CloseWindowCommand}" Cursor="Hand">
+
+            <!--Заголовок-->
+            <DockPanel DockPanel.Dock="Top" LastChildFill="False" MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent">
+
+                <Button DockPanel.Dock="Left" Margin="5" Padding="5,2"
+                        ToolTip="Добавить группу"
+                        Command="{Binding AddGroupCommand}" Cursor="Hand">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_PlusCircle"/>
+                    </Button.Content>
+                </Button>
+
+                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
+                        ToolTip="Закрыть окно"
+                        Command="{Binding CloseWindowCommand}" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
             </DockPanel>
 
-
+            <!--Наполнение-->
             <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
                 <ItemsControl ItemsSource="{Binding Groups1Column}"/>
                 <ItemsControl ItemsSource="{Binding Groups2Column}"/>

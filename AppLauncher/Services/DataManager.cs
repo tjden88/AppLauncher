@@ -53,8 +53,11 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="Name">Имя группы</param>
         /// <returns></returns>
-        public Group AddGroup(string Name)
+        public Group AddGroup(string Name, int ColumnNumber)
         {
+            if(ColumnNumber is < 1 or > 5)
+                throw new ArgumentOutOfRangeException(nameof(ColumnNumber));
+
             var grName = string.IsNullOrEmpty(Name)
                 ? "Новая группа"
                 : Name;
@@ -65,6 +68,7 @@ namespace AppLauncher.Services
                     .DefaultIfEmpty()
                     .Max() + 1,
                 Name = grName,
+                ColumnNumber = ColumnNumber,
             };
             Data.Groups.Add(group);
             SaveData();

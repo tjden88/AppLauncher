@@ -60,6 +60,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
         #region SelectedGroup : AppGroupViewModel - Выбранная группа
 
         /// <summary>Выбранная группа</summary>
@@ -76,8 +77,6 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
-
 
         public IEnumerable<AppGroupViewModel> Groups1Column => AppGroupViewModels.Where(g => g.ColumnNumber == 1);
         public IEnumerable<AppGroupViewModel> Groups2Column => AppGroupViewModels.Where(g => g.ColumnNumber == 2);
@@ -88,6 +87,33 @@ namespace AppLauncher.ViewModels
 
 
         #region Commands
+
+
+        #region Command AddGroupCommand - Добавить группу
+
+        /// <summary>Добавить группу</summary>
+        private Command _AddGroupCommand;
+
+        /// <summary>Добавить группу</summary>
+        public Command AddGroupCommand => _AddGroupCommand
+            ??= new Command(OnAddGroupCommandExecuted, CanAddGroupCommandExecute, "Добавить группу");
+
+        /// <summary>Проверка возможности выполнения - Добавить группу</summary>
+        private bool CanAddGroupCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Добавить группу</summary>
+        private void OnAddGroupCommandExecuted()
+        {
+            var column = AppGroupViewModels
+                .Select(vm => vm.ColumnNumber)
+                .DefaultIfEmpty()
+                .Max();
+
+            var newGroup = App.DataManager.AddGroup("Новая группа", column);
+            //AppGroupViewModels.Add(newGroup);
+        }
+
+        #endregion
 
         #region Command CloseWindowCommand - Закрыть или свернуть окно
 
