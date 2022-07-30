@@ -9,7 +9,13 @@
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
              xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
              xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d">
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding LoadLinksCommand}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <UserControl.Resources>
         <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     </UserControl.Resources>
@@ -31,7 +37,7 @@
             </fa5:FontAwesome>
             <TextBox Foreground="White" Background="Transparent" 
                      CaretBrush="White"
-                     IsHitTestVisible="{Binding IsSelected}"
+                     Focusable="{Binding IsSelected}"
                      BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}" 
                      BorderBrush="White"
                      Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
@@ -44,7 +50,11 @@
                       dd:DragDrop.DropHandler="{Binding}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
-                    <Image Width="40" Height="40" Source="{Binding Image}"/>
+                    <Image Width="40" Height="40" Margin="5" Cursor="Hand" Source="{Binding Image}" ToolTip="{Binding Name}">
+                        <Image.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding LaunchCommand}"/>
+                        </Image.InputBindings>
+                    </Image>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

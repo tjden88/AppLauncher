@@ -13,7 +13,7 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="450" Width="800" Opacity="0.5">
+        Title="MainWindow" Height="450" Width="800">
     <d:Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
@@ -24,24 +24,26 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Border CornerRadius="10" Background="#99000000">
+    <Grid>
+        <Border CornerRadius="10" Background="#99000000"/>
 
-       <DockPanel>
-           <DockPanel DockPanel.Dock="Top" LastChildFill="False" MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown"
-                      Background="Transparent">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Top" LastChildFill="False" MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown"
+                           Background="Transparent">
                 <Button DockPanel.Dock="Right" Margin="5" Padding="5,2" FontSize="20"
-                        Command="{Binding CloseWindowCommand}" Cursor="Hand">
+                            Command="{Binding CloseWindowCommand}" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
-           </DockPanel>
+            </DockPanel>
 
 
-           <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
-               <ItemsControl ItemsSource="{Binding Groups1Column}"/>
-               <ItemsControl ItemsSource="{Binding Groups2Column}"/>
-           </UniformGrid>
+            <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
+                <ItemsControl ItemsSource="{Binding Groups1Column}"/>
+                <ItemsControl ItemsSource="{Binding Groups2Column}"/>
+            </UniformGrid>
         </DockPanel>
-    </Border>
+
+    </Grid>
 </Window>

@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="WindowsShortcutFactory" Version="1.0.1" />
     <PackageReference Include="WPR.MVVM" Version="1.1.0" />
