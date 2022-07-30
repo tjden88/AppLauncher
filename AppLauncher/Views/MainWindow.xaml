@@ -7,6 +7,7 @@
         xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
         xmlns:views="clr-namespace:AppLauncher.Views"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
@@ -14,6 +15,11 @@
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         Title="MainWindow" Height="600" Width="1000">
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding LoadGroupsCommand}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <d:Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>

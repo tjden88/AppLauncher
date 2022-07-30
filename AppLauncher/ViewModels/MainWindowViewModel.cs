@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using AppLauncher.Models;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -8,26 +9,6 @@ namespace AppLauncher.ViewModels
 {
     public class MainWindowViewModel : WindowViewModel
     {
-
-        public MainWindowViewModel()
-        {
-            //if (IsDesignMode)
-            //{
-            //    Groups = new()
-            //    {
-            //        new AppGroupViewModel {ColumnNumber = 1},
-            //        new AppGroupViewModel {ColumnNumber = 1},
-            //        new AppGroupViewModel {ColumnNumber = 2},
-            //    };
-            //}
-
-            Groups = new()
-                {
-                    new AppGroupViewModel {ColumnNumber = 1},
-                    new AppGroupViewModel {ColumnNumber = 1},
-                    new AppGroupViewModel {ColumnNumber = 2},
-                };
-        }
 
 
         #region ColumnsCount : int - Количество колонок
@@ -70,8 +51,8 @@ namespace AppLauncher.ViewModels
         {
             get => _SelectedGroup;
             set => IfSet(ref _SelectedGroup, value)
-                .ThenIf(v=> v!= null, v => v.IsSelected = true)
-                .ThenIfOld(old => old !=null, old => old.IsSelected = false);
+                .ThenIf(v => v != null, v => v.IsSelected = true)
+                .ThenIfOld(old => old != null, old => old.IsSelected = false);
         }
 
         #endregion
@@ -79,6 +60,27 @@ namespace AppLauncher.ViewModels
 
         #region Commands
 
+        #region Command LoadGroupsCommand - Загрузить группы
+
+        /// <summary>Загрузить группы</summary>
+        private Command _LoadGroupsCommand;
+
+        /// <summary>Загрузить группы</summary>
+        public Command LoadGroupsCommand => _LoadGroupsCommand
+            ??= new Command(OnLoadGroupsCommandExecuted, CanLoadGroupsCommandExecute, "Загрузить группы");
+
+        /// <summary>Проверка возможности выполнения - Загрузить группы</summary>
+        private bool CanLoadGroupsCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Загрузить группы</summary>
+        private void OnLoadGroupsCommandExecuted()
+        {
+            var groups = App.DataManager.LoadGroups();
+            var vm = groups.Select(MapModel);
+            Groups = new(vm);
+        }
+
+        #endregion
 
         #region Command AddGroupCommand - Добавить группу
 
@@ -95,13 +97,8 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Добавить группу</summary>
         private void OnAddGroupCommandExecuted()
         {
-            var column = Groups
-                .Select(vm => vm.ColumnNumber)
-                .DefaultIfEmpty()
-                .Max();
-
             var newGroup = App.DataManager.AddGroup("Новая группа");
-            //Groups.Add(newGroup);
+            Groups.Add(MapModel(newGroup));
         }
 
         #endregion
@@ -126,7 +123,17 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
         #endregion
 
+
+        private AppGroupViewModel MapModel(Group Model)
+        {
+            return new AppGroupViewModel
+            {
+                Id = Model.Id,
+                Name = Model.Name,
+            };
+        }
     }
 }

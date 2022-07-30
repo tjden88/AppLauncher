@@ -56,21 +56,6 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region ColumnNumber : int - Номер колонки этой группы
-
-    /// <summary>Номер колонки этой группы</summary>
-    private int _ColumnNumber;
-
-    /// <summary>Номер колонки этой группы</summary>
-    public int ColumnNumber
-    {
-        get => _ColumnNumber;
-        set => Set(ref _ColumnNumber, value);
-    }
-
-    #endregion
-
-
     #region Links : ObservableCollection<AppLinkViewModel> - Список ярлыков группы
 
     /// <summary>Список ярлыков группы</summary>
