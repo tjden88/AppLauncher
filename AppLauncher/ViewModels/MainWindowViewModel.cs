@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using AppLauncher.Views;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
@@ -13,11 +12,11 @@ namespace AppLauncher.ViewModels
         {
             if (IsDesignMode)
             {
-                AppGroups = new()
+                AppGroupViewModels = new()
                 {
-                    new AppGroup() {ColumnNumber = 1},
-                    new AppGroup() {ColumnNumber = 1},
-                    new AppGroup() {ColumnNumber = 2},
+                    new AppGroupViewModel {ColumnNumber = 1},
+                    new AppGroupViewModel {ColumnNumber = 1},
+                    new AppGroupViewModel {ColumnNumber = 2},
                 };
             }
         }
@@ -38,26 +37,26 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region AppGroups : ObservableCollection<AppGroup> - Группы с ярлыками приложений
+        #region AppGroupViewModels : ObservableCollection<AppGroupViewModel> - Группы с ярлыками приложений
 
         /// <summary>Группы с ярлыками приложений</summary>
-        private ObservableCollection<AppGroup> _AppGroups;
+        private ObservableCollection<AppGroupViewModel> _AppGroupViewModels;
 
         /// <summary>Группы с ярлыками приложений</summary>
-        public ObservableCollection<AppGroup> AppGroups
+        public ObservableCollection<AppGroupViewModel> AppGroupViewModels
         {
-            get => _AppGroups;
-            set => Set(ref _AppGroups, value);
+            get => _AppGroupViewModels;
+            set => Set(ref _AppGroupViewModels, value);
         }
 
         #endregion
 
 
-        public IEnumerable<AppGroup> Groups1Column => AppGroups.Where(g => g.ColumnNumber == 1);
-        public IEnumerable<AppGroup> Groups2Column => AppGroups.Where(g => g.ColumnNumber == 2);
-        public IEnumerable<AppGroup> Groups3Column => AppGroups.Where(g => g.ColumnNumber == 3);
-        public IEnumerable<AppGroup> Groups4Column => AppGroups.Where(g => g.ColumnNumber == 4);
-        public IEnumerable<AppGroup> Groups5Column => AppGroups.Where(g => g.ColumnNumber == 5);
+        public IEnumerable<AppGroupViewModel> Groups1Column => AppGroupViewModels.Where(g => g.ColumnNumber == 1);
+        public IEnumerable<AppGroupViewModel> Groups2Column => AppGroupViewModels.Where(g => g.ColumnNumber == 2);
+        public IEnumerable<AppGroupViewModel> Groups3Column => AppGroupViewModels.Where(g => g.ColumnNumber == 3);
+        public IEnumerable<AppGroupViewModel> Groups4Column => AppGroupViewModels.Where(g => g.ColumnNumber == 4);
+        public IEnumerable<AppGroupViewModel> Groups5Column => AppGroupViewModels.Where(g => g.ColumnNumber == 5);
 
 
 

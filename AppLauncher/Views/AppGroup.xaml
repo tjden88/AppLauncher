@@ -6,8 +6,12 @@
              xmlns:local="clr-namespace:AppLauncher.Views"
              Foreground="White"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
+             xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
+    <d:UserControl.DataContext>
+        <viewModels:AppGroupViewModel/>
+    </d:UserControl.DataContext>
     <Grid>
 
         <Grid.RowDefinitions>

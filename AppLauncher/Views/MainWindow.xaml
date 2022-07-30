@@ -13,10 +13,16 @@
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         Title="MainWindow" Height="450" Width="800" Opacity="0.5">
-
     <d:Window.DataContext>
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:AppGroupViewModel}">
+            <views:AppGroup DataContext="{Binding}"/>
+        </DataTemplate>
+    </Window.Resources>
+
     <Border CornerRadius="10" Background="#99000000">
 
        <UniformGrid Columns="{Binding ColumnsCount}" Rows="1">
