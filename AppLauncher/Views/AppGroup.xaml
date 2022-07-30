@@ -34,7 +34,7 @@
             <fa5:FontAwesome Icon="Solid_CircleNotch" Margin="10" VerticalAlignment="Center" FontSize="16" Cursor="Hand" Background="Transparent">
                 <fa5:FontAwesome.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Удалить"/>
+                        <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}"/>
                     </ContextMenu>
                 </fa5:FontAwesome.ContextMenu>
                 <fa5:FontAwesome.InputBindings>

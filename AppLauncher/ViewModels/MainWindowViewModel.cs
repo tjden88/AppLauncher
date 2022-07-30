@@ -127,7 +127,7 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        private AppGroupViewModel MapModel(Group Model)
+        private static AppGroupViewModel MapModel(Group Model)
         {
             return new AppGroupViewModel
             {

@@ -114,10 +114,36 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+    #region Command DeleteGroupCommand - Удалить группу
+
+    /// <summary>Удалить группу</summary>
+    private Command _DeleteGroupCommand;
+
+    /// <summary>Удалить группу</summary>
+    public Command DeleteGroupCommand => _DeleteGroupCommand
+        ??= new Command(OnDeleteGroupCommandExecuted, CanDeleteGroupCommandExecute, "Удалить группу");
+
+    /// <summary>Проверка возможности выполнения - Удалить группу</summary>
+    private bool CanDeleteGroupCommandExecute() => true;
+
+    /// <summary>Логика выполнения - Удалить группу</summary>
+    private void OnDeleteGroupCommandExecuted()
+    {
+        var msg = MessageBox.Show(App.ActiveWindow, 
+            $"Удалить группу {Name} и все ярлыки?", "Внимание!",
+            MessageBoxButton.YesNo);
+        if (msg != MessageBoxResult.Yes) return;
+
+        App.DataManager.DeleteGroup(Id);
+        App.MainWindowViewModel.Groups.Remove(this);
+    }
+
+    #endregion
+
     #endregion
 
 
-    private AppLinkViewModel MapModel(AppLink Link)
+    private static AppLinkViewModel MapModel(AppLink Link)
     {
        return new AppLinkViewModel
         {

@@ -40,13 +40,14 @@ namespace AppLauncher.Services
 
 
 
-        #region Public
+        #region Groups
 
         /// <summary>
         /// Загрузить группы
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Group> LoadGroups() => Data.Groups.OrderBy(g => g.Id);
+
 
         /// <summary>
         /// Добавить группу
@@ -70,6 +71,7 @@ namespace AppLauncher.Services
             SaveData();
             return group;
         }
+        
 
         /// <summary>
         /// Загрузить ярлыки группы
@@ -95,6 +97,27 @@ namespace AppLauncher.Services
         }
 
 
+        public void DeleteGroup(int GroupId)
+        {
+            var group = Data.Groups.FirstOrDefault(g => g.Id == GroupId);
+            if (group == null) return;
+
+            foreach (var link in LoadGroupLinks(GroupId))
+                File.Delete(link.Path);
+
+
+            var removed = Data.Groups.Remove(group);
+            if (removed)
+                SaveData();
+        }
+
+
+
+        #endregion
+
+
+        #region Links
+
         /// <summary>
         /// Добавить ярлык в группу
         /// </summary>
@@ -109,7 +132,7 @@ namespace AppLauncher.Services
             return link;
         }
 
-
         #endregion
+
     }
 }

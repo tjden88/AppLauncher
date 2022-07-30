@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
 
@@ -17,5 +18,7 @@ namespace AppLauncher
         public static LinkService LinkService { get; } = new(ShortcutService);
 
         public static DataManager DataManager { get; } = new(LinkService);
+
+        public static Window ActiveWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
     }
 }
