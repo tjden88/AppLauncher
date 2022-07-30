@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
@@ -56,7 +58,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #region Links : ObservableCollection<AppLinkViewModel> - Список ярлыков группы
 
     /// <summary>Список ярлыков группы</summary>
-    private ObservableCollection<AppLinkViewModel> _Links;
+    private ObservableCollection<AppLinkViewModel> _Links = new();
 
     /// <summary>Список ярлыков группы</summary>
     public ObservableCollection<AppLinkViewModel> Links
@@ -90,21 +92,35 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+
+    private IEnumerable<AppLinkViewModel> _DraggedLinks;
+
     public void DragOver(IDropInfo dropInfo)
     {
         var sourceItem = dropInfo.Data;
-        var targetItem = dropInfo.TargetItem;
 
-        if (sourceItem != null && targetItem != null)
+        if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is { } fileData)
         {
-            dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-            dropInfo.Effects = DragDropEffects.Copy;
+            if (fileData is string[] strArray)
+            {
+                _DraggedLinks = strArray.Select(AppLinkViewModel.CreateLinkViewModelFromLink);
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                dropInfo.Effects = DragDropEffects.Copy;
+            }
+
+        }
+        else
+        {
+            dropInfo.Effects = DragDropEffects.None;
+            _DraggedLinks = null;
         }
     }
 
     public void Drop(IDropInfo dropInfo)
     {
-        var sourceItem = dropInfo.Data;
-        var targetItem = dropInfo.TargetItem;
+        if (_DraggedLinks == null) return;
+
+        foreach (var draggedLink in _DraggedLinks)
+            Links.Add(draggedLink);
     }
 }

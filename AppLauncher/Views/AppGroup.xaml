@@ -9,8 +9,7 @@
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
              xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     </UserControl.Resources>
@@ -40,7 +39,7 @@
         </DockPanel>
 
         <!--Содержимое-->
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Links}" dd:DragDrop.IsDragSource="True"
+        <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding Links}" dd:DragDrop.IsDragSource="True"
                       dd:DragDrop.IsDropTarget="True"
                       dd:DragDrop.DropHandler="{Binding}">
             <ItemsControl.ItemsPanel>
