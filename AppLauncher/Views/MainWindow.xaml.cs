@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using AppLauncher.ViewModels;
 // ReSharper disable InconsistentNaming
@@ -56,31 +57,37 @@ namespace AppLauncher.Views
         }
 
 
-        private void MainWindow_OnLoaded(object Sender, RoutedEventArgs E)
-        {
-            EnableBlur();
-        }
+        private void MainWindow_OnLoaded(object Sender, RoutedEventArgs E) => EnableBlur();
 
         internal void EnableBlur()
         {
             var windowHelper = new WindowInteropHelper(this);
 
-            var accent = new AccentPolicy();
-            accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
+            var accent = new AccentPolicy
+            {
+                AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND
+            };
 
             var accentStructSize = Marshal.SizeOf(accent);
 
             var accentPtr = Marshal.AllocHGlobal(accentStructSize);
             Marshal.StructureToPtr(accent, accentPtr, false);
 
-            var data = new WindowCompositionAttributeData();
-            data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
-            data.SizeOfData = accentStructSize;
-            data.Data = accentPtr;
+            var data = new WindowCompositionAttributeData
+            {
+                Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                SizeOfData = accentStructSize,
+                Data = accentPtr
+            };
 
             SetWindowCompositionAttribute(windowHelper.Handle, ref data);
 
             Marshal.FreeHGlobal(accentPtr);
+        }
+
+        private void TitleDockPanel_OnMouseLeftButtonDown(object Sender, MouseButtonEventArgs E)
+        {
+            DragMove();
         }
     }
 }

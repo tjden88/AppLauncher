@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
@@ -84,6 +86,30 @@ namespace AppLauncher.ViewModels
         public IEnumerable<AppGroupViewModel> Groups5Column => AppGroupViewModels.Where(g => g.ColumnNumber == 5);
 
 
+
+        #region Commands
+
+        #region Command CloseWindowCommand - Закрыть или свернуть окно
+
+        /// <summary>Закрыть или свернуть окно</summary>
+        private Command _CloseWindowCommand;
+
+        /// <summary>Закрыть или свернуть окно</summary>
+        public Command CloseWindowCommand => _CloseWindowCommand
+            ??= new Command(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно");
+
+        /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
+        private bool CanCloseWindowCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Закрыть или свернуть окно</summary>
+        private void OnCloseWindowCommandExecuted()
+        {
+            Application.Current.Shutdown();
+        }
+
+        #endregion
+
+        #endregion
 
     }
 }
