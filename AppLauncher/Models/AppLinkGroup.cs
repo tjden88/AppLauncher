@@ -9,6 +9,7 @@ namespace AppLauncher.Models
     {
         public int Id { get; set; }
 
+        public AppLink BigLink { get; set; }
 
         public AppLink Link1 { get; set; }
 

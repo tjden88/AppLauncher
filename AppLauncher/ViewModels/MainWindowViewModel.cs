@@ -26,13 +26,13 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region Groups : ObservableCollection<AppGroupViewModel> - Группы с ярлыками приложений
+        #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
 
         /// <summary>Группы с ярлыками приложений</summary>
-        private ObservableCollection<AppGroupViewModel> _Groups;
+        private ObservableCollection<GroupViewModel> _Groups;
 
         /// <summary>Группы с ярлыками приложений</summary>
-        public ObservableCollection<AppGroupViewModel> Groups
+        public ObservableCollection<GroupViewModel> Groups
         {
             get => _Groups;
             set => Set(ref _Groups, value);
@@ -41,13 +41,13 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region SelectedGroup : AppGroupViewModel - Выбранная группа
+        #region SelectedGroup : GroupViewModel - Выбранная группа
 
         /// <summary>Выбранная группа</summary>
-        private AppGroupViewModel _SelectedGroup;
+        private GroupViewModel _SelectedGroup;
 
         /// <summary>Выбранная группа</summary>
-        public AppGroupViewModel SelectedGroup
+        public GroupViewModel SelectedGroup
         {
             get => _SelectedGroup;
             set => IfSet(ref _SelectedGroup, value)
@@ -127,9 +127,9 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        private static AppGroupViewModel MapModel(Group Model)
+        private static GroupViewModel MapModel(Group Model)
         {
-            return new AppGroupViewModel
+            return new GroupViewModel
             {
                 Id = Model.Id,
                 Name = Model.Name,

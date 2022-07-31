@@ -17,6 +17,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+
             <Border  Tag="1" Background="Transparent"
                 dd:DragDrop.IsDragSource="{Binding AppLinkViewModel1, Converter={StaticResource ValueIsNotNullConverter}}"
                 dd:DragDrop.IsDropTarget="{Binding AppLinkViewModel1, Converter={StaticResource ValueIsNullConverter}}" 

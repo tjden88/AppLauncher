@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
@@ -8,7 +9,7 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels;
 
-public class AppGroupViewModel : ViewModel, IDropTarget
+public class GroupViewModel : ViewModel, IDropTarget
 {
 
     #region Id : int - Id группы
@@ -90,7 +91,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     private void OnLoadLinksCommandExecuted()
     {
         var links = App.DataManager.LoadGroupLinks(Id).ToArray();
-        var vm = links.Select(MapGroupModel);
+        var vm = links.Select(l => l.ToViewModel());
         LinksGroups = new(vm);
     }
 
@@ -142,29 +143,6 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
-    private static AppLinksGroupViewModel MapGroupModel(AppLinkGroup LinkGroup)
-    {
-        return new AppLinksGroupViewModel
-        {
-            AppLinkViewModel1 = MapModel(LinkGroup.Link1),
-            AppLinkViewModel2 = MapModel(LinkGroup.Link2),
-            AppLinkViewModel3 = MapModel(LinkGroup.Link3),
-            AppLinkViewModel4 = MapModel(LinkGroup.Link4),
-        };
-    }
-
-    private static AppLinkViewModel MapModel(AppLink Link)
-    {
-        if(Link == null) return null;
-
-        return new AppLinkViewModel
-        {
-            FilePath = Link.Path,
-            Name = Link.Name,
-        };
-    }
-
-
     public void DragOver(IDropInfo dropInfo)
     {
         var sourceItem = dropInfo.Data;
@@ -202,7 +180,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
             if (currentIndex == FileNames.Length)
             {
                 dataManager.UpdateAppLinkGroup(group);
-                LinksGroups.Add(MapGroupModel(group));
+                LinksGroups.Add(group.ToViewModel());
                 return true;
             }
             return false;
@@ -226,7 +204,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
             if (CheckEnd(newGroup)) break;
 
             dataManager.UpdateAppLinkGroup(newGroup);
-            LinksGroups.Add(MapGroupModel(newGroup));
+            LinksGroups.Add(newGroup.ToViewModel());
         }
     }
 }

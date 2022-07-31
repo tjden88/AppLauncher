@@ -51,7 +51,7 @@
             <!--Наполнение-->
             <ItemsControl Margin="5,0,5,5" ItemsSource="{Binding Groups}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:AppGroupViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
                         <views:AppGroup Width="300" Margin="5" DataContext="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

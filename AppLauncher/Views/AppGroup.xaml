@@ -20,7 +20,7 @@
         <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     </UserControl.Resources>
     <d:UserControl.DataContext>
-        <viewModels:AppGroupViewModel/>
+        <viewModels:GroupViewModel/>
     </d:UserControl.DataContext>
     <Grid>
 

@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using AppLauncher.Infrastructure.Helpers;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.ViewModels;
 
@@ -10,12 +12,56 @@ namespace AppLauncher.ViewModels
     public class AppLinksGroupViewModel : ViewModel, IDropTarget
     {
 
-        #region AppLinkViewModel1 : AppLinkViewModel - Первый (или большой и единственный) ярлык
+        #region Id : int - Идентификатор
 
-        /// <summary>Первый (или большой и единственный) ярлык</summary>
+        /// <summary>Идентификатор</summary>
+        private int _Id;
+
+        /// <summary>Идентификатор</summary>
+        public int Id
+        {
+            get => _Id;
+            set => Set(ref _Id, value);
+        }
+
+        #endregion
+
+        #region GroupId : int - Id группы
+
+        /// <summary>Id группы</summary>
+        private int _GroupId;
+
+        /// <summary>Id группы</summary>
+        public int GroupId
+        {
+            get => _GroupId;
+            set => Set(ref _GroupId, value);
+        }
+
+        #endregion
+
+        
+
+        #region BigLinkViewModel : AppLinkViewModel - Большой ярлык
+
+        /// <summary>Большой ярлык</summary>
+        private AppLinkViewModel _BigLinkViewModel;
+
+        /// <summary>Большой ярлык</summary>
+        public AppLinkViewModel BigLinkViewModel
+        {
+            get => _BigLinkViewModel;
+            set => Set(ref _BigLinkViewModel, value);
+        }
+
+        #endregion
+
+        #region AppLinkViewModel1 : AppLinkViewModel - Link1
+
+        /// <summary>Link1</summary>
         private AppLinkViewModel _AppLinkViewModel1;
 
-        /// <summary>Первый (или большой и единственный) ярлык</summary>
+        /// <summary>Link1</summary>
         public AppLinkViewModel AppLinkViewModel1
         {
             get => _AppLinkViewModel1;
@@ -89,7 +135,32 @@ namespace AppLauncher.ViewModels
             if (sourceItem is not DataObject dataObject ||
                 dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
 
-           
+            var ls = App.LinkService;
+
+            var firstStr = strArray[0];
+
+            var linkNumber = ((Border)dropInfo.VisualTarget).Tag as string;
+
+            var link = ls.CreateLink(firstStr);
+
+            switch (linkNumber)
+            {
+                case "1":
+                    AppLinkViewModel1 = link.ToViewModel();
+                    break;
+                case "2":
+                    AppLinkViewModel2 = link.ToViewModel();
+                    break;
+                case "3":
+                    AppLinkViewModel3 = link.ToViewModel();
+                    break;
+                case "4":
+                    AppLinkViewModel4 = link.ToViewModel();
+                    break;
+            }
+
+            App.DataManager.UpdateAppLinkGroup(this.ToModel());
+
         }
     }
 }
