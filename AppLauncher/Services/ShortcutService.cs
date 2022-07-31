@@ -20,6 +20,11 @@ namespace AppLauncher.Services
         private readonly string _ShortcutsPath = Path.Combine(Environment.CurrentDirectory, "Shortcuts");
 
 
+        public ShortcutService()
+        {
+            Directory.CreateDirectory(_ShortcutsPath);
+        }
+
         /// <summary>
         /// Создать ярлык во внутренней папке
         /// </summary>
@@ -82,17 +87,18 @@ namespace AppLauncher.Services
         /// <summary>
         /// Получить значок из ярлыка
         /// </summary>
-        /// <param name="ShortcutFileName">Путь к ярлыку</param>
+        /// <param name="ShortcutPath">Путь к ярлыку</param>
         /// <returns>null, если файл или папка не найдена</returns>
-        public ImageSource GetIconFromShortcut(string ShortcutFileName)
+        public ImageSource GetIconFromShortcut(string ShortcutPath)
         {
+            var path = Path.Combine(_ShortcutsPath, ShortcutPath);
 
-            if (!File.Exists(ShortcutFileName) && !Directory.Exists(ShortcutFileName))
+            if (!File.Exists(path) && !Directory.Exists(path))
             {
                 return null;
             }
 
-            using var sc = WindowsShortcut.Load(ShortcutFileName);
+            using var sc = WindowsShortcut.Load(path);
 
             var pathToIconFile = sc.IconLocation.Path;
             if (string.IsNullOrEmpty(pathToIconFile))

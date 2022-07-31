@@ -120,6 +120,7 @@ namespace AppLauncher.ViewModels
                 Id = App.DataManager.GetNextGroupId(),
             };
             Groups.Add(newGroup);
+            App.DataManager.SaveData();
         }
 
         #endregion
