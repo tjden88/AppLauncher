@@ -7,15 +7,9 @@
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:styles="clr-namespace:AppLauncher.Styles"
              Width="292"
              mc:Ignorable="d">
-    <b:Interaction.Triggers>
-        <b:EventTrigger EventName="Loaded">
-            <b:InvokeCommandAction Command="{Binding LoadLinksCommand}"/>
-        </b:EventTrigger>
-    </b:Interaction.Triggers>
     <d:UserControl.DataContext>
         <viewModels:GroupViewModel/>
     </d:UserControl.DataContext>

@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
-using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Views;
-using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -77,8 +75,6 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-
-        
         #region Commands
 
 
@@ -227,15 +223,12 @@ namespace AppLauncher.ViewModels
             ??= new Command(OnGoToFileCommandExecuted, CanGoToFileCommandExecute, "Перейти в расположение файла");
 
         /// <summary>Проверка возможности выполнения - Перейти в расположение файла</summary>
-        private bool CanGoToFileCommandExecute() => true;
+        private bool CanGoToFileCommandExecute() => PathToDirectory() != null;
 
         /// <summary>Логика выполнения - Перейти в расположение файла</summary>
         private void OnGoToFileCommandExecuted()
         {
-            var path = App.ShortcutService.GetFilePath(ShortcutPath);
-
-            var directoryName = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
-            if (directoryName == null) return;
+            var path = PathToDirectory();
 
             var argument = "/select, \"" + path + "\"";
 
@@ -264,6 +257,14 @@ namespace AppLauncher.ViewModels
             throw new ArgumentOutOfRangeException(nameof(Name), "Ячейка не найдена");
         }
 
+
+        private string PathToDirectory()
+        {
+            var path = App.ShortcutService.GetFilePath(ShortcutPath);
+
+            var directoryName = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
+            return directoryName;
+        }
 
     }
 }
