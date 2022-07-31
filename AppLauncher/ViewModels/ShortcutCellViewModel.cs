@@ -168,6 +168,11 @@ namespace AppLauncher.ViewModels
                 MessageBoxResult.Yes)
             {
                 var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
+
+                GetAllShortcuts()
+                    .ForEach(sc => App.ShortcutService
+                        .DeleteShortcut(sc.ShortcutPath));
+
                 vm.ShortcutCells.Remove(this);
                 App.DataManager.SaveData();
             }

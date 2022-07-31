@@ -110,10 +110,16 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = ShortcutCells?.Count == 0 ||
+        var msg = ShortcutCells.Count == 0 ||
                   MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
 
         if (!msg) return;
+
+        foreach (var cell in ShortcutCells)
+           cell.GetAllShortcuts()
+               .ForEach(sc => App.ShortcutService
+                   .DeleteShortcut(sc.ShortcutPath));
+
 
         App.MainWindowViewModel.Groups.Remove(this);
         App.DataManager.SaveData();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Media;
-using AppLauncher.Infrastructure.Helpers;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -92,6 +91,7 @@ namespace AppLauncher.ViewModels
         private void OnDeleteCommandExecuted()
         {
             var cell = FindCell();
+            App.ShortcutService.DeleteShortcut(ShortcutPath);
             cell.Remove(this);
             App.DataManager.SaveData();
         }
