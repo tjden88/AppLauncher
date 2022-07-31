@@ -108,8 +108,13 @@ namespace AppLauncher.Services
             var group = Data.Groups.FirstOrDefault(g => g.Id == GroupId);
             if (group == null) return;
 
-            foreach (var linkGroup in LoadGroupLinks(GroupId))
+            var loadGroupLinks = LoadGroupLinks(GroupId);
+            foreach (var linkGroup in loadGroupLinks)
+            {
                 linkGroup.GetAllLinks().ForEach(l => File.Delete(l.Path));
+                Data.LinksGroups.Remove(linkGroup);
+            }
+
 
 
             var removed = Data.Groups.Remove(group);

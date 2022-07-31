@@ -187,20 +187,46 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         if (sourceItem is not DataObject dataObject ||
             dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
 
-        var newGroup = App.DataManager.AddAppLinkGroup(Id);
+        AddLinks(strArray);
+    }
 
-        var link = App.LinkService.CreateLink(strArray[0]);
-        newGroup.Link1 = link;
-        App.DataManager.UpdateAppLinkGroup(newGroup);
+    public void AddLinks(string[] FileNames)
+    {
 
-        LinksGroups.Add(MapGroupModel(newGroup));
+        var currentIndex = 0;
 
-        foreach (var str in strArray)
+        var dataManager = App.DataManager;
+
+        bool CheckEnd(AppLinkGroup group)
         {
-            
-            //var added = dataManager.AddAppLink(str, Id);
-            //Links.Add(MapModel(added));
+            if (currentIndex == FileNames.Length)
+            {
+                dataManager.UpdateAppLinkGroup(group);
+                LinksGroups.Add(MapGroupModel(group));
+                return true;
+            }
+            return false;
         }
 
+
+        while (currentIndex < FileNames.Length)
+        {
+            var newGroup = dataManager.AddAppLinkGroup(Id);
+
+            newGroup.Link1 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link2 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link3 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link4 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            if (CheckEnd(newGroup)) break;
+
+            dataManager.UpdateAppLinkGroup(newGroup);
+            LinksGroups.Add(MapGroupModel(newGroup));
+        }
     }
 }
