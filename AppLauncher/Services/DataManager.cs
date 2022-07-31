@@ -15,10 +15,6 @@ namespace AppLauncher.Services
     {
         private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Config.json");
 
-        public DataManager()
-        {
-        }
-
         private class AppData
         {
             public List<ShortcutCell> ShortcutCells { get; set; } = new();
@@ -42,6 +38,10 @@ namespace AppLauncher.Services
         /// <summary> Получить ID для следующей ячейки </summary>
         public int GetNextCellId() => _NextCellId ++;
 
+        /// <summary>
+        /// После загрузки данных необходимо установить флаг для возможности сохранения данных
+        /// </summary>
+        public bool CanSaveData { get; set; }
 
         /// <summary>
         /// Загрузить данные с диска
@@ -65,6 +65,8 @@ namespace AppLauncher.Services
         /// <summary>Обновить и сохранить данные </summary>
         public void SaveData()
         {
+            if(!CanSaveData) return;
+
             var data = new AppData();
 
             var groups = App.MainWindowViewModel.Groups;

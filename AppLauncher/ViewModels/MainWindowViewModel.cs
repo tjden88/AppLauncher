@@ -57,8 +57,6 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
-
 
         #region Commands
 
@@ -78,9 +76,24 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Загрузить группы</summary>
         private void OnLoadGroupsCommandExecuted()
         {
-            var groups = App.DataManager.LoadGroups();
-            var vm = groups.Select(g => g.ToViewModel());
+            var groups = App.DataManager
+                .LoadGroupsData()
+                .ToArray();
+
+            var vm = groups
+                .Select(g => g.ToViewModel());
+
             Groups = new(vm);
+            foreach (var group in Groups)
+            {
+                var viewModels = groups
+                    .First(g =>g.Id == group.Id).Cells
+                    .Select(c => c.ToViewModel());
+
+                group.ShortcutCells = new(viewModels);
+            }
+            App.DataManager.CanSaveData = true;
+
         }
 
         #endregion
@@ -101,8 +114,12 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Добавить группу</summary>
         private void OnAddGroupCommandExecuted()
         {
-            var newGroup = App.DataManager.AddGroup("Новая группа");
-            Groups.Add(newGroup.ToViewModel());
+            var newGroup = new GroupViewModel()
+            {
+                Name = "Новая группа",
+                Id = App.DataManager.GetNextGroupId(),
+            };
+            Groups.Add(newGroup);
         }
 
         #endregion
@@ -139,10 +156,17 @@ namespace AppLauncher.ViewModels
             var links = DragDropHelper.Drop(dropInfo);
             if (links.Length == 0) return;
 
-            var newGroup = App.DataManager.AddGroup(links[0].Name);
-            var viewModel = newGroup.ToViewModel();
-            viewModel.AddLinks(links);
-            Groups.Add(viewModel);
+            var dataManager = App.DataManager;
+            var newGroup = new GroupViewModel()
+            {
+                Name = links[0].Name,
+                Id = dataManager.GetNextGroupId(),
+            };
+            dataManager.CanSaveData = false;
+            newGroup.AddLinks(links);
+            Groups.Add(newGroup);
+            dataManager.CanSaveData =true;
+            dataManager.SaveData();
         }
     }
 }

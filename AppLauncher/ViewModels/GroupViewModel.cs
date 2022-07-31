@@ -40,7 +40,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     {
         get => _Name;
         set => IfSet(ref _Name, value)
-            .Then(v=> App.DataManager.RenameGroup(v, Id));
+            .Then(App.DataManager.SaveData);
     }
 
     #endregion
@@ -163,13 +163,10 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         var currentIndex = 0;
 
-        var dataManager = App.DataManager;
-
         bool CheckEnd(ShortcutCell group)
         {
             if (currentIndex == links.Length)
             {
-                dataManager.UpdateCell(group);
                 ShortcutCells.Add(group.ToViewModel());
                 return true;
             }

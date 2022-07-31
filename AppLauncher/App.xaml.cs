@@ -15,7 +15,7 @@ namespace AppLauncher
 
         public static ShortcutService ShortcutService { get; } = new ();
 
-        public static DataManager DataManager { get; } = new(ShortcutService);
+        public static DataManager DataManager { get; } = new();
 
         public static Window ActiveWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
     }
