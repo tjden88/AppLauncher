@@ -1,0 +1,31 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewModels="clr-namespace:AppLauncher.ViewModels">
+
+
+    <DataTemplate DataType="{x:Type viewModels:AppLinksGroupViewModel}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ContentPresenter Content="{Binding AppLinkViewModel1}"/>
+            <ContentPresenter Grid.Row="0" Grid.Column="1" Content="{Binding AppLinkViewModel2}"/>
+            <ContentPresenter Grid.Row="1" Grid.Column="0" Content="{Binding AppLinkViewModel3}"/>
+            <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{Binding AppLinkViewModel4}"/>
+
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
+        <Button Command="{Binding LaunchCommand}"
+                ToolTip="{Binding Name}">
+            <Image Width="35" Height="35" Margin="5" Source="{Binding Image}"/>
+        </Button>
+    </DataTemplate>
+
+</ResourceDictionary>

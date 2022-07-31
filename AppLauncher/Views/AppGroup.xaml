@@ -51,17 +51,9 @@
         </DockPanel>
 
         <!--Содержимое-->
-        <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding Links}" dd:DragDrop.IsDragSource="True"
+        <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding LinksGroups}" dd:DragDrop.IsDragSource="True"
                       dd:DragDrop.IsDropTarget="True"
                       dd:DragDrop.DropHandler="{Binding}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
-                    <Button Command="{Binding LaunchCommand}"
-                            ToolTip="{Binding Name}">
-                        <Image Width="35" Height="35" Margin="5" Source="{Binding Image}"/>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
