@@ -48,7 +48,7 @@
                 </Button.ContextMenu>
                 <Grid>
 
-                    <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"  Margin="10,10,10,25" Source="{Binding Image}"/>
                     <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
                     <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
                                                TextWrapping="Wrap"/>
@@ -159,7 +159,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
                 <Grid>
-                    <Image  Margin="5" Source="{Binding Image}"/>
+                    <Image  Margin="5" Source="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
                     <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
                 </Grid>
             </Button>
