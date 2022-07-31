@@ -85,7 +85,7 @@
             </b:Interaction.Behaviors>
             <Button.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Крупный">
+                    <MenuItem Header="Крупный" Command="{Binding MakeBigShortcutCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Icon="Solid_Expand"/>
                         </MenuItem.Icon>

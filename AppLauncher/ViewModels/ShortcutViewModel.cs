@@ -51,7 +51,6 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-
         #region Commands
 
 
@@ -101,7 +100,7 @@ namespace AppLauncher.ViewModels
                 Owner = App.ActiveWindow,
                 DataContext = vm,
             };
-            if(wnd.ShowDialog() != true) return;
+            if (wnd.ShowDialog() != true) return;
 
             Name = vm.Result;
 
@@ -134,6 +133,37 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        #region Command MakeBigShortcutCommand - Сделать большим
+
+        /// <summary>Сделать большим</summary>
+        private Command _MakeBigShortcutCommand;
+
+        /// <summary>Сделать большим</summary>
+        public Command MakeBigShortcutCommand => _MakeBigShortcutCommand
+            ??= new Command(OnMakeBigShortcutCommandExecuted, CanMakeBigShortcutCommandExecute, "Сделать большим");
+
+        /// <summary>Проверка возможности выполнения - Сделать большим</summary>
+        private bool CanMakeBigShortcutCommandExecute() => !Equals(FindCell().BigLinkViewModel, this);
+
+        /// <summary>Логика выполнения - Сделать большим</summary>
+        private void OnMakeBigShortcutCommandExecuted()
+        {
+            var cell = FindCell();
+            var others = cell.GetAllShortcuts();
+
+            others.Remove(this);
+            var group = App.MainWindowViewModel.Groups.First(g => g.Id == cell.GroupId);
+            group.AddShortcuts(others.ToArray());
+
+            others.ForEach(sh => cell.Remove(sh));
+            cell.Remove(this);
+            cell.BigLinkViewModel = this;
+            App.DataManager.SaveData();
+        }
+
+        #endregion
+
         #endregion
 
         private ShortcutCellViewModel FindCell()
@@ -142,7 +172,7 @@ namespace AppLauncher.ViewModels
             foreach (var group in groups)
             {
                 var find = group.ShortcutCells.FirstOrDefault(sc => sc.GetAllShortcuts().Contains(this));
-                if(find != null)
+                if (find != null)
                     return find;
             }
 
