@@ -11,21 +11,6 @@ namespace AppLauncher.ViewModels;
 public class AppGroupViewModel : ViewModel, IDropTarget
 {
 
-    #region Name : string - Имя группы
-
-    /// <summary>Имя группы</summary>
-    private string _Name = "Новая группа";
-
-    /// <summary>Имя группы</summary>
-    public string Name
-    {
-        get => _Name;
-        set => Set(ref _Name, value);
-    }
-
-    #endregion
-
-
     #region Id : int - Id группы
 
     /// <summary>Id группы</summary>
@@ -36,6 +21,21 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     {
         get => _Id;
         set => Set(ref _Id, value);
+    }
+
+    #endregion
+
+
+    #region Name : string - Имя группы
+
+    /// <summary>Имя группы</summary>
+    private string _Name = "Новая группа";
+
+    /// <summary>Имя группы</summary>
+    public string Name
+    {
+        get => _Name;
+        set => Set(ref _Name, value);
     }
 
     #endregion
@@ -56,39 +56,20 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region Links : ObservableCollection<AppLinkViewModel> - Список ярлыков группы
+    #region LinksGroups : ObservableCollection<AppLinkViewModel[]> - Группированные ссылки
 
-    /// <summary>Список ярлыков группы</summary>
-    private ObservableCollection<AppLinkViewModel> _Links = new();
+    /// <summary>Группированные ссылки</summary>
+    private ObservableCollection<AppLinksGroupViewModel> _LinksGroups;
 
-    /// <summary>Список ярлыков группы</summary>
-    public ObservableCollection<AppLinkViewModel> Links
+    /// <summary>Группированные ссылки</summary>
+    public ObservableCollection<AppLinksGroupViewModel> LinksGroups
     {
-        get => _Links;
-        set => Set(ref _Links, value);
+        get => _LinksGroups;
+        set => Set(ref _LinksGroups, value);
     }
 
     #endregion
 
-
-    #region GroupedLinks : ObservableCollection<AppLinkViewModel[]> - Группированные ссылки
-
-    /// <summary>Группированные ссылки</summary>
-    private ObservableCollection<AppLinkViewModel[]> _GroupedLinks;
-
-    /// <summary>Группированные ссылки</summary>
-    public ObservableCollection<AppLinkViewModel[]> GroupedLinks
-    {
-        get => _GroupedLinks;
-        set => Set(ref _GroupedLinks, value);
-    }
-
-    #endregion
-
-    private void MakeLinksGroups()
-    {
-
-    }
 
 
     #region Commands
@@ -109,8 +90,8 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     private void OnLoadLinksCommandExecuted()
     {
         var links = App.DataManager.LoadGroupLinks(Id).ToArray();
-        var vm = links.Select(MapModel);
-        Links=new(vm);
+        var vm = links.Select(MapGroupModel);
+        LinksGroups = new(vm);
     }
 
     #endregion
@@ -148,7 +129,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = MessageBox.Show(App.ActiveWindow, 
+        var msg = MessageBox.Show(App.ActiveWindow,
             $"Удалить группу {Name} и все ярлыки?", "Внимание!",
             MessageBoxButton.YesNo);
         if (msg != MessageBoxResult.Yes) return;
@@ -161,10 +142,22 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+    private static AppLinksGroupViewModel MapGroupModel(AppLinkGroup LinkGroup)
+    {
+        return new AppLinksGroupViewModel
+        {
+            AppLinkViewModel1 = MapModel(LinkGroup.Link1),
+            AppLinkViewModel2 = MapModel(LinkGroup.Link2),
+            AppLinkViewModel3 = MapModel(LinkGroup.Link3),
+            AppLinkViewModel4 = MapModel(LinkGroup.Link4),
+        };
+    }
 
     private static AppLinkViewModel MapModel(AppLink Link)
     {
-       return new AppLinkViewModel
+        if(Link == null) return null;
+
+        return new AppLinkViewModel
         {
             FilePath = Link.Path,
             Name = Link.Name,
@@ -198,8 +191,8 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
         foreach (var str in strArray)
         {
-            var added = dataManager.AddAppLink(str, Id);
-            Links.Add(MapModel(added));
+            //var added = dataManager.AddAppLink(str, Id);
+            //Links.Add(MapModel(added));
         }
 
     }
