@@ -12,6 +12,11 @@ namespace AppLauncher.ViewModels;
 /// </summary>
 public class GroupViewModel : ViewModel, IDropTarget
 {
+    /// <summary>
+    /// Пустая вьюмодель с нулевым идентификатором для добавления новой ячейки в группу
+    /// </summary>
+    private static ShortcutCellViewModel MockShortcutCellViewModel { get; } = new();
+
 
     #region Id : int - Id группы
 
@@ -53,7 +58,13 @@ public class GroupViewModel : ViewModel, IDropTarget
     public bool IsSelected
     {
         get => _IsSelected;
-        set => Set(ref _IsSelected, value);
+        set => IfSet(ref _IsSelected, value).Then(v =>
+        {
+            if(v)
+                ShortcutCells.Add(MockShortcutCellViewModel);
+            else
+                ShortcutCells.Remove(MockShortcutCellViewModel);
+        });
     }
 
     #endregion

@@ -12,7 +12,7 @@
     <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-    <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="ShortcutCellDataTemplate">
         <Grid>
             
             <Grid Width="90" Height="90">
@@ -119,6 +119,11 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="MockShortcutCellDataTemplate">
+        <Grid>
+            <TextBlock Text="!!!"></TextBlock>
+        </Grid>
+    </DataTemplate>
 
 
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">

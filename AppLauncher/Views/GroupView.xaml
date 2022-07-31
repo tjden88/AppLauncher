@@ -8,6 +8,7 @@
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:styles="clr-namespace:AppLauncher.Styles"
              Width="292"
              mc:Ignorable="d">
     <b:Interaction.Triggers>
@@ -63,7 +64,10 @@
                     dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.IsDropTarget="True" 
                     dd:DragDrop.DropHandler="{Binding}" />
-                <ItemsControl Margin="10,10,10,10" ItemsSource="{Binding ShortcutCells}" >
+                <ItemsControl Margin="10,10,10,10" ItemsSource="{Binding ShortcutCells}">
+                    <ItemsControl.ItemTemplateSelector>
+                        <styles:ShortcutCellDataTemplateSelector/>
+                    </ItemsControl.ItemTemplateSelector>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel/>
