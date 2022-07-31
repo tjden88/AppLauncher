@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using AppLauncher.Infrastructure.Helpers;
 using GongSolutions.Wpf.DragDrop;
@@ -160,6 +161,12 @@ namespace AppLauncher.ViewModels
             }
 
             App.DataManager.UpdateAppLinkGroup(this.ToModel());
+
+            if (strArray.Length < 2) return;
+
+            var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
+
+            vm.AddLinks(strArray.Skip(1).ToArray());
 
         }
     }

@@ -57,7 +57,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region LinksGroups : ObservableCollection<AppLinkViewModel[]> - Группированные ссылки
+    #region LinksGroups : ObservableCollection<AppLinkViewModel> - Группированные ссылки
 
     /// <summary>Группированные ссылки</summary>
     private ObservableCollection<AppLinksGroupViewModel> _LinksGroups;
@@ -70,7 +70,6 @@ public class GroupViewModel : ViewModel, IDropTarget
     }
 
     #endregion
-
 
 
     #region Commands
@@ -115,6 +114,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+
     #region Command DeleteGroupCommand - Удалить группу
 
     /// <summary>Удалить группу</summary>
@@ -130,10 +130,10 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = MessageBox.Show(App.ActiveWindow,
-            $"Удалить группу {Name} и все ярлыки?", "Внимание!",
-            MessageBoxButton.YesNo);
-        if (msg != MessageBoxResult.Yes) return;
+        var msg = LinksGroups?.Count == 0 ||
+                  MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+
+        if (!msg) return;
 
         App.DataManager.DeleteGroup(Id);
         App.MainWindowViewModel.Groups.Remove(this);
@@ -142,6 +142,8 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
     #endregion
+
+
 
     public void DragOver(IDropInfo dropInfo)
     {

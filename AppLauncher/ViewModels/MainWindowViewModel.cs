@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using AppLauncher.Models;
+using AppLauncher.Infrastructure.Helpers;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -9,22 +9,6 @@ namespace AppLauncher.ViewModels
 {
     public class MainWindowViewModel : WindowViewModel
     {
-
-
-        #region ColumnsCount : int - Количество колонок
-
-        /// <summary>Количество колонок</summary>
-        private int _ColumnsCount = 3;
-
-        /// <summary>Количество колонок</summary>
-        public int ColumnsCount
-        {
-            get => _ColumnsCount;
-            set => Set(ref _ColumnsCount, value);
-        }
-
-        #endregion
-
 
         #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
 
@@ -60,6 +44,7 @@ namespace AppLauncher.ViewModels
 
         #region Commands
 
+
         #region Command LoadGroupsCommand - Загрузить группы
 
         /// <summary>Загрузить группы</summary>
@@ -76,11 +61,12 @@ namespace AppLauncher.ViewModels
         private void OnLoadGroupsCommandExecuted()
         {
             var groups = App.DataManager.LoadGroups();
-            var vm = groups.Select(MapModel);
+            var vm = groups.Select(g => g.ToViewModel());
             Groups = new(vm);
         }
 
         #endregion
+
 
         #region Command AddGroupCommand - Добавить группу
 
@@ -98,10 +84,11 @@ namespace AppLauncher.ViewModels
         private void OnAddGroupCommandExecuted()
         {
             var newGroup = App.DataManager.AddGroup("Новая группа");
-            Groups.Add(MapModel(newGroup));
+            Groups.Add(newGroup.ToViewModel());
         }
 
         #endregion
+
 
         #region Command CloseWindowCommand - Закрыть или свернуть окно
 
@@ -127,13 +114,6 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        private static GroupViewModel MapModel(Group Model)
-        {
-            return new GroupViewModel
-            {
-                Id = Model.Id,
-                Name = Model.Name,
-            };
-        }
+
     }
 }
