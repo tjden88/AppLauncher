@@ -12,14 +12,23 @@ namespace AppLauncher.Infrastructure.Helpers
         {
             var sourceItem = dropInfo.Data;
 
-            if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
+            switch (sourceItem)
             {
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                dropInfo.Effects = DragDropEffects.Copy;
-                return;
-            }
+                case ShortcutViewModel:
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Move;
+                    break;
 
-            dropInfo.Effects = DragDropEffects.None;
+                case DataObject dataObject when dataObject.GetData(DataFormats.FileDrop) is string[]:
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Copy;
+                    break;
+
+                default:
+
+                    dropInfo.Effects = DragDropEffects.None;
+                    break;
+            }
         }
 
 
@@ -27,16 +36,22 @@ namespace AppLauncher.Infrastructure.Helpers
         {
             var sourceItem = dropInfo.Data;
 
+            if (sourceItem is ShortcutViewModel vm)
+            {
+                vm.FindCell().Remove(vm);
+                return new[] { vm };
+            }
+
             if (sourceItem is not DataObject dataObject ||
                 dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<ShortcutViewModel>();
 
             var shortcutService = App.ShortcutService;
 
-            var vm = strArray
+            var viewModels = strArray
                 .Select(shortcutService.CreateShortcut)
                 .Select(sh => sh.ToViewModel());
 
-            return vm.ToArray();
+            return viewModels.ToArray();
         }
     }
 }

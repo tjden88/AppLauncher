@@ -151,22 +151,22 @@ namespace AppLauncher.ViewModels
         }
         #region Commands
 
-        #region Command DeleteCommand - Удалить группу
+        #region Command DeleteCommand - Удалить ячейку
 
-        /// <summary>Удалить группу</summary>
+        /// <summary>Удалить ячейку</summary>
         private Command _DeleteCommand;
 
-        /// <summary>Удалить группу</summary>
+        /// <summary>Удалить ячейку</summary>
         public Command DeleteCommand => _DeleteCommand
-            ??= new Command(OnDeleteCommandExecuted, CanDeleteCommandExecute, "Удалить группу");
+            ??= new Command(OnDeleteCommandExecuted, CanDeleteCommandExecute, "Удалить ячейку");
 
-        /// <summary>Проверка возможности выполнения - Удалить группу</summary>
+        /// <summary>Проверка возможности выполнения - Удалить ячейку</summary>
         private bool CanDeleteCommandExecute() => true;
 
-        /// <summary>Логика выполнения - Удалить группу</summary>
+        /// <summary>Логика выполнения - Удалить ячейку</summary>
         private void OnDeleteCommandExecuted()
         {
-            if (_IsEmpty() || MessageBox.Show(App.ActiveWindow, "Удалить группу вместе с ярлыками?", "Вопрос", MessageBoxButton.YesNo) ==
+            if (_IsEmpty() || MessageBox.Show(App.ActiveWindow, "Удалить ячейку вместе с ярлыками?", "Вопрос", MessageBoxButton.YesNo) ==
                 MessageBoxResult.Yes)
             {
                 var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
@@ -178,6 +178,34 @@ namespace AppLauncher.ViewModels
                 vm.ShortcutCells.Remove(this);
                 App.DataManager.SaveData();
             }
+        }
+
+        #endregion
+
+        #region Command AddEmptyCellCommand - Добавить пустую ячейку
+
+        /// <summary>Добавить пустую ячейку</summary>
+        private Command _AddEmptyCellCommand;
+
+        /// <summary>Добавить пустую ячейку</summary>
+        public Command AddEmptyCellCommand => _AddEmptyCellCommand
+            ??= new Command(OnAddEmptyCellCommandExecuted, CanAddEmptyCellCommandExecute, "Добавить пустую ячейку");
+
+        /// <summary>Проверка возможности выполнения - Добавить пустую ячейку</summary>
+        private bool CanAddEmptyCellCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Добавить пустую ячейку</summary>
+        private void OnAddEmptyCellCommandExecuted()
+        {
+           
+            var group = App.MainWindowViewModel.SelectedGroup;
+            var cell = new ShortcutCellViewModel()
+            {
+                Id = App.DataManager.GetNextCellId(),
+                GroupId = group.Id,
+            };
+            group.ShortcutCells.Insert(group.ShortcutCells.Count -1, cell);
+            App.DataManager.SaveData();
         }
 
         #endregion
@@ -228,6 +256,7 @@ namespace AppLauncher.ViewModels
         } 
 
         #endregion
+
 
     }
 }
