@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>Launch.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

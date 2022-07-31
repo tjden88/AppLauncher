@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
 using WindowsShortcutFactory;
 
@@ -69,7 +70,7 @@ namespace AppLauncher.Services
             var cuccess = CreateShortcut(FileName, newFileName);
 
             if (!cuccess) return null;
-            
+
 
             return new Shortcut
             {
@@ -135,9 +136,9 @@ namespace AppLauncher.Services
         public void CleanNotUsedShortcuts()
         {
             var usedShortcuts = App.DataManager.LoadGroupsData()
-                .SelectMany(g=>g.Cells)
-                .SelectMany(c=> c.GetAllShortcuts())
-                .Select(sc => Path.Combine(_ShortcutsPath,sc.Path));
+                .SelectMany(g => g.Cells)
+                .SelectMany(c => c.GetAllShortcuts())
+                .Select(sc => Path.Combine(_ShortcutsPath, sc.Path));
 
             var allShortcuts = Directory.EnumerateFiles(_ShortcutsPath);
 
@@ -182,7 +183,18 @@ namespace AppLauncher.Services
 
         }
 
+        private readonly IconHelper _IconHelper = new();
+
         private ImageSource GetImgFromFileOrFolder(string Path)
+        {
+            if (File.Exists(Path))
+                return _IconHelper.GetIcon(Path);
+
+            return GetImgFromFolder(Path);
+        }
+
+
+        private ImageSource GetImgFromFolder(string Path)
         {
             var shinfo = new SHFILEINFO();
 
@@ -200,7 +212,6 @@ namespace AppLauncher.Services
 
             return img;
         }
-
 
         #region Interop
 
