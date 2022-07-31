@@ -12,7 +12,7 @@ namespace AppLauncher.Infrastructure.Helpers
     {
         public ImageSource GetIcon(string FileName)
         {
-            IntPtr hIcon = GetJumboIcon(GetIconIndex(FileName));
+            IntPtr hIcon = GetXLIcon(GetIconIndex(FileName));
 
             // from native to managed
             using Icon ico = (Icon)Icon.FromHandle(hIcon).Clone();

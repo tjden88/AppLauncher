@@ -48,9 +48,9 @@
                 </Button.ContextMenu>
                 <Grid>
 
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"  Margin="10,5,10,30" Source="{Binding Image}"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality"  Margin="10,5,10,30" Source="{Binding Image}"/>
                     <fa5:ImageAwesome Icon="Solid_Dizzy"  Margin="15,5,15,35" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
-                    <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="11" Text="{Binding Name}"
+                    <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" FontWeight="Medium" Margin="5" FontSize="11" Text="{Binding Name}"
                                                TextWrapping="Wrap"/>
 
                 </Grid>
