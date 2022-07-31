@@ -75,6 +75,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
         #region Commands
 
 
@@ -230,7 +231,7 @@ namespace AppLauncher.ViewModels
         {
             var path = PathToDirectory();
 
-            var argument = "/select, \"" + path + "\"";
+            var argument = "/select, \"" + App.ShortcutService.GetFilePath(ShortcutPath) + "\"";
 
             Process.Start(new ProcessStartInfo("explorer.exe", argument)
             {
