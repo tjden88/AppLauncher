@@ -75,6 +75,27 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region Command RenameCommand - Переименовать ярлык
+
+        /// <summary>Переименовать ярлык</summary>
+        private Command _RenameCommand;
+
+        /// <summary>Переименовать ярлык</summary>
+        public Command RenameCommand => _RenameCommand
+            ??= new Command(OnRenameCommandExecuted, CanRenameCommandExecute, "Переименовать ярлык");
+
+        /// <summary>Проверка возможности выполнения - Переименовать ярлык</summary>
+        private bool CanRenameCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Переименовать ярлык</summary>
+        private void OnRenameCommandExecuted()
+        {
+            
+        }
+
+        #endregion
+
+
         #region Command DeleteCommand - Удалить
 
         /// <summary>Удалить</summary>
