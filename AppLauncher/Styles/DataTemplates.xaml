@@ -1,7 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:viewModels="clr-namespace:AppLauncher.ViewModels">
+                    xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
+                    xmlns:dd="urn:gong-wpf-dragdrop"
+                    xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters">
 
+    <converters:ValueIsNotNullConverter x:Key="ValueIsNotNullConverter"/>
+    <converters:ValueIsNullConverter x:Key="ValueIsNullConverter"/>
 
     <DataTemplate DataType="{x:Type viewModels:AppLinksGroupViewModel}">
         <Grid Width="90" Height="90" ShowGridLines="True">
@@ -13,10 +17,33 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ContentPresenter Content="{Binding AppLinkViewModel1}"/>
-            <ContentPresenter Grid.Row="0" Grid.Column="1" Content="{Binding AppLinkViewModel2}"/>
-            <ContentPresenter Grid.Row="1" Grid.Column="0" Content="{Binding AppLinkViewModel3}"/>
-            <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{Binding AppLinkViewModel4}"/>
+            <Border  Tag="1" Background="Transparent"
+                dd:DragDrop.IsDragSource="{Binding AppLinkViewModel1, Converter={StaticResource ValueIsNotNullConverter}}"
+                dd:DragDrop.IsDropTarget="{Binding AppLinkViewModel1, Converter={StaticResource ValueIsNullConverter}}" 
+                dd:DragDrop.DropHandler="{Binding}">
+                <ContentPresenter Content="{Binding AppLinkViewModel1}"/>
+            </Border>
+
+            <Border Grid.Row="0" Grid.Column="1" Tag="2" Background="Transparent"
+                    dd:DragDrop.IsDragSource="{Binding AppLinkViewModel2, Converter={StaticResource ValueIsNotNullConverter}}"
+                    dd:DragDrop.IsDropTarget="{Binding AppLinkViewModel2, Converter={StaticResource ValueIsNullConverter}}" 
+                    dd:DragDrop.DropHandler="{Binding}">
+                <ContentPresenter Content="{Binding AppLinkViewModel2}"/>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="0"  Tag="3" Background="Transparent"
+                    dd:DragDrop.IsDragSource="{Binding AppLinkViewModel3, Converter={StaticResource ValueIsNotNullConverter}}"
+                    dd:DragDrop.IsDropTarget="{Binding AppLinkViewModel3, Converter={StaticResource ValueIsNullConverter}}" 
+                    dd:DragDrop.DropHandler="{Binding}">
+                <ContentPresenter Content="{Binding AppLinkViewModel3}"/>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="1" Tag="4" Background="Transparent"
+                            dd:DragDrop.IsDragSource="{Binding AppLinkViewModel4, Converter={StaticResource ValueIsNotNullConverter}}"
+                            dd:DragDrop.IsDropTarget="{Binding AppLinkViewModel4, Converter={StaticResource ValueIsNullConverter}}" 
+                            dd:DragDrop.DropHandler="{Binding}">
+                <ContentPresenter Content="{Binding AppLinkViewModel4}"/>
+            </Border>
 
         </Grid>
     </DataTemplate>

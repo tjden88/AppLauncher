@@ -1,11 +1,13 @@
-﻿using WPR.MVVM.ViewModels;
+﻿using System.Windows;
+using GongSolutions.Wpf.DragDrop;
+using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
     /// <summary>
     /// Группа из 4 маленького или 1 большого ярлыка
     /// </summary>
-    public class AppLinksGroupViewModel : ViewModel
+    public class AppLinksGroupViewModel : ViewModel, IDropTarget
     {
 
         #region AppLinkViewModel1 : AppLinkViewModel - Первый (или большой и единственный) ярлык
@@ -64,5 +66,30 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var sourceItem = dropInfo.Data;
+
+            if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
+            {
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                dropInfo.Effects = DragDropEffects.Copy;
+                return;
+            }
+
+            dropInfo.Effects = DragDropEffects.None;
+        }
+
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var sourceItem = dropInfo.Data;
+
+            if (sourceItem is not DataObject dataObject ||
+                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
+
+           
+        }
     }
 }

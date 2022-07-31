@@ -51,14 +51,19 @@
         </DockPanel>
 
         <!--Содержимое-->
-        <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding LinksGroups}" dd:DragDrop.IsDragSource="True"
-                      dd:DragDrop.IsDropTarget="True" 
-                      dd:DragDrop.DropHandler="{Binding}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+        <Grid  Grid.Row="1">
+            <Border MinHeight="45" Background="Transparent"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True" 
+                    dd:DragDrop.DropHandler="{Binding}">
+            </Border>
+                <ItemsControl Margin="0,0,0,10" ItemsSource="{Binding LinksGroups}" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+        </Grid>
     </Grid>
 </UserControl>
