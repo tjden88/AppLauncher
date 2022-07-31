@@ -66,7 +66,7 @@
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator Margin="0,8,10,8"/>
-                                        <MenuItem Header="Мелкий" Command="{Binding MakeLittleCommand}">
+                                        <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
                                             <MenuItem.Icon>
                                                 <fa5:FontAwesome Icon="Solid_Compress"/>
                                             </MenuItem.Icon>
@@ -108,7 +108,7 @@
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </Style>
                 </Border.Style>
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
+                <Button HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Удалить ячейку"
                         Command="{Binding DeleteCommand}"
                         Visibility="{Binding ElementName=Border, Path=IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Button.Content>
@@ -123,6 +123,7 @@
         <Grid>
             <Border  Width="86" Height="86" Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
                 <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        ToolTip="Добавить пустую ячейку"
                         Command="{Binding AddEmptyCellCommand}">
                     <Button.Content>
                         <fa5:FontAwesome Margin="8" Icon="Solid_Plus" Foreground="Lime"/>
@@ -147,7 +148,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Крупный" Command="{Binding MakeBigShortcutCommand}">
+                    <MenuItem Header="Увеличить размер" Command="{Binding MakeBigShortcutCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Icon="Solid_Expand"/>
                         </MenuItem.Icon>
