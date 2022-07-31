@@ -71,6 +71,14 @@ namespace AppLauncher.Services
             SaveData();
             return group;
         }
+
+        /// <summary> Переименовать группу </summary>
+        public void RenameGroup(string NewName, int GroupId)
+        {
+            var gr = Data.Groups.First(g => g.Id == GroupId);
+            gr.Name = NewName;
+            SaveData();
+        }
         
 
         /// <summary>

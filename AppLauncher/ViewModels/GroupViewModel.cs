@@ -36,7 +36,8 @@ public class GroupViewModel : ViewModel, IDropTarget
     public string Name
     {
         get => _Name;
-        set => Set(ref _Name, value);
+        set => IfSet(ref _Name, value)
+            .Then(v=> App.DataManager.RenameGroup(v, Id));
     }
 
     #endregion
