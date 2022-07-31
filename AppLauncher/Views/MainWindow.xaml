@@ -8,6 +8,7 @@
         xmlns:views="clr-namespace:AppLauncher.Views"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
@@ -49,18 +50,24 @@
             </DockPanel>
 
             <!--Наполнение-->
-            <ItemsControl Margin="5,0,5,5" ItemsSource="{Binding Groups}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:AppGroupViewModel}">
-                        <views:AppGroup Width="300" Margin="5" DataContext="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <Grid Margin="5,0,5,5">
+                <Border  Background="Transparent"
+                        dd:DragDrop.IsDragSource="True"
+                        dd:DragDrop.IsDropTarget="True" 
+                        dd:DragDrop.DropHandler="{Binding}" />
+                <ItemsControl  ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
+                            <views:AppGroup Width="300" Margin="5" DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
         </DockPanel>
     </Grid>
 </Window>

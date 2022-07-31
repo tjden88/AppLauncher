@@ -2,12 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AppLauncher.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              Foreground="White"
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
-             xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d">
@@ -16,57 +14,57 @@
             <b:InvokeCommandAction Command="{Binding LoadLinksCommand}"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
-    <UserControl.Resources>
-        <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
-    </UserControl.Resources>
     <d:UserControl.DataContext>
-        <viewModels:AppGroupViewModel/>
+        <viewModels:GroupViewModel/>
     </d:UserControl.DataContext>
-    <Grid>
+    <Border BorderBrush="Gray" CornerRadius="7" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}">
+        <Grid>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-        <!--Заголовок-->
-        <DockPanel >
-            <fa5:FontAwesome Icon="Solid_CircleNotch" Margin="10" VerticalAlignment="Center" FontSize="16" Cursor="Hand" Background="Transparent">
-                <fa5:FontAwesome.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}"/>
-                    </ContextMenu>
-                </fa5:FontAwesome.ContextMenu>
-                <fa5:FontAwesome.InputBindings>
-                    <MouseBinding MouseAction="LeftClick" Command="{Binding SelectGroupCommand}"/>
-                </fa5:FontAwesome.InputBindings>
-            </fa5:FontAwesome>
-            <TextBox Foreground="White" Background="Transparent" 
+            <!--Заголовок-->
+            <DockPanel>
+                <fa5:FontAwesome Icon="Solid_CircleNotch" Margin="10" VerticalAlignment="Center" FontSize="16" Cursor="Hand" Background="Transparent"
+                             ToolTip="Редактировать группу">
+                    <fa5:FontAwesome.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}"/>
+                        </ContextMenu>
+                    </fa5:FontAwesome.ContextMenu>
+                    <fa5:FontAwesome.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" Command="{Binding SelectGroupCommand}"/>
+                    </fa5:FontAwesome.InputBindings>
+                </fa5:FontAwesome>
+
+                <TextBox Foreground="White" Background="Transparent" 
                      CaretBrush="White"
                      Focusable="{Binding IsSelected}"
                      BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}" 
                      BorderBrush="White"
                      Text="{Binding Name}"
-                     FontSize="18" Margin="0,10,10,10"></TextBox>
-        </DockPanel>
+                     FontSize="18" Margin="0,10,10,10" />
+            </DockPanel>
 
-        <!--Содержимое-->
-        <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding Links}" dd:DragDrop.IsDragSource="True"
-                      dd:DragDrop.IsDropTarget="True"
-                      dd:DragDrop.DropHandler="{Binding}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
-                    <Button Command="{Binding LaunchCommand}"
-                            ToolTip="{Binding Name}">
-                        <Image Width="35" Height="35" Margin="5" Source="{Binding Image}"/>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </Grid>
+            <Separator Grid.Row="0" VerticalAlignment="Bottom"  Margin="5,0"/>
+
+
+            <!--Содержимое-->
+            <Grid  Grid.Row="1">
+                <Border MinHeight="45" Background="Transparent"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True" 
+                    dd:DragDrop.DropHandler="{Binding}" />
+                <ItemsControl Margin="0,0,0,10" ItemsSource="{Binding LinksGroups}" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+    </Border>
 </UserControl>

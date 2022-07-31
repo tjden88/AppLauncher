@@ -1,38 +1,23 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using AppLauncher.Models;
+using AppLauncher.Infrastructure.Helpers;
+using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
-    public class MainWindowViewModel : WindowViewModel
+    public class MainWindowViewModel : WindowViewModel, IDropTarget
     {
 
-
-        #region ColumnsCount : int - Количество колонок
-
-        /// <summary>Количество колонок</summary>
-        private int _ColumnsCount = 3;
-
-        /// <summary>Количество колонок</summary>
-        public int ColumnsCount
-        {
-            get => _ColumnsCount;
-            set => Set(ref _ColumnsCount, value);
-        }
-
-        #endregion
-
-
-        #region Groups : ObservableCollection<AppGroupViewModel> - Группы с ярлыками приложений
+        #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
 
         /// <summary>Группы с ярлыками приложений</summary>
-        private ObservableCollection<AppGroupViewModel> _Groups;
+        private ObservableCollection<GroupViewModel> _Groups;
 
         /// <summary>Группы с ярлыками приложений</summary>
-        public ObservableCollection<AppGroupViewModel> Groups
+        public ObservableCollection<GroupViewModel> Groups
         {
             get => _Groups;
             set => Set(ref _Groups, value);
@@ -41,13 +26,13 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region SelectedGroup : AppGroupViewModel - Выбранная группа
+        #region SelectedGroup : GroupViewModel - Выбранная группа
 
         /// <summary>Выбранная группа</summary>
-        private AppGroupViewModel _SelectedGroup;
+        private GroupViewModel _SelectedGroup;
 
         /// <summary>Выбранная группа</summary>
-        public AppGroupViewModel SelectedGroup
+        public GroupViewModel SelectedGroup
         {
             get => _SelectedGroup;
             set => IfSet(ref _SelectedGroup, value)
@@ -59,6 +44,7 @@ namespace AppLauncher.ViewModels
 
 
         #region Commands
+
 
         #region Command LoadGroupsCommand - Загрузить группы
 
@@ -76,11 +62,12 @@ namespace AppLauncher.ViewModels
         private void OnLoadGroupsCommandExecuted()
         {
             var groups = App.DataManager.LoadGroups();
-            var vm = groups.Select(MapModel);
+            var vm = groups.Select(g => g.ToViewModel());
             Groups = new(vm);
         }
 
         #endregion
+
 
         #region Command AddGroupCommand - Добавить группу
 
@@ -98,10 +85,11 @@ namespace AppLauncher.ViewModels
         private void OnAddGroupCommandExecuted()
         {
             var newGroup = App.DataManager.AddGroup("Новая группа");
-            Groups.Add(MapModel(newGroup));
+            Groups.Add(newGroup.ToViewModel());
         }
 
         #endregion
+
 
         #region Command CloseWindowCommand - Закрыть или свернуть окно
 
@@ -127,13 +115,17 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        private static AppGroupViewModel MapModel(Group Model)
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+
+        public void Drop(IDropInfo dropInfo)
         {
-            return new AppGroupViewModel
-            {
-                Id = Model.Id,
-                Name = Model.Name,
-            };
+            var links = DragDropHelper.Drop(dropInfo);
+            if (links.Length == 0) return;
+
+            var newGroup = App.DataManager.AddGroup(links[0].Name);
+            var viewModel = newGroup.ToViewModel();
+            viewModel.AddLinks(links);
+            Groups.Add(viewModel);
         }
     }
 }

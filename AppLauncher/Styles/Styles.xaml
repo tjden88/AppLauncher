@@ -8,10 +8,10 @@
 
     <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"></Setter>
-        <Setter Property="Foreground" Value="White"></Setter>
-        <Setter Property="FontSize" Value="20"></Setter>
-        <Setter Property="Cursor" Value="Hand"></Setter>
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -30,7 +30,7 @@
 
 
     <Style TargetType="{x:Type ContextMenu}" >
-        <Setter Property="FontSize" Value="16" ></Setter>
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuBase}">

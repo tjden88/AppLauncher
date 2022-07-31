@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
@@ -8,23 +9,8 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels;
 
-public class AppGroupViewModel : ViewModel, IDropTarget
+public class GroupViewModel : ViewModel, IDropTarget
 {
-
-    #region Name : string - Имя группы
-
-    /// <summary>Имя группы</summary>
-    private string _Name = "Новая группа";
-
-    /// <summary>Имя группы</summary>
-    public string Name
-    {
-        get => _Name;
-        set => Set(ref _Name, value);
-    }
-
-    #endregion
-
 
     #region Id : int - Id группы
 
@@ -36,6 +22,22 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     {
         get => _Id;
         set => Set(ref _Id, value);
+    }
+
+    #endregion
+
+
+    #region Name : string - Имя группы
+
+    /// <summary>Имя группы</summary>
+    private string _Name = "Новая группа";
+
+    /// <summary>Имя группы</summary>
+    public string Name
+    {
+        get => _Name;
+        set => IfSet(ref _Name, value)
+            .Then(v=> App.DataManager.RenameGroup(v, Id));
     }
 
     #endregion
@@ -56,20 +58,19 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region Links : ObservableCollection<AppLinkViewModel> - Список ярлыков группы
+    #region LinksGroups : ObservableCollection<AppLinkViewModel> - Группированные ссылки
 
-    /// <summary>Список ярлыков группы</summary>
-    private ObservableCollection<AppLinkViewModel> _Links = new();
+    /// <summary>Группированные ссылки</summary>
+    private ObservableCollection<AppLinksGroupViewModel> _LinksGroups = new();
 
-    /// <summary>Список ярлыков группы</summary>
-    public ObservableCollection<AppLinkViewModel> Links
+    /// <summary>Группированные ссылки</summary>
+    public ObservableCollection<AppLinksGroupViewModel> LinksGroups
     {
-        get => _Links;
-        set => Set(ref _Links, value);
+        get => _LinksGroups;
+        set => Set(ref _LinksGroups, value);
     }
 
     #endregion
-
 
 
     #region Commands
@@ -90,8 +91,8 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     private void OnLoadLinksCommandExecuted()
     {
         var links = App.DataManager.LoadGroupLinks(Id).ToArray();
-        var vm = links.Select(MapModel);
-        Links=new(vm);
+        var vm = links.Select(l => l.ToViewModel());
+        LinksGroups = new(vm);
     }
 
     #endregion
@@ -114,6 +115,7 @@ public class AppGroupViewModel : ViewModel, IDropTarget
 
     #endregion
 
+
     #region Command DeleteGroupCommand - Удалить группу
 
     /// <summary>Удалить группу</summary>
@@ -129,10 +131,10 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = MessageBox.Show(App.ActiveWindow, 
-            $"Удалить группу {Name} и все ярлыки?", "Внимание!",
-            MessageBoxButton.YesNo);
-        if (msg != MessageBoxResult.Yes) return;
+        var msg = LinksGroups?.Count == 0 ||
+                  MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+
+        if (!msg) return;
 
         App.DataManager.DeleteGroup(Id);
         App.MainWindowViewModel.Groups.Remove(this);
@@ -143,45 +145,53 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    private static AppLinkViewModel MapModel(AppLink Link)
-    {
-       return new AppLinkViewModel
-        {
-            FilePath = Link.Path,
-            Name = Link.Name,
-        };
-    }
 
-
-    public void DragOver(IDropInfo dropInfo)
-    {
-        var sourceItem = dropInfo.Data;
-
-        if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
-        {
-            dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-            dropInfo.Effects = DragDropEffects.Copy;
-            return;
-        }
-
-        dropInfo.Effects = DragDropEffects.None;
-    }
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
 
     public void Drop(IDropInfo dropInfo)
     {
-        var sourceItem = dropInfo.Data;
 
-        if (sourceItem is not DataObject dataObject ||
-            dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
+        AddLinks(DragDropHelper.Drop(dropInfo));
+    }
+
+    public void AddLinks(AppLink[] links)
+    {
+
+        var currentIndex = 0;
 
         var dataManager = App.DataManager;
 
-        foreach (var str in strArray)
+        bool CheckEnd(AppLinkGroup group)
         {
-            var added = dataManager.AddAppLink(str, Id);
-            Links.Add(MapModel(added));
+            if (currentIndex == links.Length)
+            {
+                dataManager.UpdateAppLinkGroup(group);
+                LinksGroups.Add(group.ToViewModel());
+                return true;
+            }
+            return false;
         }
 
+
+        while (currentIndex < links.Length)
+        {
+            var newGroup = dataManager.AddAppLinkGroup(Id);
+
+            newGroup.Link1 = links[currentIndex++];
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link2 =links[currentIndex++];
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link3 = links[currentIndex++];
+            if (CheckEnd(newGroup)) break;
+
+            newGroup.Link4 = links[currentIndex++];
+            if (CheckEnd(newGroup)) break;
+
+            dataManager.UpdateAppLinkGroup(newGroup);
+            LinksGroups.Add(newGroup.ToViewModel());
+        }
     }
 }

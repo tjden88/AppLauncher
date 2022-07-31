@@ -22,7 +22,7 @@ namespace AppLauncher.Services
 
         private class AppData
         {
-            public List<AppLink> Links { get; set; } = new();
+            public List<AppLinkGroup> LinksGroups { get; set; } = new();
             public List<Group> Groups { get; set; } = new();
         }
 
@@ -71,29 +71,43 @@ namespace AppLauncher.Services
             SaveData();
             return group;
         }
+
+        /// <summary> Переименовать группу </summary>
+        public void RenameGroup(string NewName, int GroupId)
+        {
+            var gr = Data.Groups.First(g => g.Id == GroupId);
+            gr.Name = NewName;
+            SaveData();
+        }
         
 
         /// <summary>
         /// Загрузить ярлыки группы
         /// </summary>
         /// <param name="GroupId">Id группы</param>
-        public IEnumerable<AppLink> LoadGroupLinks(int GroupId)
+        public IEnumerable<AppLinkGroup> LoadGroupLinks(int GroupId)
         {
-            var links = Data.Links
+            var groups = Data.LinksGroups
                 .Where(l => l.GroupId == GroupId)
                 .ToArray();
 
-            var existLinks = links
-                .Where(l => File.Exists(l.Path))
-                .ToArray();
+            var brokenLinks = new List<AppLink>();
 
-            var dist = links.Except(existLinks).ToArray();
-            if (dist.Any()) // Некоторые ярлыки не найдены
+            foreach (var linkGroup in groups)
             {
-                foreach (var appLink in dist) Data.Links.Remove(appLink);
+                var linksInGroup = linkGroup.GetAllLinks();
+                brokenLinks.AddRange(linksInGroup.Where(l => !File.Exists(l.Path)));
+            }
+
+
+            if (brokenLinks.Any()) // Некоторые ярлыки не найдены
+            {
+                foreach (var appLink in brokenLinks) 
+                    Data.LinksGroups.ForEach(g => g.Remove(appLink));
+
                 SaveData();
             }
-            return existLinks;
+            return groups;
         }
 
 
@@ -102,8 +116,13 @@ namespace AppLauncher.Services
             var group = Data.Groups.FirstOrDefault(g => g.Id == GroupId);
             if (group == null) return;
 
-            foreach (var link in LoadGroupLinks(GroupId))
-                File.Delete(link.Path);
+            var loadGroupLinks = LoadGroupLinks(GroupId);
+            foreach (var linkGroup in loadGroupLinks)
+            {
+                linkGroup.GetAllLinks().ForEach(l => File.Delete(l.Path));
+                Data.LinksGroups.Remove(linkGroup);
+            }
+
 
 
             var removed = Data.Groups.Remove(group);
@@ -111,25 +130,41 @@ namespace AppLauncher.Services
                 SaveData();
         }
 
-
-
         #endregion
 
 
-        #region Links
+        #region LinkGroups
 
-        /// <summary>
-        /// Добавить ярлык в группу
-        /// </summary>
-        /// <param name="Path">Путь к источнику</param>
-        /// <param name="GroupId">Id группы</param>
-        public AppLink AddAppLink(string Path, int GroupId)
+        public AppLinkGroup AddAppLinkGroup(int GroupId)
         {
-            var link = _LinkService.CreateLink(Path);
-            link.GroupId = GroupId;
-            Data.Links.Add(link);
+            var lg = new AppLinkGroup
+            {
+                GroupId = GroupId,
+                Id = Data.LinksGroups.Select(l => l.Id).DefaultIfEmpty().Max() + 1,
+            };
+            Data.LinksGroups.Add(lg);
             SaveData();
-            return link;
+            return lg;
+        }
+
+        public void UpdateAppLinkGroup(AppLinkGroup appLinkGroup)
+        {
+            var findGroup = Data.LinksGroups.First(g => g.Id == appLinkGroup.Id);
+            var index = Data.LinksGroups.IndexOf(findGroup);
+            Data.LinksGroups.Remove(findGroup);
+            Data.LinksGroups.Insert(index, appLinkGroup);
+            SaveData();
+        }
+
+        public void DeleteAppLinkGroup(int Id)
+        {
+            var group = Data.LinksGroups.FirstOrDefault(g => g.Id == Id);
+            if (group == null) return;
+            var links = group.GetAllLinks();
+            links.ForEach(l => File.Delete(l.Path));
+
+            Data.LinksGroups.Remove(group);
+            SaveData();
         }
 
         #endregion
