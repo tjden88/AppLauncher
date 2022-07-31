@@ -52,7 +52,7 @@
 
         <!--Содержимое-->
         <ItemsControl Grid.Row="1" MinHeight="30" Background="Transparent" ItemsSource="{Binding LinksGroups}" dd:DragDrop.IsDragSource="True"
-                      dd:DragDrop.IsDropTarget="True"
+                      dd:DragDrop.IsDropTarget="True" 
                       dd:DragDrop.DropHandler="{Binding}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

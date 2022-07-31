@@ -4,7 +4,7 @@
 
 
     <DataTemplate DataType="{x:Type viewModels:AppLinksGroupViewModel}">
-        <Grid>
+        <Grid Width="90" Height="90" ShowGridLines="True">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -24,7 +24,7 @@
     <DataTemplate DataType="{x:Type viewModels:AppLinkViewModel}">
         <Button Command="{Binding LaunchCommand}"
                 ToolTip="{Binding Name}">
-            <Image Width="35" Height="35" Margin="5" Source="{Binding Image}"/>
+            <Image  Margin="5" Source="{Binding Image}"/>
         </Button>
     </DataTemplate>
 

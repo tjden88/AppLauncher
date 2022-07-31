@@ -187,10 +187,17 @@ public class AppGroupViewModel : ViewModel, IDropTarget
         if (sourceItem is not DataObject dataObject ||
             dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
 
-        var dataManager = App.DataManager;
+        var newGroup = App.DataManager.AddAppLinkGroup(Id);
+
+        var link = App.LinkService.CreateLink(strArray[0]);
+        newGroup.Link1 = link;
+        App.DataManager.UpdateAppLinkGroup(newGroup);
+
+        LinksGroups.Add(MapGroupModel(newGroup));
 
         foreach (var str in strArray)
         {
+            
             //var added = dataManager.AddAppLink(str, Id);
             //Links.Add(MapModel(added));
         }
