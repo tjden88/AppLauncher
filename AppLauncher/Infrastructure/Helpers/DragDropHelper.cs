@@ -30,9 +30,9 @@ namespace AppLauncher.Infrastructure.Helpers
             if (sourceItem is not DataObject dataObject ||
                 dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<Shortcut>();
 
-            var linkService = App.LinkService;
+            var shortcutService = App.ShortcutService;
 
-            var list = strArray.Select(linkService.CreateLink);
+            var list = strArray.Select(shortcutService.CreateLink);
 
             return list.ToArray();
         }

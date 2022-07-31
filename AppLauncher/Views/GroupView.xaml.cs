@@ -1,11 +1,11 @@
 ﻿namespace AppLauncher.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AppGroup.xaml
+    /// Логика взаимодействия для GroupView.xaml
     /// </summary>
-    public partial class AppGroup
+    public partial class GroupView
     {
-        public AppGroup()
+        public GroupView()
         {
             InitializeComponent();
         }

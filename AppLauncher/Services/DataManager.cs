@@ -12,12 +12,12 @@ namespace AppLauncher.Services
     /// </summary>
     public class DataManager
     {
-        private readonly LinkService _LinkService;
+        private readonly ShortcutService _ShortcutService;
         private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Settings.json");
 
-        public DataManager(LinkService LinkService)
+        public DataManager(ShortcutService ShortcutService)
         {
-            _LinkService = LinkService;
+            _ShortcutService = ShortcutService;
         }
 
         private class AppData
