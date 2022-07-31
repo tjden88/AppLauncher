@@ -26,28 +26,24 @@
                 </Grid.ColumnDefinitions>
 
                 <Border  Tag="1" Background="Transparent" Margin="2"
-                dd:DragDrop.IsDragSource="{Binding ShortcutViewModel1, Converter={StaticResource ValueIsNotNullConverter}}"
                 dd:DragDrop.IsDropTarget="{Binding ShortcutViewModel1, Converter={StaticResource ValueIsNullConverter}}" 
                 dd:DragDrop.DropHandler="{Binding}">
                     <ContentPresenter Content="{Binding ShortcutViewModel1}"/>
                 </Border>
 
                 <Border Grid.Row="0" Grid.Column="1" Tag="2" Background="Transparent" Margin="2"
-                    dd:DragDrop.IsDragSource="{Binding ShortcutViewModel2, Converter={StaticResource ValueIsNotNullConverter}}"
                     dd:DragDrop.IsDropTarget="{Binding ShortcutViewModel2, Converter={StaticResource ValueIsNullConverter}}" 
                     dd:DragDrop.DropHandler="{Binding}">
                     <ContentPresenter Content="{Binding ShortcutViewModel2}"/>
                 </Border>
 
                 <Border Grid.Row="1" Grid.Column="0"  Tag="3" Background="Transparent" Margin="2"
-                    dd:DragDrop.IsDragSource="{Binding ShortcutViewModel3, Converter={StaticResource ValueIsNotNullConverter}}"
                     dd:DragDrop.IsDropTarget="{Binding ShortcutViewModel3, Converter={StaticResource ValueIsNullConverter}}" 
                     dd:DragDrop.DropHandler="{Binding}">
                     <ContentPresenter Content="{Binding ShortcutViewModel3}"/>
                 </Border>
 
                 <Border Grid.Row="1" Grid.Column="1" Tag="4" Background="Transparent" Margin="2"
-                            dd:DragDrop.IsDragSource="{Binding ShortcutViewModel4, Converter={StaticResource ValueIsNotNullConverter}}"
                             dd:DragDrop.IsDropTarget="{Binding ShortcutViewModel4, Converter={StaticResource ValueIsNullConverter}}" 
                             dd:DragDrop.DropHandler="{Binding}">
                     <ContentPresenter Content="{Binding ShortcutViewModel4}"/>
@@ -126,7 +122,8 @@
 
 
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
-        <Button Command="{Binding LaunchCommand}">
+        <Button Command="{Binding LaunchCommand}" 
+                dd:DragDrop.IsDragSource="True">
             <b:Interaction.Behaviors>
                 <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
             </b:Interaction.Behaviors>

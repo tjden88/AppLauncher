@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Views;
+using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -60,6 +62,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+   
         #region HasImage : bool - Есть ли изображение
 
         /// <summary>Есть ли изображение</summary>
@@ -74,9 +77,8 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
         
-
-
         #region Commands
 
 
@@ -247,7 +249,9 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        private ShortcutCellViewModel FindCell()
+
+        /// <summary> Найти ячейку, содержащую этот ярлык </summary>
+        public ShortcutCellViewModel FindCell()
         {
             var groups = App.MainWindowViewModel.Groups;
             foreach (var group in groups)
@@ -259,6 +263,7 @@ namespace AppLauncher.ViewModels
 
             throw new ArgumentOutOfRangeException(nameof(Name), "Ячейка не найдена");
         }
+
 
     }
 }
