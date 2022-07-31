@@ -81,6 +81,5 @@ namespace AppLauncher.Services
 
             DataSerializer.SaveToFile(data, _SettingsFileName);
         }
-
     }
 }

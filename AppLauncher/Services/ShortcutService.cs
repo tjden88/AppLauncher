@@ -128,6 +128,11 @@ namespace AppLauncher.Services
             return null;
         }
 
+        /// <summary> Очистка лишних ярлыков </summary>
+        public void CleanNotUsedShortcuts()
+        {
+
+        }
 
         #region Private
 
