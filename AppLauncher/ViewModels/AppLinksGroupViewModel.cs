@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AppLauncher.Infrastructure.Helpers;
 using GongSolutions.Wpf.DragDrop;
+using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
@@ -113,6 +114,38 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+        private bool _IsEmpty() => BigLinkViewModel == null && AppLinkViewModel1 == null && AppLinkViewModel2 == null && AppLinkViewModel3 == null && AppLinkViewModel4 == null;
+
+
+        #region Commands
+
+        #region Command DeleteCommand - Удалить группу
+
+        /// <summary>Удалить группу</summary>
+        private Command _DeleteCommand;
+
+        /// <summary>Удалить группу</summary>
+        public Command DeleteCommand => _DeleteCommand
+            ??= new Command(OnDeleteCommandExecuted, CanDeleteCommandExecute, "Удалить группу");
+
+        /// <summary>Проверка возможности выполнения - Удалить группу</summary>
+        private bool CanDeleteCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Удалить группу</summary>
+        private void OnDeleteCommandExecuted()
+        {
+            if (_IsEmpty() || MessageBox.Show(App.ActiveWindow, "Удалить группу вместе с ярлыками?", "Вопрос", MessageBoxButton.YesNo) ==
+                MessageBoxResult.Yes)
+            {
+                var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
+                vm.LinksGroups.Remove(this);
+                App.DataManager.DeleteAppLinkGroup(Id);
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 

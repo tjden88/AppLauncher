@@ -63,7 +63,9 @@
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </Style>
                 </Border.Style>
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ElementName=Border, Path=IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Command="{Binding DeleteCommand}"
+                        Visibility="{Binding ElementName=Border, Path=IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Button.Content>
                         <fa5:FontAwesome Margin="8" Icon="Solid_TrashAlt" Foreground="Red"/>
                     </Button.Content>

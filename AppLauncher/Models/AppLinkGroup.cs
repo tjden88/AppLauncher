@@ -33,6 +33,8 @@ namespace AppLauncher.Models
                 result.Add(Link3);
             if (Link4 != null)
                 result.Add(Link4);
+            if(BigLink != null)
+                result.Add(BigLink);
 
             return result;
         }
@@ -47,6 +49,8 @@ namespace AppLauncher.Models
                 Link3 = null; 
             if (ReferenceEquals(Link4, link))
                 Link4 = null;
+            if (ReferenceEquals(BigLink, link))
+                BigLink = null;
 
         }
     }

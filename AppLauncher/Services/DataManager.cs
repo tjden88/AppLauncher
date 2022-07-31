@@ -156,6 +156,17 @@ namespace AppLauncher.Services
             SaveData();
         }
 
+        public void DeleteAppLinkGroup(int Id)
+        {
+            var group = Data.LinksGroups.FirstOrDefault(g => g.Id == Id);
+            if (group == null) return;
+            var links = group.GetAllLinks();
+            links.ForEach(l => File.Delete(l.Path));
+
+            Data.LinksGroups.Remove(group);
+            SaveData();
+        }
+
         #endregion
 
     }
