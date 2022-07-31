@@ -3,7 +3,9 @@
                     xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
                     xmlns:dd="urn:gong-wpf-dragdrop"
                     xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
-                    xmlns:fa5="http://schemas.fontawesome.com/icons/">
+                    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:behaviors="clr-namespace:AppLauncher.Infrastructure.Behaviors">
 
     <converters:ValueIsNotNullConverter x:Key="ValueIsNotNullConverter"/>
     <converters:ValueIsNullConverter x:Key="ValueIsNullConverter"/>
@@ -77,8 +79,10 @@
 
 
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
-        <Button Command="{Binding LaunchCommand}"
-                ToolTip="{Binding Name}">
+        <Button Command="{Binding LaunchCommand}">
+            <b:Interaction.Behaviors>
+                <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
+            </b:Interaction.Behaviors>
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Крупный">

@@ -8,7 +8,7 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
-    public class MainWindowViewModel : WindowViewModel, IDropTarget
+    public class MainWindowViewModel : ViewModel, IDropTarget
     {
 
         #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
@@ -41,6 +41,23 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
+
+
+        #region Title : string - Текст в заголовке
+
+        /// <summary>Текст в заголовке</summary>
+        private string _Title;
+
+        /// <summary>Текст в заголовке</summary>
+        public string Title
+        {
+            get => _Title;
+            set => Set(ref _Title, value);
+        }
+
+        #endregion
+
+        
 
 
         #region Commands
