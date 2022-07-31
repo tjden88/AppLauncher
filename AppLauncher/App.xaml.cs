@@ -13,6 +13,8 @@ namespace AppLauncher
         /// <summary> Вьюмодель главного окна </summary>
         public static MainWindowViewModel MainWindowViewModel { get; } = new();
 
+        public static SettingsWindowViewModel SettingsWindowViewModel { get; } = new();
+
         public static ShortcutService ShortcutService { get; } = new ();
 
         public static DataManager DataManager { get; } = new();
@@ -24,5 +26,6 @@ namespace AppLauncher
             ShortcutService.CleanNotUsedShortcuts();
             base.OnExit(e);
         }
+
     }
 }

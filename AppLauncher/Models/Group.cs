@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AppLauncher.Models
 {
@@ -11,6 +12,7 @@ namespace AppLauncher.Models
 
         public string Name { get; set; }
 
+        [JsonIgnore]
         public ICollection<ShortcutCell> Cells { get; set; } = new List<ShortcutCell>();
     }
 }
