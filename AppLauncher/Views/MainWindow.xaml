@@ -54,8 +54,7 @@
                 <Border  Background="Transparent"
                         dd:DragDrop.IsDragSource="True"
                         dd:DragDrop.IsDropTarget="True" 
-                        dd:DragDrop.DropHandler="{Binding}">
-                </Border>
+                        dd:DragDrop.DropHandler="{Binding}" />
                 <ItemsControl  ItemsSource="{Binding Groups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
