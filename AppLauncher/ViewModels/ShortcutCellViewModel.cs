@@ -11,8 +11,9 @@ namespace AppLauncher.ViewModels
     /// <summary>
     /// Группа из 4 маленького или 1 большого ярлыка
     /// </summary>
-    public class AppLinksGroupViewModel : ViewModel, IDropTarget
+    public class ShortcutCellViewModel : ViewModel, IDropTarget
     {
+        private bool _IsEmpty() => BigLinkViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
 
         #region Id : int - Идентификатор
 
@@ -43,14 +44,13 @@ namespace AppLauncher.ViewModels
         #endregion
 
         
-
-        #region BigLinkViewModel : AppLinkViewModel - Большой ярлык
-
-        /// <summary>Большой ярлык</summary>
-        private AppLinkViewModel _BigLinkViewModel;
+        #region BigLinkViewModel : ShortcutViewModel - Большой ярлык
 
         /// <summary>Большой ярлык</summary>
-        public AppLinkViewModel BigLinkViewModel
+        private ShortcutViewModel _BigLinkViewModel;
+
+        /// <summary>Большой ярлык</summary>
+        public ShortcutViewModel BigLinkViewModel
         {
             get => _BigLinkViewModel;
             set => Set(ref _BigLinkViewModel, value);
@@ -58,63 +58,62 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        #region AppLinkViewModel1 : AppLinkViewModel - Link1
+        #region ShortcutViewModel1 : ShortcutViewModel - Link1
 
         /// <summary>Link1</summary>
-        private AppLinkViewModel _AppLinkViewModel1;
+        private ShortcutViewModel _ShortcutViewModel1;
 
         /// <summary>Link1</summary>
-        public AppLinkViewModel AppLinkViewModel1
+        public ShortcutViewModel ShortcutViewModel1
         {
-            get => _AppLinkViewModel1;
-            set => Set(ref _AppLinkViewModel1, value);
+            get => _ShortcutViewModel1;
+            set => Set(ref _ShortcutViewModel1, value);
         }
 
         #endregion
 
-        #region AppLinkViewModel2 : AppLinkViewModel - Link2
+        #region ShortcutViewModel2 : ShortcutViewModel - Link2
 
         /// <summary>Link2</summary>
-        private AppLinkViewModel _AppLinkViewModel2;
+        private ShortcutViewModel _ShortcutViewModel2;
 
         /// <summary>Link2</summary>
-        public AppLinkViewModel AppLinkViewModel2
+        public ShortcutViewModel ShortcutViewModel2
         {
-            get => _AppLinkViewModel2;
-            set => Set(ref _AppLinkViewModel2, value);
+            get => _ShortcutViewModel2;
+            set => Set(ref _ShortcutViewModel2, value);
         }
 
         #endregion
 
-        #region AppLinkViewModel3 : AppLinkViewModel - Link3
+        #region ShortcutViewModel3 : ShortcutViewModel - Link3
 
         /// <summary>Link3</summary>
-        private AppLinkViewModel _AppLinkViewModel3;
+        private ShortcutViewModel _ShortcutViewModel3;
 
         /// <summary>Link3</summary>
-        public AppLinkViewModel AppLinkViewModel3
+        public ShortcutViewModel ShortcutViewModel3
         {
-            get => _AppLinkViewModel3;
-            set => Set(ref _AppLinkViewModel3, value);
+            get => _ShortcutViewModel3;
+            set => Set(ref _ShortcutViewModel3, value);
         }
 
         #endregion
 
-        #region AppLinkViewModel4 : AppLinkViewModel - Link4
+        #region ShortcutViewModel4 : ShortcutViewModel - Link4
 
         /// <summary>Link4</summary>
-        private AppLinkViewModel _AppLinkViewModel4;
+        private ShortcutViewModel _ShortcutViewModel4;
 
         /// <summary>Link4</summary>
-        public AppLinkViewModel AppLinkViewModel4
+        public ShortcutViewModel ShortcutViewModel4
         {
-            get => _AppLinkViewModel4;
-            set => Set(ref _AppLinkViewModel4, value);
+            get => _ShortcutViewModel4;
+            set => Set(ref _ShortcutViewModel4, value);
         }
 
         #endregion
 
-        private bool _IsEmpty() => BigLinkViewModel == null && AppLinkViewModel1 == null && AppLinkViewModel2 == null && AppLinkViewModel3 == null && AppLinkViewModel4 == null;
 
 
         #region Commands
@@ -147,6 +146,9 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        #region DragDrop
+
         public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
 
@@ -162,16 +164,16 @@ namespace AppLauncher.ViewModels
             switch (linkNumber)
             {
                 case "1":
-                    AppLinkViewModel1 = firstLink.ToViewModel();
+                    ShortcutViewModel1 = firstLink.ToViewModel();
                     break;
                 case "2":
-                    AppLinkViewModel2 = firstLink.ToViewModel();
+                    ShortcutViewModel2 = firstLink.ToViewModel();
                     break;
                 case "3":
-                    AppLinkViewModel3 = firstLink.ToViewModel();
+                    ShortcutViewModel3 = firstLink.ToViewModel();
                     break;
                 case "4":
-                    AppLinkViewModel4 = firstLink.ToViewModel();
+                    ShortcutViewModel4 = firstLink.ToViewModel();
                     break;
             }
 
@@ -183,6 +185,9 @@ namespace AppLauncher.ViewModels
 
             vm.AddLinks(links.Skip(1).ToArray());
 
-        }
+        } 
+
+        #endregion
+
     }
 }

@@ -9,6 +9,9 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels;
 
+/// <summary>
+/// Группа ярлыков в главнгом окне
+/// </summary>
 public class GroupViewModel : ViewModel, IDropTarget
 {
 
@@ -58,13 +61,13 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region LinksGroups : ObservableCollection<AppLinkViewModel> - Группированные ссылки
+    #region LinksGroups : ObservableCollection<ShortcutViewModel> - Группированные ссылки
 
     /// <summary>Группированные ссылки</summary>
-    private ObservableCollection<AppLinksGroupViewModel> _LinksGroups = new();
+    private ObservableCollection<ShortcutCellViewModel> _LinksGroups = new();
 
     /// <summary>Группированные ссылки</summary>
-    public ObservableCollection<AppLinksGroupViewModel> LinksGroups
+    public ObservableCollection<ShortcutCellViewModel> LinksGroups
     {
         get => _LinksGroups;
         set => Set(ref _LinksGroups, value);

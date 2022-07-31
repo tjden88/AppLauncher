@@ -17,30 +17,30 @@ namespace AppLauncher.Infrastructure.Helpers
             };
         }
 
-        public static AppLinksGroupViewModel ToViewModel(this ShortcutCell LinkGroup) =>
+        public static ShortcutCellViewModel ToViewModel(this ShortcutCell LinkGroup) =>
             new ()
             {
-                AppLinkViewModel1 = ToViewModel(LinkGroup.Link1),
-                AppLinkViewModel2 = ToViewModel(LinkGroup.Link2),
-                AppLinkViewModel3 = ToViewModel(LinkGroup.Link3),
-                AppLinkViewModel4 = ToViewModel(LinkGroup.Link4),
+                ShortcutViewModel1 = ToViewModel(LinkGroup.Link1),
+                ShortcutViewModel2 = ToViewModel(LinkGroup.Link2),
+                ShortcutViewModel3 = ToViewModel(LinkGroup.Link3),
+                ShortcutViewModel4 = ToViewModel(LinkGroup.Link4),
                 BigLinkViewModel = ToViewModel(LinkGroup.BigLink),
                 Id = LinkGroup.Id,
                 GroupId = LinkGroup.GroupId,
             };
 
-        public static AppLinkViewModel ToViewModel(this Shortcut Link)
+        public static ShortcutViewModel ToViewModel(this Shortcut Link)
         {
             if (Link == null) return null;
 
-            return new AppLinkViewModel
+            return new ShortcutViewModel
             {
                 FilePath = Link.Path,
                 Name = Link.Name,
             };
         }
 
-        public static Shortcut ToModel(this AppLinkViewModel Link)
+        public static Shortcut ToModel(this ShortcutViewModel Link)
         {
             if (Link == null) return null;
 
@@ -51,14 +51,14 @@ namespace AppLauncher.Infrastructure.Helpers
             };
         }
 
-        public static ShortcutCell ToModel(this AppLinksGroupViewModel vm)
+        public static ShortcutCell ToModel(this ShortcutCellViewModel vm)
         {
             return new ShortcutCell
             {
-                Link1 = vm.AppLinkViewModel1.ToModel(),
-                Link2 = vm.AppLinkViewModel2.ToModel(),
-                Link3 = vm.AppLinkViewModel3.ToModel(),
-                Link4 = vm.AppLinkViewModel4.ToModel(),
+                Link1 = vm.ShortcutViewModel1.ToModel(),
+                Link2 = vm.ShortcutViewModel2.ToModel(),
+                Link3 = vm.ShortcutViewModel3.ToModel(),
+                Link4 = vm.ShortcutViewModel4.ToModel(),
                 BigLink = vm.BigLinkViewModel.ToModel(),
                 Id = vm.Id,
                 GroupId = vm.GroupId,
