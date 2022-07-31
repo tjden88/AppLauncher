@@ -15,7 +15,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>
     /// Пустая вьюмодель с нулевым идентификатором для добавления новой ячейки в группу
     /// </summary>
-    private static ShortcutCellViewModel MockShortcutCellViewModel { get; } = new();
+    public static ShortcutCellViewModel MockShortcutCellViewModel { get; } = new();
 
 
     #region Id : int - Id группы

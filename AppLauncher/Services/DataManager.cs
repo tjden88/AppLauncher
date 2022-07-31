@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
+using AppLauncher.ViewModels;
 using WPR.Tools;
 
 namespace AppLauncher.Services
@@ -74,6 +75,7 @@ namespace AppLauncher.Services
 
             var cells = groups
                 .SelectMany(g => g.ShortcutCells)
+                .Where(c=>!ReferenceEquals(c, GroupViewModel.MockShortcutCellViewModel))
                 .Select(c=>c.ToModel());
 
             data.ShortcutCells = cells.ToList();

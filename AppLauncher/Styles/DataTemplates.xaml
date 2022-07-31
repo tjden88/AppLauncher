@@ -121,7 +121,14 @@
 
     <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="MockShortcutCellDataTemplate">
         <Grid>
-            <TextBlock Text="!!!"></TextBlock>
+            <Border  Width="86" Height="86" Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
+                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Command="{Binding AddEmptyCellCommand}">
+                    <Button.Content>
+                        <fa5:FontAwesome Margin="8" Icon="Solid_Plus" Foreground="Lime"/>
+                    </Button.Content>
+                </Button>
+            </Border>
         </Grid>
     </DataTemplate>
 
