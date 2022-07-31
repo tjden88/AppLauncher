@@ -32,7 +32,7 @@ namespace AppLauncher.Infrastructure.Helpers
 
             var shortcutService = App.ShortcutService;
 
-            var list = strArray.Select(shortcutService.CreateLink);
+            var list = strArray.Select(shortcutService.CreateShortcut);
 
             return list.ToArray();
         }

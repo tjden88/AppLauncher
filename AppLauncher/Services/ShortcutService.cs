@@ -17,7 +17,7 @@ namespace AppLauncher.Services
     /// </summary>
     public class ShortcutService
     {
-        private readonly string _LinkPath = Path.Combine(Environment.CurrentDirectory, "Links");
+        private readonly string _ShortcutsPath = Path.Combine(Environment.CurrentDirectory, "Shortcuts");
 
 
         /// <summary>
@@ -25,19 +25,19 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="FileName">Имя к оригинальному файлу/папке</param>
         /// <returns>Созданный ярлык, не привязанный к группе</returns>
-        public Shortcut CreateLink(string FileName)
+        public Shortcut CreateShortcut(string FileName)
         {
 
             const string linkExtension = ".lnk";
 
             var fileNameNoExt = Path.GetFileNameWithoutExtension(FileName);
 
-            var newFileName = Path.Combine(_LinkPath, fileNameNoExt + linkExtension);
+            var newFileName = Path.Combine(_ShortcutsPath, fileNameNoExt + linkExtension);
 
             var intCount = 1;
             while (File.Exists(newFileName))
             {
-                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
+                newFileName = Path.Combine(_ShortcutsPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
             }
 
 
@@ -48,12 +48,30 @@ namespace AppLauncher.Services
 
             return new Shortcut
             {
-                Path = newFileName,
+                Path = Path.GetFileName(newFileName),
                 Name = fileNameNoExt,
             };
 
         }
-        
+
+        /// <summary>
+        /// Удалить ярлык из рабочей папки
+        /// </summary>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
+        public void DeleteShortcut(string ShortcutPath)
+        {
+            File.Delete(Path.Combine(_ShortcutsPath, ShortcutPath));
+        }
+
+        /// <summary>
+        /// Запустить ярлык
+        /// </summary>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
+        public void StartProcess(string ShortcutPath)
+        {
+
+        }
+
 
         /// <summary>
         /// Получить значок из ярлыка
