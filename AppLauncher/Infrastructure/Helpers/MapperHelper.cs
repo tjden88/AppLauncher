@@ -8,6 +8,16 @@ namespace AppLauncher.Infrastructure.Helpers
     /// </summary>
     public static class MapperHelper
     {
+        public static Group ToModel(this GroupViewModel vm)
+        {
+            return new Group
+            {
+                Id = vm.Id,
+                Name = vm.Name,
+            };
+        }
+
+
         public static GroupViewModel ToViewModel(this Group Model)
         {
             return new GroupViewModel
