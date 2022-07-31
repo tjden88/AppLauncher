@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 
 namespace AppLauncher.Models
 {
@@ -22,7 +23,7 @@ namespace AppLauncher.Models
         public int GroupId { get; set; }
 
 
-        public List<Shortcut> GetAllLinks()
+        public List<Shortcut> GetAllShortcuts()
         {
             var result = new List<Shortcut>();
             if (Link1 != null)
@@ -33,25 +34,10 @@ namespace AppLauncher.Models
                 result.Add(Link3);
             if (Link4 != null)
                 result.Add(Link4);
-            if(BigLink != null)
+            if (BigLink != null)
                 result.Add(BigLink);
 
             return result;
-        }
-
-        public void Remove(Shortcut link)
-        {
-            if(ReferenceEquals(Link1, link))
-                Link1 = null;
-            if (ReferenceEquals(Link2, link))
-                Link2 = null;
-            if (ReferenceEquals(Link3, link))
-                Link3 = null; 
-            if (ReferenceEquals(Link4, link))
-                Link4 = null;
-            if (ReferenceEquals(BigLink, link))
-                BigLink = null;
-
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -17,7 +18,31 @@ namespace AppLauncher.Services
     /// </summary>
     public class ShortcutService
     {
-        private readonly string _LinkPath = Path.Combine(Environment.CurrentDirectory, "Links");
+        private readonly string _ShortcutsPath = Path.Combine(Environment.CurrentDirectory, "Shortcuts");
+
+        private string _ShortcutFullPath(string ShortcutPath) => Path.Combine(_ShortcutsPath, ShortcutPath);
+
+        public ShortcutService()
+        {
+            Directory.CreateDirectory(_ShortcutsPath);
+        }
+
+
+        /// <summary>
+        /// Получить путь до целевого объекта ярлыка
+        /// </summary>
+        /// <param name="ShortcutsPath">Путь ярлыка</param>
+        /// <returns></returns>
+        public string GetFilePath(string ShortcutsPath)
+        {
+            var path = _ShortcutFullPath(ShortcutsPath);
+
+            if (!File.Exists(path)) return null;
+
+            using var sc = WindowsShortcut.Load(path);
+
+            return sc.Path;
+        }
 
 
         /// <summary>
@@ -25,19 +50,19 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="FileName">Имя к оригинальному файлу/папке</param>
         /// <returns>Созданный ярлык, не привязанный к группе</returns>
-        public Shortcut CreateLink(string FileName)
+        public Shortcut CreateShortcut(string FileName)
         {
 
             const string linkExtension = ".lnk";
 
             var fileNameNoExt = Path.GetFileNameWithoutExtension(FileName);
 
-            var newFileName = Path.Combine(_LinkPath, fileNameNoExt + linkExtension);
+            var newFileName = Path.Combine(_ShortcutsPath, fileNameNoExt + linkExtension);
 
             var intCount = 1;
             while (File.Exists(newFileName))
             {
-                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
+                newFileName = Path.Combine(_ShortcutsPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
             }
 
 
@@ -48,27 +73,51 @@ namespace AppLauncher.Services
 
             return new Shortcut
             {
-                Path = newFileName,
+                Path = Path.GetFileName(newFileName),
                 Name = fileNameNoExt,
             };
 
         }
-        
+
+        /// <summary>
+        /// Удалить ярлык из рабочей папки
+        /// </summary>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
+        public void DeleteShortcut(string ShortcutPath)
+        {
+            File.Delete(_ShortcutFullPath(ShortcutPath));
+        }
+
+        /// <summary>
+        /// Запустить ярлык
+        /// </summary>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
+        public void StartProcess(string ShortcutPath)
+        {
+            var path = _ShortcutFullPath(ShortcutPath);
+
+            if (!File.Exists(path)) return;
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+        }
+
 
         /// <summary>
         /// Получить значок из ярлыка
         /// </summary>
-        /// <param name="ShortcutFileName">Путь к ярлыку</param>
+        /// <param name="ShortcutPath">Путь к ярлыку</param>
         /// <returns>null, если файл или папка не найдена</returns>
-        public ImageSource GetIconFromShortcut(string ShortcutFileName)
+        public ImageSource GetIconFromShortcut(string ShortcutPath)
         {
+            var path = _ShortcutFullPath(ShortcutPath);
 
-            if (!File.Exists(ShortcutFileName) && !Directory.Exists(ShortcutFileName))
-            {
-                return null;
-            }
+            if (!File.Exists(path)) return null;
 
-            using var sc = WindowsShortcut.Load(ShortcutFileName);
+            using var sc = WindowsShortcut.Load(path);
 
             var pathToIconFile = sc.IconLocation.Path;
             if (string.IsNullOrEmpty(pathToIconFile))
@@ -82,8 +131,24 @@ namespace AppLauncher.Services
             return null;
         }
 
+        /// <summary> Очистка лишних ярлыков </summary>
+        public void CleanNotUsedShortcuts()
+        {
+            var usedShortcuts = App.DataManager.LoadGroupsData()
+                .SelectMany(g=>g.Cells)
+                .SelectMany(c=> c.GetAllShortcuts())
+                .Select(sc => Path.Combine(_ShortcutsPath,sc.Path));
+
+            var allShortcuts = Directory.EnumerateFiles(_ShortcutsPath);
+
+            var notUsedFiles = allShortcuts.Except(usedShortcuts);
+
+            foreach (var notUsedFile in notUsedFiles)
+                File.Delete(notUsedFile);
+        }
 
         #region Private
+
 
         /// <summary>
         /// Создать ярлык для файла и сохранить на диске

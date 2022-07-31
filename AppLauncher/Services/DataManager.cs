@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
 using WPR.Tools;
 
@@ -12,23 +13,13 @@ namespace AppLauncher.Services
     /// </summary>
     public class DataManager
     {
-        private readonly ShortcutService _ShortcutService;
-        private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Settings.json");
-
-        public DataManager(ShortcutService ShortcutService)
-        {
-            _ShortcutService = ShortcutService;
-        }
+        private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Config.json");
 
         private class AppData
         {
-            public List<ShortcutCell> LinksGroups { get; set; } = new();
+            public List<ShortcutCell> ShortcutCells { get; set; } = new();
             public List<Group> Groups { get; set; } = new();
         }
-
-        private AppData _Data;
-
-        private AppData Data => _Data ??= LoadData();
 
         private AppData LoadData()
         {
@@ -36,138 +27,59 @@ namespace AppLauncher.Services
             return data ?? new AppData();
         }
 
-        private void SaveData() => DataSerializer.SaveToFile(Data, _SettingsFileName);
+
+        private int _NextGroupId;
+        private int _NextCellId;
+
+        /// <summary> Получить ID для следующей группы </summary>
+        public int GetNextGroupId() => _NextGroupId ++;
 
 
-
-        #region Groups
-
-        /// <summary>
-        /// Загрузить группы
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Group> LoadGroups() => Data.Groups.OrderBy(g => g.Id);
-
+        /// <summary> Получить ID для следующей ячейки </summary>
+        public int GetNextCellId() => _NextCellId ++;
 
         /// <summary>
-        /// Добавить группу
+        /// После загрузки данных необходимо установить флаг для возможности сохранения данных
         /// </summary>
-        /// <param name="Name">Имя группы</param>
-        /// <returns></returns>
-        public Group AddGroup(string Name)
-        {
-            var grName = string.IsNullOrEmpty(Name)
-                ? "Новая группа"
-                : Name;
-            var group = new Group()
-            {
-                Id = Data.Groups
-                    .Select(g => g.Id)
-                    .DefaultIfEmpty()
-                    .Max() + 1,
-                Name = grName,
-            };
-            Data.Groups.Add(group);
-            SaveData();
-            return group;
-        }
-
-        /// <summary> Переименовать группу </summary>
-        public void RenameGroup(string NewName, int GroupId)
-        {
-            var gr = Data.Groups.First(g => g.Id == GroupId);
-            gr.Name = NewName;
-            SaveData();
-        }
-        
+        public bool CanSaveData { get; set; }
 
         /// <summary>
-        /// Загрузить ярлыки группы
+        /// Загрузить данные с диска
         /// </summary>
-        /// <param name="GroupId">Id группы</param>
-        public IEnumerable<ShortcutCell> LoadGroupLinks(int GroupId)
+        /// <returns>Список групп и вложенные в него списки</returns>
+        public IEnumerable<Group> LoadGroupsData()
         {
-            var groups = Data.LinksGroups
-                .Where(l => l.GroupId == GroupId)
-                .ToArray();
+            var data = LoadData();
 
-            var brokenLinks = new List<Shortcut>();
+            foreach (var group in data.Groups)
+                group.Cells = data.ShortcutCells
+                    .Where(c => c.GroupId == group.Id)
+                    .ToList();
 
-            foreach (var linkGroup in groups)
+            _NextGroupId = data.Groups.Select(g=> g.Id).DefaultIfEmpty().Max() + 1;
+            _NextCellId = data.ShortcutCells.Select(g=> g.Id).DefaultIfEmpty().Max() + 1;
+
+            return data.Groups.OrderBy(g => g.Id);
+        }
+
+        /// <summary>Обновить и сохранить данные </summary>
+        public void SaveData()
+        {
+            if(!CanSaveData) return;
+
+            var data = new AppData();
+
+            var groups = App.MainWindowViewModel.Groups;
+            foreach (var group in groups)
             {
-                var linksInGroup = linkGroup.GetAllLinks();
-                brokenLinks.AddRange(linksInGroup.Where(l => !File.Exists(l.Path)));
+                var cells = group.ShortcutCells;
+                var cellsModels = cells.Select(c => c.ToModel());
+                data.ShortcutCells = cellsModels.ToList();
             }
 
+            data.Groups = groups.Select(g => g.ToModel()).ToList();
 
-            if (brokenLinks.Any()) // Некоторые ярлыки не найдены
-            {
-                foreach (var appLink in brokenLinks) 
-                    Data.LinksGroups.ForEach(g => g.Remove(appLink));
-
-                SaveData();
-            }
-            return groups;
+            DataSerializer.SaveToFile(data, _SettingsFileName);
         }
-
-
-        public void DeleteGroup(int GroupId)
-        {
-            var group = Data.Groups.FirstOrDefault(g => g.Id == GroupId);
-            if (group == null) return;
-
-            var loadGroupLinks = LoadGroupLinks(GroupId);
-            foreach (var linkGroup in loadGroupLinks)
-            {
-                linkGroup.GetAllLinks().ForEach(l => File.Delete(l.Path));
-                Data.LinksGroups.Remove(linkGroup);
-            }
-
-
-
-            var removed = Data.Groups.Remove(group);
-            if (removed)
-                SaveData();
-        }
-
-        #endregion
-
-
-        #region LinkGroups
-
-        public ShortcutCell AddAppLinkGroup(int GroupId)
-        {
-            var lg = new ShortcutCell
-            {
-                GroupId = GroupId,
-                Id = Data.LinksGroups.Select(l => l.Id).DefaultIfEmpty().Max() + 1,
-            };
-            Data.LinksGroups.Add(lg);
-            SaveData();
-            return lg;
-        }
-
-        public void UpdateAppLinkGroup(ShortcutCell ShortcutCell)
-        {
-            var findGroup = Data.LinksGroups.First(g => g.Id == ShortcutCell.Id);
-            var index = Data.LinksGroups.IndexOf(findGroup);
-            Data.LinksGroups.Remove(findGroup);
-            Data.LinksGroups.Insert(index, ShortcutCell);
-            SaveData();
-        }
-
-        public void DeleteAppLinkGroup(int Id)
-        {
-            var group = Data.LinksGroups.FirstOrDefault(g => g.Id == Id);
-            if (group == null) return;
-            var links = group.GetAllLinks();
-            links.ForEach(l => File.Delete(l.Path));
-
-            Data.LinksGroups.Remove(group);
-            SaveData();
-        }
-
-        #endregion
-
     }
 }

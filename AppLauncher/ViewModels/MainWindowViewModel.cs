@@ -8,7 +8,7 @@ using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
-    public class MainWindowViewModel : WindowViewModel, IDropTarget
+    public class MainWindowViewModel : ViewModel, IDropTarget
     {
 
         #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
@@ -43,6 +43,21 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region Title : string - Текст в заголовке
+
+        /// <summary>Текст в заголовке</summary>
+        private string _Title;
+
+        /// <summary>Текст в заголовке</summary>
+        public string Title
+        {
+            get => _Title;
+            set => Set(ref _Title, value);
+        }
+
+        #endregion
+
+
         #region Commands
 
 
@@ -61,9 +76,24 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Загрузить группы</summary>
         private void OnLoadGroupsCommandExecuted()
         {
-            var groups = App.DataManager.LoadGroups();
-            var vm = groups.Select(g => g.ToViewModel());
+            var groups = App.DataManager
+                .LoadGroupsData()
+                .ToArray();
+
+            var vm = groups
+                .Select(g => g.ToViewModel());
+
             Groups = new(vm);
+            foreach (var group in Groups)
+            {
+                var viewModels = groups
+                    .First(g =>g.Id == group.Id).Cells
+                    .Select(c => c.ToViewModel());
+
+                group.ShortcutCells = new(viewModels);
+            }
+            App.DataManager.CanSaveData = true;
+
         }
 
         #endregion
@@ -84,8 +114,13 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Добавить группу</summary>
         private void OnAddGroupCommandExecuted()
         {
-            var newGroup = App.DataManager.AddGroup("Новая группа");
-            Groups.Add(newGroup.ToViewModel());
+            var newGroup = new GroupViewModel()
+            {
+                Name = "Новая группа",
+                Id = App.DataManager.GetNextGroupId(),
+            };
+            Groups.Add(newGroup);
+            App.DataManager.SaveData();
         }
 
         #endregion
@@ -122,10 +157,17 @@ namespace AppLauncher.ViewModels
             var links = DragDropHelper.Drop(dropInfo);
             if (links.Length == 0) return;
 
-            var newGroup = App.DataManager.AddGroup(links[0].Name);
-            var viewModel = newGroup.ToViewModel();
-            viewModel.AddLinks(links);
-            Groups.Add(viewModel);
+            var dataManager = App.DataManager;
+            var newGroup = new GroupViewModel()
+            {
+                Name = links[0].Name,
+                Id = dataManager.GetNextGroupId(),
+            };
+            dataManager.CanSaveData = false;
+            newGroup.AddShortcuts(links);
+            Groups.Add(newGroup);
+            dataManager.CanSaveData =true;
+            dataManager.SaveData();
         }
     }
 }

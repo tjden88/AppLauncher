@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AppLauncher.Infrastructure.Helpers;
@@ -13,7 +14,7 @@ namespace AppLauncher.ViewModels
     /// </summary>
     public class ShortcutCellViewModel : ViewModel, IDropTarget
     {
-        private bool _IsEmpty() => BigLinkViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
+        private bool _IsEmpty() => BigShortcutViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
 
         #region Id : int - Идентификатор
 
@@ -44,16 +45,16 @@ namespace AppLauncher.ViewModels
         #endregion
 
         
-        #region BigLinkViewModel : ShortcutViewModel - Большой ярлык
+        #region BigShortcutViewModel : ShortcutViewModel - Большой ярлык
 
         /// <summary>Большой ярлык</summary>
-        private ShortcutViewModel _BigLinkViewModel;
+        private ShortcutViewModel _BigShortcutViewModel;
 
         /// <summary>Большой ярлык</summary>
-        public ShortcutViewModel BigLinkViewModel
+        public ShortcutViewModel BigShortcutViewModel
         {
-            get => _BigLinkViewModel;
-            set => Set(ref _BigLinkViewModel, value);
+            get => _BigShortcutViewModel;
+            set => IfSet(ref _BigShortcutViewModel, value).CallPropertyChanged(nameof(IsBigShortcut));
         }
 
         #endregion
@@ -115,7 +116,39 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        public bool IsBigShortcut => BigShortcutViewModel != null;
 
+        public List<ShortcutViewModel> GetAllShortcuts()
+        {
+            var result = new List<ShortcutViewModel>();
+            if (ShortcutViewModel1 != null)
+                result.Add(ShortcutViewModel1);
+            if (ShortcutViewModel2 != null)
+                result.Add(ShortcutViewModel2);
+            if (ShortcutViewModel3 != null)
+                result.Add(ShortcutViewModel3);
+            if (ShortcutViewModel4 != null)
+                result.Add(ShortcutViewModel4);
+            if (BigShortcutViewModel != null)
+                result.Add(BigShortcutViewModel);
+
+            return result;
+        }
+
+        public void Remove(ShortcutViewModel vm)
+        {
+            if (ReferenceEquals(ShortcutViewModel1, vm))
+                ShortcutViewModel1 = null;
+            if (ReferenceEquals(ShortcutViewModel2, vm))
+                ShortcutViewModel2 = null;
+            if (ReferenceEquals(ShortcutViewModel3, vm))
+                ShortcutViewModel3 = null;
+            if (ReferenceEquals(ShortcutViewModel4, vm))
+                ShortcutViewModel4 = null;
+            if (ReferenceEquals(BigShortcutViewModel, vm))
+                BigShortcutViewModel = null;
+
+        }
         #region Commands
 
         #region Command DeleteCommand - Удалить группу
@@ -137,8 +170,13 @@ namespace AppLauncher.ViewModels
                 MessageBoxResult.Yes)
             {
                 var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
-                vm.LinksGroups.Remove(this);
-                App.DataManager.DeleteAppLinkGroup(Id);
+
+                GetAllShortcuts()
+                    .ForEach(sc => App.ShortcutService
+                        .DeleteShortcut(sc.ShortcutPath));
+
+                vm.ShortcutCells.Remove(this);
+                App.DataManager.SaveData();
             }
         }
 
@@ -164,26 +202,28 @@ namespace AppLauncher.ViewModels
             switch (linkNumber)
             {
                 case "1":
-                    ShortcutViewModel1 = firstLink.ToViewModel();
+                    ShortcutViewModel1 = firstLink;
                     break;
                 case "2":
-                    ShortcutViewModel2 = firstLink.ToViewModel();
+                    ShortcutViewModel2 = firstLink;
                     break;
                 case "3":
-                    ShortcutViewModel3 = firstLink.ToViewModel();
+                    ShortcutViewModel3 = firstLink;
                     break;
                 case "4":
-                    ShortcutViewModel4 = firstLink.ToViewModel();
+                    ShortcutViewModel4 = firstLink;
                     break;
             }
 
-            App.DataManager.UpdateAppLinkGroup(this.ToModel());
-
-            if (links.Length < 2) return;
+            if (links.Length < 2)
+            {
+                App.DataManager.SaveData();
+                return;
+            }
 
             var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 
-            vm.AddLinks(links.Skip(1).ToArray());
+            vm.AddShortcuts(links.Skip(1).ToArray());
 
         } 
 
