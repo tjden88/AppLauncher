@@ -8,7 +8,7 @@ namespace AppLauncher.ViewModels
     /// <summary>
     /// Модель - представление ярлыка для запуска
     /// </summary>
-    public class AppLinkViewModel : ViewModel
+    public class ShortcutViewModel : ViewModel
     {
 
         #region Name : string - Имя ярлыка

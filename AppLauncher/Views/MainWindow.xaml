@@ -58,7 +58,7 @@
                 <ItemsControl  ItemsSource="{Binding Groups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
-                            <views:AppGroup Width="300" Margin="5" DataContext="{Binding}"/>
+                            <views:GroupView Width="300" Margin="5" DataContext="{Binding}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>

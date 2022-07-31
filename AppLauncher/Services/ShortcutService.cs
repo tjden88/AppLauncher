@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AppLauncher.Models;
 using WindowsShortcutFactory;
 
 namespace AppLauncher.Services
@@ -16,39 +17,43 @@ namespace AppLauncher.Services
     /// </summary>
     public class ShortcutService
     {
+        private readonly string _LinkPath = Path.Combine(Environment.CurrentDirectory, "Links");
+
 
         /// <summary>
-        /// Создать ярлык для файла и сохранить на диске
+        /// Создать ярлык во внутренней папке
         /// </summary>
-        /// <param name="originalFileName">Файл, для которого необходим ярлык</param>
-        /// <param name="saveFileName">Путь для сохранения (вместе с расширением .lnk)</param>
-        /// <returns></returns>
-        public bool CreateShortcut(string originalFileName, string saveFileName)
+        /// <param name="FileName">Имя к оригинальному файлу/папке</param>
+        /// <returns>Созданный ярлык, не привязанный к группе</returns>
+        public Shortcut CreateLink(string FileName)
         {
-            if (!File.Exists(originalFileName) && !Directory.Exists(originalFileName))
-                throw new FileNotFoundException(originalFileName);
 
-            try
+            const string linkExtension = ".lnk";
+
+            var fileNameNoExt = Path.GetFileNameWithoutExtension(FileName);
+
+            var newFileName = Path.Combine(_LinkPath, fileNameNoExt + linkExtension);
+
+            var intCount = 1;
+            while (File.Exists(newFileName))
             {
-                if (Path.GetExtension(originalFileName) == ".lnk")
-                    File.Copy(originalFileName, saveFileName);
-                else
-                {
-                    using var sc = new WindowsShortcut();
-                    sc.Path = originalFileName;
-                    sc.WorkingDirectory = Path.GetDirectoryName(originalFileName);
-                    sc.Save(saveFileName);
-                }
-                return true;
+                newFileName = Path.Combine(_LinkPath, $"{fileNameNoExt}({intCount++}){linkExtension}");
             }
-            catch (Exception e)
+
+
+            var cuccess = CreateShortcut(FileName, newFileName);
+
+            if (!cuccess) return null;
+            
+
+            return new Shortcut
             {
-                Debug.WriteLine(e);
-                return false;
-            }
+                Path = newFileName,
+                Name = fileNameNoExt,
+            };
 
         }
-
+        
 
         /// <summary>
         /// Получить значок из ярлыка
@@ -77,6 +82,40 @@ namespace AppLauncher.Services
             return null;
         }
 
+
+        #region Private
+
+        /// <summary>
+        /// Создать ярлык для файла и сохранить на диске
+        /// </summary>
+        /// <param name="originalFileName">Файл, для которого необходим ярлык</param>
+        /// <param name="saveFileName">Путь для сохранения (вместе с расширением .lnk)</param>
+        /// <returns></returns>
+        private bool CreateShortcut(string originalFileName, string saveFileName)
+        {
+            if (!File.Exists(originalFileName) && !Directory.Exists(originalFileName))
+                throw new FileNotFoundException(originalFileName);
+
+            try
+            {
+                if (Path.GetExtension(originalFileName) == ".lnk")
+                    File.Copy(originalFileName, saveFileName);
+                else
+                {
+                    using var sc = new WindowsShortcut();
+                    sc.Path = originalFileName;
+                    sc.WorkingDirectory = Path.GetDirectoryName(originalFileName);
+                    sc.Save(saveFileName);
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return false;
+            }
+
+        }
 
         private ImageSource GetImgFromFileOrFolder(string Path)
         {
@@ -123,6 +162,7 @@ namespace AppLauncher.Services
 
         #endregion
 
+        #endregion
 
     }
 }

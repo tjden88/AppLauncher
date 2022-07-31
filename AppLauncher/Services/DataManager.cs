@@ -12,17 +12,17 @@ namespace AppLauncher.Services
     /// </summary>
     public class DataManager
     {
-        private readonly LinkService _LinkService;
+        private readonly ShortcutService _ShortcutService;
         private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Settings.json");
 
-        public DataManager(LinkService LinkService)
+        public DataManager(ShortcutService ShortcutService)
         {
-            _LinkService = LinkService;
+            _ShortcutService = ShortcutService;
         }
 
         private class AppData
         {
-            public List<AppLinkGroup> LinksGroups { get; set; } = new();
+            public List<ShortcutCell> LinksGroups { get; set; } = new();
             public List<Group> Groups { get; set; } = new();
         }
 
@@ -85,13 +85,13 @@ namespace AppLauncher.Services
         /// Загрузить ярлыки группы
         /// </summary>
         /// <param name="GroupId">Id группы</param>
-        public IEnumerable<AppLinkGroup> LoadGroupLinks(int GroupId)
+        public IEnumerable<ShortcutCell> LoadGroupLinks(int GroupId)
         {
             var groups = Data.LinksGroups
                 .Where(l => l.GroupId == GroupId)
                 .ToArray();
 
-            var brokenLinks = new List<AppLink>();
+            var brokenLinks = new List<Shortcut>();
 
             foreach (var linkGroup in groups)
             {
@@ -135,9 +135,9 @@ namespace AppLauncher.Services
 
         #region LinkGroups
 
-        public AppLinkGroup AddAppLinkGroup(int GroupId)
+        public ShortcutCell AddAppLinkGroup(int GroupId)
         {
-            var lg = new AppLinkGroup
+            var lg = new ShortcutCell
             {
                 GroupId = GroupId,
                 Id = Data.LinksGroups.Select(l => l.Id).DefaultIfEmpty().Max() + 1,
@@ -147,12 +147,12 @@ namespace AppLauncher.Services
             return lg;
         }
 
-        public void UpdateAppLinkGroup(AppLinkGroup appLinkGroup)
+        public void UpdateAppLinkGroup(ShortcutCell ShortcutCell)
         {
-            var findGroup = Data.LinksGroups.First(g => g.Id == appLinkGroup.Id);
+            var findGroup = Data.LinksGroups.First(g => g.Id == ShortcutCell.Id);
             var index = Data.LinksGroups.IndexOf(findGroup);
             Data.LinksGroups.Remove(findGroup);
-            Data.LinksGroups.Insert(index, appLinkGroup);
+            Data.LinksGroups.Insert(index, ShortcutCell);
             SaveData();
         }
 
