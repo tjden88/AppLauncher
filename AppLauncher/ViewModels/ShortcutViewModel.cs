@@ -234,7 +234,7 @@ namespace AppLauncher.ViewModels
         {
             var path = App.ShortcutService.GetFilePath(ShortcutPath);
 
-            var directoryName = Path.GetDirectoryName(path);
+            var directoryName = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
             if (directoryName == null) return;
 
             var argument = "/select, \"" + path + "\"";
