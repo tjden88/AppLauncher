@@ -19,11 +19,30 @@ namespace AppLauncher.Services
     {
         private readonly string _ShortcutsPath = Path.Combine(Environment.CurrentDirectory, "Shortcuts");
 
+        private string _ShortcutFullPath(string ShortcutPath) => Path.Combine(_ShortcutsPath, ShortcutPath);
 
         public ShortcutService()
         {
             Directory.CreateDirectory(_ShortcutsPath);
         }
+
+
+        /// <summary>
+        /// Получить путь до целевого объекта ярлыка
+        /// </summary>
+        /// <param name="ShortcutsPath">Путь ярлыка</param>
+        /// <returns></returns>
+        public string GetFilePath(string ShortcutsPath)
+        {
+            var path = _ShortcutFullPath(ShortcutsPath);
+
+            if (!File.Exists(path)) return null;
+
+            using var sc = WindowsShortcut.Load(path);
+
+            return sc.Path;
+        }
+
 
         /// <summary>
         /// Создать ярлык во внутренней папке
@@ -65,7 +84,7 @@ namespace AppLauncher.Services
         /// <param name="ShortcutPath">Путь ярлыка</param>
         public void DeleteShortcut(string ShortcutPath)
         {
-            File.Delete(Path.Combine(_ShortcutsPath, ShortcutPath));
+            File.Delete(_ShortcutFullPath(ShortcutPath));
         }
 
         /// <summary>
@@ -74,7 +93,7 @@ namespace AppLauncher.Services
         /// <param name="ShortcutPath">Путь ярлыка</param>
         public void StartProcess(string ShortcutPath)
         {
-            var path = Path.Combine(_ShortcutsPath, ShortcutPath);
+            var path = _ShortcutFullPath(ShortcutPath);
 
             Process.Start(new ProcessStartInfo
             {
@@ -91,12 +110,9 @@ namespace AppLauncher.Services
         /// <returns>null, если файл или папка не найдена</returns>
         public ImageSource GetIconFromShortcut(string ShortcutPath)
         {
-            var path = Path.Combine(_ShortcutsPath, ShortcutPath);
+            var path = _ShortcutFullPath(ShortcutPath);
 
-            if (!File.Exists(path) && !Directory.Exists(path))
-            {
-                return null;
-            }
+            if (!File.Exists(path)) return null;
 
             using var sc = WindowsShortcut.Load(path);
 
@@ -114,6 +130,7 @@ namespace AppLauncher.Services
 
 
         #region Private
+
 
         /// <summary>
         /// Создать ярлык для файла и сохранить на диске

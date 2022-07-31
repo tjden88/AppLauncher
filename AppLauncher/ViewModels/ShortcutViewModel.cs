@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using AppLauncher.Views;
@@ -160,6 +162,57 @@ namespace AppLauncher.ViewModels
             cell.Remove(this);
             cell.BigShortcutViewModel = this;
             App.DataManager.SaveData();
+        }
+
+        #endregion
+
+
+        #region Command MakeLittleCommand - Сделать маленьким
+
+        /// <summary>Сделать маленьким</summary>
+        private Command _MakeLittleCommand;
+
+        /// <summary>Сделать маленьким</summary>
+        public Command MakeLittleCommand => _MakeLittleCommand
+            ??= new Command(OnMakeLittleCommandExecuted, CanMakeLittleCommandExecute, "Сделать маленьким");
+
+        /// <summary>Проверка возможности выполнения - Сделать маленьким</summary>
+        private bool CanMakeLittleCommandExecute() => Equals(FindCell().BigShortcutViewModel, null);
+
+        /// <summary>Логика выполнения - Сделать маленьким</summary>
+        private void OnMakeLittleCommandExecuted()
+        {
+
+        }
+
+        #endregion
+
+        #region Command GoToFileCommand - Перейти в расположение файла
+
+        /// <summary>Перейти в расположение файла</summary>
+        private Command _GoToFileCommand;
+
+        /// <summary>Перейти в расположение файла</summary>
+        public Command GoToFileCommand => _GoToFileCommand
+            ??= new Command(OnGoToFileCommandExecuted, CanGoToFileCommandExecute, "Перейти в расположение файла");
+
+        /// <summary>Проверка возможности выполнения - Перейти в расположение файла</summary>
+        private bool CanGoToFileCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Перейти в расположение файла</summary>
+        private void OnGoToFileCommandExecuted()
+        {
+            var path = App.ShortcutService.GetFilePath(ShortcutPath);
+
+            var directoryName = Path.GetDirectoryName(path);
+            if (directoryName == null) return;
+
+            var argument = "/select, \"" + path + "\"";
+
+            Process.Start(new ProcessStartInfo("explorer.exe", argument)
+            {
+                UseShellExecute = true
+            });
         }
 
         #endregion

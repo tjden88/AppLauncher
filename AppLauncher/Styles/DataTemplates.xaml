@@ -129,12 +129,18 @@
             </b:Interaction.Behaviors>
             <Button.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Margin="0,8,10,8"/>
                     <MenuItem Header="Крупный" Command="{Binding MakeBigShortcutCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Icon="Solid_Expand"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Мелкий">
+                    <MenuItem Header="Мелкий" Command="{Binding MakeLittleCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Icon="Solid_Compress"/>
                         </MenuItem.Icon>
