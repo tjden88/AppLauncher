@@ -144,7 +144,7 @@ namespace AppLauncher.ViewModels
             ??= new Command(OnMakeBigShortcutCommandExecuted, CanMakeBigShortcutCommandExecute, "Сделать большим");
 
         /// <summary>Проверка возможности выполнения - Сделать большим</summary>
-        private bool CanMakeBigShortcutCommandExecute() => !Equals(FindCell().BigLinkViewModel, this);
+        private bool CanMakeBigShortcutCommandExecute() => !Equals(FindCell().BigShortcutViewModel, this);
 
         /// <summary>Логика выполнения - Сделать большим</summary>
         private void OnMakeBigShortcutCommandExecuted()
@@ -158,7 +158,7 @@ namespace AppLauncher.ViewModels
 
             others.ForEach(sh => cell.Remove(sh));
             cell.Remove(this);
-            cell.BigLinkViewModel = this;
+            cell.BigShortcutViewModel = this;
             App.DataManager.SaveData();
         }
 

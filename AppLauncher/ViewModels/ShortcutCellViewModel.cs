@@ -14,7 +14,7 @@ namespace AppLauncher.ViewModels
     /// </summary>
     public class ShortcutCellViewModel : ViewModel, IDropTarget
     {
-        private bool _IsEmpty() => BigLinkViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
+        private bool _IsEmpty() => BigShortcutViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
 
         #region Id : int - Идентификатор
 
@@ -45,16 +45,16 @@ namespace AppLauncher.ViewModels
         #endregion
 
         
-        #region BigLinkViewModel : ShortcutViewModel - Большой ярлык
+        #region BigShortcutViewModel : ShortcutViewModel - Большой ярлык
 
         /// <summary>Большой ярлык</summary>
-        private ShortcutViewModel _BigLinkViewModel;
+        private ShortcutViewModel _BigShortcutViewModel;
 
         /// <summary>Большой ярлык</summary>
-        public ShortcutViewModel BigLinkViewModel
+        public ShortcutViewModel BigShortcutViewModel
         {
-            get => _BigLinkViewModel;
-            set => Set(ref _BigLinkViewModel, value);
+            get => _BigShortcutViewModel;
+            set => IfSet(ref _BigShortcutViewModel, value).CallPropertyChanged(nameof(IsBigShortcut));
         }
 
         #endregion
@@ -116,6 +116,8 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        public bool IsBigShortcut => BigShortcutViewModel != null;
+
         public List<ShortcutViewModel> GetAllShortcuts()
         {
             var result = new List<ShortcutViewModel>();
@@ -127,8 +129,8 @@ namespace AppLauncher.ViewModels
                 result.Add(ShortcutViewModel3);
             if (ShortcutViewModel4 != null)
                 result.Add(ShortcutViewModel4);
-            if (BigLinkViewModel != null)
-                result.Add(BigLinkViewModel);
+            if (BigShortcutViewModel != null)
+                result.Add(BigShortcutViewModel);
 
             return result;
         }
@@ -143,8 +145,8 @@ namespace AppLauncher.ViewModels
                 ShortcutViewModel3 = null;
             if (ReferenceEquals(ShortcutViewModel4, vm))
                 ShortcutViewModel4 = null;
-            if (ReferenceEquals(BigLinkViewModel, vm))
-                BigLinkViewModel = null;
+            if (ReferenceEquals(BigShortcutViewModel, vm))
+                BigShortcutViewModel = null;
 
         }
         #region Commands

@@ -34,7 +34,7 @@ namespace AppLauncher.Infrastructure.Helpers
                 ShortcutViewModel2 = ToViewModel(LinkGroup.Link2),
                 ShortcutViewModel3 = ToViewModel(LinkGroup.Link3),
                 ShortcutViewModel4 = ToViewModel(LinkGroup.Link4),
-                BigLinkViewModel = ToViewModel(LinkGroup.BigLink),
+                BigShortcutViewModel = ToViewModel(LinkGroup.BigLink),
                 Id = LinkGroup.Id,
                 GroupId = LinkGroup.GroupId,
             };
@@ -69,7 +69,7 @@ namespace AppLauncher.Infrastructure.Helpers
                 Link2 = vm.ShortcutViewModel2.ToModel(),
                 Link3 = vm.ShortcutViewModel3.ToModel(),
                 Link4 = vm.ShortcutViewModel4.ToModel(),
-                BigLink = vm.BigLinkViewModel.ToModel(),
+                BigLink = vm.BigShortcutViewModel.ToModel(),
                 Id = vm.Id,
                 GroupId = vm.GroupId,
             };
