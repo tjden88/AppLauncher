@@ -145,32 +145,16 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
 
-    public void DragOver(IDropInfo dropInfo)
-    {
-        var sourceItem = dropInfo.Data;
-
-        if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
-        {
-            dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-            dropInfo.Effects = DragDropEffects.Copy;
-            return;
-        }
-
-        dropInfo.Effects = DragDropEffects.None;
-    }
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
 
     public void Drop(IDropInfo dropInfo)
     {
-        var sourceItem = dropInfo.Data;
 
-        if (sourceItem is not DataObject dataObject ||
-            dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
-
-        AddLinks(strArray);
+        AddLinks(DragDropHelper.Drop(dropInfo));
     }
 
-    public void AddLinks(string[] FileNames)
+    public void AddLinks(AppLink[] links)
     {
 
         var currentIndex = 0;
@@ -179,7 +163,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         bool CheckEnd(AppLinkGroup group)
         {
-            if (currentIndex == FileNames.Length)
+            if (currentIndex == links.Length)
             {
                 dataManager.UpdateAppLinkGroup(group);
                 LinksGroups.Add(group.ToViewModel());
@@ -189,20 +173,20 @@ public class GroupViewModel : ViewModel, IDropTarget
         }
 
 
-        while (currentIndex < FileNames.Length)
+        while (currentIndex < links.Length)
         {
             var newGroup = dataManager.AddAppLinkGroup(Id);
 
-            newGroup.Link1 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            newGroup.Link1 = links[currentIndex++];
             if (CheckEnd(newGroup)) break;
 
-            newGroup.Link2 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            newGroup.Link2 =links[currentIndex++];
             if (CheckEnd(newGroup)) break;
 
-            newGroup.Link3 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            newGroup.Link3 = links[currentIndex++];
             if (CheckEnd(newGroup)) break;
 
-            newGroup.Link4 = App.LinkService.CreateLink(FileNames[currentIndex++]);
+            newGroup.Link4 = links[currentIndex++];
             if (CheckEnd(newGroup)) break;
 
             dataManager.UpdateAppLinkGroup(newGroup);

@@ -114,59 +114,41 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        public void DragOver(IDropInfo dropInfo)
-        {
-            var sourceItem = dropInfo.Data;
-
-            if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[])
-            {
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                dropInfo.Effects = DragDropEffects.Copy;
-                return;
-            }
-
-            dropInfo.Effects = DragDropEffects.None;
-        }
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
 
         public void Drop(IDropInfo dropInfo)
         {
-            var sourceItem = dropInfo.Data;
+            var links = DragDropHelper.Drop(dropInfo);
 
-            if (sourceItem is not DataObject dataObject ||
-                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return;
 
-            var ls = App.LinkService;
-
-            var firstStr = strArray[0];
+            var firstLink = links[0];
 
             var linkNumber = ((Border)dropInfo.VisualTarget).Tag as string;
-
-            var link = ls.CreateLink(firstStr);
 
             switch (linkNumber)
             {
                 case "1":
-                    AppLinkViewModel1 = link.ToViewModel();
+                    AppLinkViewModel1 = firstLink.ToViewModel();
                     break;
                 case "2":
-                    AppLinkViewModel2 = link.ToViewModel();
+                    AppLinkViewModel2 = firstLink.ToViewModel();
                     break;
                 case "3":
-                    AppLinkViewModel3 = link.ToViewModel();
+                    AppLinkViewModel3 = firstLink.ToViewModel();
                     break;
                 case "4":
-                    AppLinkViewModel4 = link.ToViewModel();
+                    AppLinkViewModel4 = firstLink.ToViewModel();
                     break;
             }
 
             App.DataManager.UpdateAppLinkGroup(this.ToModel());
 
-            if (strArray.Length < 2) return;
+            if (links.Length < 2) return;
 
             var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 
-            vm.AddLinks(strArray.Skip(1).ToArray());
+            vm.AddLinks(links.Skip(1).ToArray());
 
         }
     }
