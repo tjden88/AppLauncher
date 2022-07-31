@@ -69,13 +69,14 @@ namespace AppLauncher.Services
 
             var data = new AppData();
 
-            var groups = App.MainWindowViewModel.Groups;
-            foreach (var group in groups)
-            {
-                var cells = group.ShortcutCells;
-                var cellsModels = cells.Select(c => c.ToModel());
-                data.ShortcutCells = cellsModels.ToList();
-            }
+            var groups = App.MainWindowViewModel.Groups
+                .ToArray();
+
+            var cells = groups
+                .SelectMany(g => g.ShortcutCells)
+                .Select(c=>c.ToModel());
+
+            data.ShortcutCells = cells.ToList();
 
             data.Groups = groups.Select(g => g.ToModel()).ToList();
 
