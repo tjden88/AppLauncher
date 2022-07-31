@@ -96,7 +96,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Переименовать">
+                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Icon="Solid_FileSignature"/>
                         </MenuItem.Icon>

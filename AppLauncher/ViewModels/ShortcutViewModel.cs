@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Media;
+using AppLauncher.Views;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -90,7 +91,21 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Переименовать ярлык</summary>
         private void OnRenameCommandExecuted()
         {
-            
+            var vm = new InputBoxWindowViewModel()
+            {
+                Caption = $"Введите новое имя для ярлыка {Name}:",
+                Result = Name
+            };
+            var wnd = new InputBoxWindow()
+            {
+                Owner = App.ActiveWindow,
+                DataContext = vm,
+            };
+            if(wnd.ShowDialog() != true) return;
+
+            Name = vm.Result;
+
+            App.DataManager.SaveData();
         }
 
         #endregion

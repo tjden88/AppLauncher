@@ -1,4 +1,6 @@
-﻿using WPR.MVVM.ViewModels;
+﻿using System.Windows;
+using WPR.MVVM.Commands;
+using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
@@ -39,6 +41,24 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+        #region Command AcceptCommand - Принять изменения
 
+        /// <summary>Принять изменения</summary>
+        private Command _AcceptCommand;
+
+        /// <summary>Принять изменения</summary>
+        public Command AcceptCommand => _AcceptCommand
+            ??= new Command(OnAcceptCommandExecuted, CanAcceptCommandExecute, "Принять изменения");
+
+        /// <summary>Проверка возможности выполнения - Принять изменения</summary>
+        private bool CanAcceptCommandExecute(object p) => p is Window;
+
+        /// <summary>Логика выполнения - Принять изменения</summary>
+        private void OnAcceptCommandExecuted(object p)
+        {
+            ((Window) p).DialogResult = true;
+        }
+
+        #endregion
     }
 }
