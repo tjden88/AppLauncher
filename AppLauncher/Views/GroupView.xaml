@@ -31,7 +31,11 @@
                              ToolTip="Редактировать группу">
                     <fa5:FontAwesome.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}"/>
+                            <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}">
+                                <MenuItem.Icon>
+                                    <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </fa5:FontAwesome.ContextMenu>
                     <fa5:FontAwesome.InputBindings>

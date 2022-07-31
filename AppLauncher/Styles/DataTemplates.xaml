@@ -74,9 +74,36 @@
         </Grid>
     </DataTemplate>
 
+
+
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
         <Button Command="{Binding LaunchCommand}"
                 ToolTip="{Binding Name}">
+            <Button.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Крупный">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_Expand"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Мелкий">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_Compress"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Margin="0,8,10,8"/>
+                    <MenuItem Header="Переименовать">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_FileSignature"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Удалить">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Button.ContextMenu>
             <Image  Margin="5" Source="{Binding Image}"/>
         </Button>
     </DataTemplate>
