@@ -15,45 +15,47 @@
 
     <!--Шаблон данных большого ярлыка-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}" x:Key="BigShortcutViewModelDataTemplate">
-        <Button Command="{Binding LaunchCommand}" dd:DragDrop.IsDragSource="True">
-            <b:Interaction.Behaviors>
-                <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
-            </b:Interaction.Behaviors>
-            <Button.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_FileUpload"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_Compress"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_FileSignature"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </Button.ContextMenu>
-            <Grid>
+        <Border  dd:DragDrop.IsDragSource="True">
+            <Button Command="{Binding LaunchCommand}">
+                <b:Interaction.Behaviors>
+                    <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
+                </b:Interaction.Behaviors>
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0,8,10,8"/>
+                        <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Compress"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0,8,10,8"/>
+                        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_FileSignature"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <Grid>
 
-                <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
-                <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
-                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
+                    <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
+                    <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
+                    <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
                                                TextWrapping="Wrap"/>
 
-            </Grid>
-        </Button>
+                </Grid>
+            </Button>
+        </Border>
     </DataTemplate>
 
 
@@ -124,42 +126,44 @@
 
     <!--Шаблон данных обычного ярлыка-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
-        <Button Command="{Binding LaunchCommand}" 
-                dd:DragDrop.IsDragSource="True">
-            <b:Interaction.Behaviors>
-                <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
-            </b:Interaction.Behaviors>
-            <Button.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_FileUpload"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Увеличить размер" Command="{Binding MakeBigShortcutCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_Expand"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Margin="0,8,10,8"/>
-                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Icon="Solid_FileSignature"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
-                        <MenuItem.Icon>
-                            <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </Button.ContextMenu>
-           <Grid>
-               <Image  Margin="5" Source="{Binding Image}"/>
-                <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
-           </Grid>
-        </Button>
+        <Border dd:DragDrop.IsDragSource="True">
+            <Button Command="{Binding LaunchCommand}" 
+                    >
+                <b:Interaction.Behaviors>
+                    <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
+                </b:Interaction.Behaviors>
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0,8,10,8"/>
+                        <MenuItem Header="Увеличить размер" Command="{Binding MakeBigShortcutCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Expand"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Margin="0,8,10,8"/>
+                        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_FileSignature"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <Grid>
+                    <Image  Margin="5" Source="{Binding Image}"/>
+                    <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
+                </Grid>
+            </Button>
+        </Border>
     </DataTemplate>
 
 
