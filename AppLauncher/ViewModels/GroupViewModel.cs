@@ -155,14 +155,14 @@ public class GroupViewModel : ViewModel, IDropTarget
         AddLinks(DragDropHelper.Drop(dropInfo));
     }
 
-    public void AddLinks(AppLink[] links)
+    public void AddLinks(Shortcut[] links)
     {
 
         var currentIndex = 0;
 
         var dataManager = App.DataManager;
 
-        bool CheckEnd(AppLinkGroup group)
+        bool CheckEnd(ShortcutCell group)
         {
             if (currentIndex == links.Length)
             {

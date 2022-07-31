@@ -23,12 +23,12 @@ namespace AppLauncher.Infrastructure.Helpers
         }
 
 
-        public static AppLink[] Drop(IDropInfo dropInfo)
+        public static Shortcut[] Drop(IDropInfo dropInfo)
         {
             var sourceItem = dropInfo.Data;
 
             if (sourceItem is not DataObject dataObject ||
-                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<AppLink>();
+                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<Shortcut>();
 
             var linkService = App.LinkService;
 

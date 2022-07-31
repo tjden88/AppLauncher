@@ -17,7 +17,7 @@ namespace AppLauncher.Infrastructure.Helpers
             };
         }
 
-        public static AppLinksGroupViewModel ToViewModel(this AppLinkGroup LinkGroup) =>
+        public static AppLinksGroupViewModel ToViewModel(this ShortcutCell LinkGroup) =>
             new ()
             {
                 AppLinkViewModel1 = ToViewModel(LinkGroup.Link1),
@@ -29,7 +29,7 @@ namespace AppLauncher.Infrastructure.Helpers
                 GroupId = LinkGroup.GroupId,
             };
 
-        public static AppLinkViewModel ToViewModel(this AppLink Link)
+        public static AppLinkViewModel ToViewModel(this Shortcut Link)
         {
             if (Link == null) return null;
 
@@ -40,20 +40,20 @@ namespace AppLauncher.Infrastructure.Helpers
             };
         }
 
-        public static AppLink ToModel(this AppLinkViewModel Link)
+        public static Shortcut ToModel(this AppLinkViewModel Link)
         {
             if (Link == null) return null;
 
-            return new AppLink
+            return new Shortcut
             {
                 Path = Link.FilePath,
                 Name = Link.Name,
             };
         }
 
-        public static AppLinkGroup ToModel(this AppLinksGroupViewModel vm)
+        public static ShortcutCell ToModel(this AppLinksGroupViewModel vm)
         {
-            return new AppLinkGroup
+            return new ShortcutCell
             {
                 Link1 = vm.AppLinkViewModel1.ToModel(),
                 Link2 = vm.AppLinkViewModel2.ToModel(),

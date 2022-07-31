@@ -5,26 +5,26 @@ namespace AppLauncher.Models
     /// <summary>
     /// Группа ссылок
     /// </summary>
-    public class AppLinkGroup
+    public class ShortcutCell
     {
         public int Id { get; set; }
 
-        public AppLink BigLink { get; set; }
+        public Shortcut BigLink { get; set; }
 
-        public AppLink Link1 { get; set; }
+        public Shortcut Link1 { get; set; }
 
-        public AppLink Link2 { get; set; }
+        public Shortcut Link2 { get; set; }
 
-        public AppLink Link3 { get; set; }
+        public Shortcut Link3 { get; set; }
 
-        public AppLink Link4 { get; set; }
+        public Shortcut Link4 { get; set; }
 
         public int GroupId { get; set; }
 
 
-        public List<AppLink> GetAllLinks()
+        public List<Shortcut> GetAllLinks()
         {
-            var result = new List<AppLink>();
+            var result = new List<Shortcut>();
             if (Link1 != null)
                 result.Add(Link1);
             if (Link2 != null)
@@ -39,7 +39,7 @@ namespace AppLauncher.Models
             return result;
         }
 
-        public void Remove(AppLink link)
+        public void Remove(Shortcut link)
         {
             if(ReferenceEquals(Link1, link))
                 Link1 = null;

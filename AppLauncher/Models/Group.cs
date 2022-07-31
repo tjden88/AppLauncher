@@ -11,6 +11,6 @@ namespace AppLauncher.Models
 
         public string Name { get; set; }
 
-        public ICollection<AppLink> Links { get; set; } = new List<AppLink>();
+        public ICollection<Shortcut> Links { get; set; } = new List<Shortcut>();
     }
 }

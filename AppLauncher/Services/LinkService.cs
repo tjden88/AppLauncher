@@ -26,7 +26,7 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="FileName">Имя к оригинальному файлу/папке</param>
         /// <returns>Созданный ярлык, не привязанный к группе</returns>
-        public AppLink CreateLink(string FileName)
+        public Shortcut CreateLink(string FileName)
         {
 
             const string linkExtension = ".lnk";
@@ -45,7 +45,7 @@ namespace AppLauncher.Services
             _ShortcutService.CreateShortcut(FileName, newFileName);
 
 
-            return new AppLink
+            return new Shortcut
             {
                 Path = newFileName,
                 Name = fileNameNoExt,
