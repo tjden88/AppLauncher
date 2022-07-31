@@ -22,12 +22,11 @@ namespace AppLauncher.Services
 
         private class AppData
         {
-            public List<ShortcutCell> LinksGroups { get; set; } = new();
+            public List<ShortcutCell> ShortcutCells { get; set; } = new();
             public List<Group> Groups { get; set; } = new();
         }
 
         private AppData _Data;
-
         private AppData Data => _Data ??= LoadData();
 
         private AppData LoadData()
@@ -85,9 +84,9 @@ namespace AppLauncher.Services
         /// Загрузить ярлыки группы
         /// </summary>
         /// <param name="GroupId">Id группы</param>
-        public IEnumerable<ShortcutCell> LoadGroupLinks(int GroupId)
+        public IEnumerable<ShortcutCell> LoadGroupCells(int GroupId)
         {
-            var groups = Data.LinksGroups
+            var groups = Data.ShortcutCells
                 .Where(l => l.GroupId == GroupId)
                 .ToArray();
 
@@ -95,7 +94,7 @@ namespace AppLauncher.Services
 
             foreach (var linkGroup in groups)
             {
-                var linksInGroup = linkGroup.GetAllLinks();
+                var linksInGroup = linkGroup.GetAllShortcuts();
                 brokenLinks.AddRange(linksInGroup.Where(l => !File.Exists(l.Path)));
             }
 
@@ -103,7 +102,7 @@ namespace AppLauncher.Services
             if (brokenLinks.Any()) // Некоторые ярлыки не найдены
             {
                 foreach (var appLink in brokenLinks) 
-                    Data.LinksGroups.ForEach(g => g.Remove(appLink));
+                    Data.ShortcutCells.ForEach(g => g.Remove(appLink));
 
                 SaveData();
             }
@@ -116,11 +115,11 @@ namespace AppLauncher.Services
             var group = Data.Groups.FirstOrDefault(g => g.Id == GroupId);
             if (group == null) return;
 
-            var loadGroupLinks = LoadGroupLinks(GroupId);
+            var loadGroupLinks = LoadGroupCells(GroupId);
             foreach (var linkGroup in loadGroupLinks)
             {
-                linkGroup.GetAllLinks().ForEach(l => File.Delete(l.Path));
-                Data.LinksGroups.Remove(linkGroup);
+                linkGroup.GetAllShortcuts().ForEach(l => File.Delete(l.Path));
+                Data.ShortcutCells.Remove(linkGroup);
             }
 
 
@@ -133,37 +132,37 @@ namespace AppLauncher.Services
         #endregion
 
 
-        #region LinkGroups
+        #region Cells
 
-        public ShortcutCell AddAppLinkGroup(int GroupId)
+        public ShortcutCell AddCell(int GroupId)
         {
             var lg = new ShortcutCell
             {
                 GroupId = GroupId,
-                Id = Data.LinksGroups.Select(l => l.Id).DefaultIfEmpty().Max() + 1,
+                Id = Data.ShortcutCells.Select(l => l.Id).DefaultIfEmpty().Max() + 1,
             };
-            Data.LinksGroups.Add(lg);
+            Data.ShortcutCells.Add(lg);
             SaveData();
             return lg;
         }
 
-        public void UpdateAppLinkGroup(ShortcutCell ShortcutCell)
+        public void UpdateCell(ShortcutCell ShortcutCell)
         {
-            var findGroup = Data.LinksGroups.First(g => g.Id == ShortcutCell.Id);
-            var index = Data.LinksGroups.IndexOf(findGroup);
-            Data.LinksGroups.Remove(findGroup);
-            Data.LinksGroups.Insert(index, ShortcutCell);
+            var findGroup = Data.ShortcutCells.First(g => g.Id == ShortcutCell.Id);
+            var index = Data.ShortcutCells.IndexOf(findGroup);
+            Data.ShortcutCells.Remove(findGroup);
+            Data.ShortcutCells.Insert(index, ShortcutCell);
             SaveData();
         }
 
-        public void DeleteAppLinkGroup(int Id)
+        public void DeleteCell(int Id)
         {
-            var group = Data.LinksGroups.FirstOrDefault(g => g.Id == Id);
+            var group = Data.ShortcutCells.FirstOrDefault(g => g.Id == Id);
             if (group == null) return;
-            var links = group.GetAllLinks();
+            var links = group.GetAllShortcuts();
             links.ForEach(l => File.Delete(l.Path));
 
-            Data.LinksGroups.Remove(group);
+            Data.ShortcutCells.Remove(group);
             SaveData();
         }
 

@@ -61,16 +61,16 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region LinksGroups : ObservableCollection<ShortcutViewModel> - Группированные ссылки
+    #region ShortcutCells : ObservableCollection<ShortcutViewModel> - Группированные ссылки
 
     /// <summary>Группированные ссылки</summary>
-    private ObservableCollection<ShortcutCellViewModel> _LinksGroups = new();
+    private ObservableCollection<ShortcutCellViewModel> _ShortcutCells = new();
 
     /// <summary>Группированные ссылки</summary>
-    public ObservableCollection<ShortcutCellViewModel> LinksGroups
+    public ObservableCollection<ShortcutCellViewModel> ShortcutCells
     {
-        get => _LinksGroups;
-        set => Set(ref _LinksGroups, value);
+        get => _ShortcutCells;
+        set => Set(ref _ShortcutCells, value);
     }
 
     #endregion
@@ -93,9 +93,9 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Загрузить ярлыки группы</summary>
     private void OnLoadLinksCommandExecuted()
     {
-        var links = App.DataManager.LoadGroupLinks(Id).ToArray();
+        var links = App.DataManager.LoadGroupCells(Id).ToArray();
         var vm = links.Select(l => l.ToViewModel());
-        LinksGroups = new(vm);
+        ShortcutCells = new(vm);
     }
 
     #endregion
@@ -134,7 +134,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = LinksGroups?.Count == 0 ||
+        var msg = ShortcutCells?.Count == 0 ||
                   MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
 
         if (!msg) return;
@@ -169,8 +169,8 @@ public class GroupViewModel : ViewModel, IDropTarget
         {
             if (currentIndex == links.Length)
             {
-                dataManager.UpdateAppLinkGroup(group);
-                LinksGroups.Add(group.ToViewModel());
+                dataManager.UpdateCell(group);
+                ShortcutCells.Add(group.ToViewModel());
                 return true;
             }
             return false;
@@ -179,7 +179,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         while (currentIndex < links.Length)
         {
-            var newGroup = dataManager.AddAppLinkGroup(Id);
+            var newGroup = dataManager.AddCell(Id);
 
             newGroup.Link1 = links[currentIndex++];
             if (CheckEnd(newGroup)) break;
@@ -193,8 +193,8 @@ public class GroupViewModel : ViewModel, IDropTarget
             newGroup.Link4 = links[currentIndex++];
             if (CheckEnd(newGroup)) break;
 
-            dataManager.UpdateAppLinkGroup(newGroup);
-            LinksGroups.Add(newGroup.ToViewModel());
+            dataManager.UpdateCell(newGroup);
+            ShortcutCells.Add(newGroup.ToViewModel());
         }
     }
 }

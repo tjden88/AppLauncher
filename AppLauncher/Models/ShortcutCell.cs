@@ -22,7 +22,7 @@ namespace AppLauncher.Models
         public int GroupId { get; set; }
 
 
-        public List<Shortcut> GetAllLinks()
+        public List<Shortcut> GetAllShortcuts()
         {
             var result = new List<Shortcut>();
             if (Link1 != null)
@@ -39,17 +39,17 @@ namespace AppLauncher.Models
             return result;
         }
 
-        public void Remove(Shortcut link)
+        public void Remove(Shortcut shortcut)
         {
-            if(ReferenceEquals(Link1, link))
+            if(ReferenceEquals(Link1, shortcut))
                 Link1 = null;
-            if (ReferenceEquals(Link2, link))
+            if (ReferenceEquals(Link2, shortcut))
                 Link2 = null;
-            if (ReferenceEquals(Link3, link))
+            if (ReferenceEquals(Link3, shortcut))
                 Link3 = null; 
-            if (ReferenceEquals(Link4, link))
+            if (ReferenceEquals(Link4, shortcut))
                 Link4 = null;
-            if (ReferenceEquals(BigLink, link))
+            if (ReferenceEquals(BigLink, shortcut))
                 BigLink = null;
 
         }

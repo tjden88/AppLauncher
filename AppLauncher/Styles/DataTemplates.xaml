@@ -101,7 +101,7 @@
                             <fa5:FontAwesome Icon="Solid_FileSignature"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Удалить">
+                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
                             <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
                         </MenuItem.Icon>

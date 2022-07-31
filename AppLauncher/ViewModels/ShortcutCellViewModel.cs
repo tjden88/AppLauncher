@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AppLauncher.Infrastructure.Helpers;
+using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -115,7 +117,37 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        public List<ShortcutViewModel> GetAllShortcuts()
+        {
+            var result = new List<ShortcutViewModel>();
+            if (ShortcutViewModel1 != null)
+                result.Add(ShortcutViewModel1);
+            if (ShortcutViewModel2 != null)
+                result.Add(ShortcutViewModel2);
+            if (ShortcutViewModel3 != null)
+                result.Add(ShortcutViewModel3);
+            if (ShortcutViewModel4 != null)
+                result.Add(ShortcutViewModel4);
+            if (BigLinkViewModel != null)
+                result.Add(BigLinkViewModel);
 
+            return result;
+        }
+
+        public void Remove(ShortcutViewModel vm)
+        {
+            if (ReferenceEquals(ShortcutViewModel1, vm))
+                ShortcutViewModel1 = null;
+            if (ReferenceEquals(ShortcutViewModel2, vm))
+                ShortcutViewModel2 = null;
+            if (ReferenceEquals(ShortcutViewModel3, vm))
+                ShortcutViewModel3 = null;
+            if (ReferenceEquals(ShortcutViewModel4, vm))
+                ShortcutViewModel4 = null;
+            if (ReferenceEquals(BigLinkViewModel, vm))
+                BigLinkViewModel = null;
+
+        }
         #region Commands
 
         #region Command DeleteCommand - Удалить группу
@@ -137,8 +169,8 @@ namespace AppLauncher.ViewModels
                 MessageBoxResult.Yes)
             {
                 var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
-                vm.LinksGroups.Remove(this);
-                App.DataManager.DeleteAppLinkGroup(Id);
+                vm.ShortcutCells.Remove(this);
+                App.DataManager.DeleteCell(Id);
             }
         }
 
@@ -177,7 +209,7 @@ namespace AppLauncher.ViewModels
                     break;
             }
 
-            App.DataManager.UpdateAppLinkGroup(this.ToModel());
+            App.DataManager.UpdateCell(this.ToModel());
 
             if (links.Length < 2) return;
 

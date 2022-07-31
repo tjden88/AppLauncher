@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Media;
+using AppLauncher.Infrastructure.Helpers;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
@@ -39,6 +42,17 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+        #region Image : ImageSource - Изображение ярлыка
+
+        /// <summary>Изображение ярлыка</summary>
+        public ImageSource Image => App.ShortcutService.GetIconFromShortcut(FilePath);
+
+        #endregion
+
+
+        #region Commands
+
+
         #region Command LaunchCommand - Запуск
 
         /// <summary>Запуск</summary>
@@ -63,12 +77,43 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        #region Image : ImageSource - Изображение ярлыка
 
-        /// <summary>Изображение ярлыка</summary>
-        public ImageSource Image => App.ShortcutService.GetIconFromShortcut(FilePath);
+        #region Command DeleteCommand - Удалить
+
+        /// <summary>Удалить</summary>
+        private Command _DeleteCommand;
+
+        /// <summary>Удалить</summary>
+        public Command DeleteCommand => _DeleteCommand
+            ??= new Command(OnDeleteCommandExecuted, CanDeleteCommandExecute, "Удалить");
+
+        /// <summary>Проверка возможности выполнения - Удалить</summary>
+        private bool CanDeleteCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Удалить</summary>
+        private void OnDeleteCommandExecuted()
+        {
+            var cell = FindCell();
+            cell.Remove(this);
+            App.DataManager.UpdateCell(cell.ToModel());
+        }
 
         #endregion
+
+        #endregion
+
+        private ShortcutCellViewModel FindCell()
+        {
+            var groups = App.MainWindowViewModel.Groups;
+            foreach (var group in groups)
+            {
+                var find = group.ShortcutCells.FirstOrDefault(sc => sc.GetAllShortcuts().Contains(this));
+                if(find != null)
+                    return find;
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(Name), "Ячейка не найдена");
+        }
 
     }
 }
