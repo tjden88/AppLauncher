@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
+using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 
 namespace AppLauncher.ViewModels
 {
-    public class MainWindowViewModel : WindowViewModel
+    public class MainWindowViewModel : WindowViewModel, IDropTarget
     {
 
         #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
@@ -114,6 +115,17 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
+        public void Drop(IDropInfo dropInfo)
+        {
+            var links = DragDropHelper.Drop(dropInfo);
+            if (links.Length == 0) return;
+
+            var newGroup = App.DataManager.AddGroup(links[0].Name);
+            var viewModel = newGroup.ToViewModel();
+            viewModel.AddLinks(links);
+            Groups.Add(viewModel);
+        }
     }
 }

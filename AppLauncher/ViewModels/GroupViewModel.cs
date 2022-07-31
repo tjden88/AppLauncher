@@ -60,7 +60,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     #region LinksGroups : ObservableCollection<AppLinkViewModel> - Группированные ссылки
 
     /// <summary>Группированные ссылки</summary>
-    private ObservableCollection<AppLinksGroupViewModel> _LinksGroups;
+    private ObservableCollection<AppLinksGroupViewModel> _LinksGroups = new();
 
     /// <summary>Группированные ссылки</summary>
     public ObservableCollection<AppLinksGroupViewModel> LinksGroups
