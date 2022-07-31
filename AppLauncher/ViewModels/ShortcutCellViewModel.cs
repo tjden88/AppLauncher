@@ -169,7 +169,7 @@ namespace AppLauncher.ViewModels
             {
                 var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
                 vm.ShortcutCells.Remove(this);
-                App.DataManager.DeleteCell(Id);
+                App.DataManager.SaveData();
             }
         }
 
@@ -195,22 +195,24 @@ namespace AppLauncher.ViewModels
             switch (linkNumber)
             {
                 case "1":
-                    ShortcutViewModel1 = firstLink.ToViewModel();
+                    ShortcutViewModel1 = firstLink;
                     break;
                 case "2":
-                    ShortcutViewModel2 = firstLink.ToViewModel();
+                    ShortcutViewModel2 = firstLink;
                     break;
                 case "3":
-                    ShortcutViewModel3 = firstLink.ToViewModel();
+                    ShortcutViewModel3 = firstLink;
                     break;
                 case "4":
-                    ShortcutViewModel4 = firstLink.ToViewModel();
+                    ShortcutViewModel4 = firstLink;
                     break;
             }
 
-            App.DataManager.UpdateCell(this.ToModel());
-
-            if (links.Length < 2) return;
+            if (links.Length < 2)
+            {
+                App.DataManager.SaveData();
+                return;
+            }
 
             var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 using AppLauncher.Infrastructure.Helpers;
@@ -28,26 +27,29 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        #region FilePath : string - Путь для запуска
+
+        #region ShortcutPath : string - Путь для запуска
 
         /// <summary>Путь для запуска</summary>
-        private string _FilePath;
+        private string _ShortcutPath;
 
         /// <summary>Путь для запуска</summary>
-        public string FilePath
+        public string ShortcutPath
         {
-            get => _FilePath;
-            set => Set(ref _FilePath, value);
+            get => _ShortcutPath;
+            set => Set(ref _ShortcutPath, value);
         }
 
         #endregion
 
+
         #region Image : ImageSource - Изображение ярлыка
 
         /// <summary>Изображение ярлыка</summary>
-        public ImageSource Image => App.ShortcutService.GetIconFromShortcut(FilePath);
+        public ImageSource Image => App.ShortcutService.GetIconFromShortcut(ShortcutPath);
 
         #endregion
+
 
 
         #region Commands
@@ -68,11 +70,7 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Запуск</summary>
         private void OnLaunchCommandExecuted()
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = FilePath,
-                UseShellExecute = true
-            });
+            App.ShortcutService.StartProcess(ShortcutPath);
         }
 
         #endregion
@@ -95,7 +93,7 @@ namespace AppLauncher.ViewModels
         {
             var cell = FindCell();
             cell.Remove(this);
-            App.DataManager.UpdateCell(cell.ToModel());
+            App.DataManager.SaveData();
         }
 
         #endregion

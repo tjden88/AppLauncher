@@ -45,7 +45,7 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return new ShortcutViewModel
             {
-                FilePath = Link.Path,
+                ShortcutPath = Link.Path,
                 Name = Link.Name,
             };
         }
@@ -56,7 +56,7 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return new Shortcut
             {
-                Path = Link.FilePath,
+                Path = Link.ShortcutPath,
                 Name = Link.Name,
             };
         }

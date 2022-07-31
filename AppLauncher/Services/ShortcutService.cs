@@ -69,7 +69,13 @@ namespace AppLauncher.Services
         /// <param name="ShortcutPath">Путь ярлыка</param>
         public void StartProcess(string ShortcutPath)
         {
+            var path = Path.Combine(_ShortcutsPath, ShortcutPath);
 
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
         }
 
 
