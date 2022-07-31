@@ -12,6 +12,52 @@
     <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
+
+    <!--Шаблон данных большого ярлыка-->
+    <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}" x:Key="BigShortcutViewModelDataTemplate">
+        <Button Command="{Binding LaunchCommand}" dd:DragDrop.IsDragSource="True">
+            <b:Interaction.Behaviors>
+                <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
+            </b:Interaction.Behaviors>
+            <Button.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Margin="0,8,10,8"/>
+                    <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_Compress"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Margin="0,8,10,8"/>
+                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Icon="Solid_FileSignature"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
+                        <MenuItem.Icon>
+                            <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Button.ContextMenu>
+            <Grid>
+
+                <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
+                <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
+                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
+                                               TextWrapping="Wrap"/>
+
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+
+    <!--Шаблон данных ячейки ярлыков-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="ShortcutCellDataTemplate">
         <Grid>
             
@@ -51,51 +97,7 @@
 
             </Grid>
             <Border Width="86" Height="86" Margin="2" Visibility="{Binding IsBigShortcut, Converter={StaticResource BoolToVisibilityConverter}}">
-                <ContentPresenter Content="{Binding BigShortcutViewModel}">
-                    <ContentPresenter.ContentTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
-                            <Button Command="{Binding LaunchCommand}">
-                                <b:Interaction.Behaviors>
-                                    <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
-                                </b:Interaction.Behaviors>
-                                <Button.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
-                                            <MenuItem.Icon>
-                                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator Margin="0,8,10,8"/>
-                                        <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
-                                            <MenuItem.Icon>
-                                                <fa5:FontAwesome Icon="Solid_Compress"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator Margin="0,8,10,8"/>
-                                        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
-                                            <MenuItem.Icon>
-                                                <fa5:FontAwesome Icon="Solid_FileSignature"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
-                                            <MenuItem.Icon>
-                                                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </Button.ContextMenu>
-                                <Grid>
-
-                                    <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
-                                    <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
-                                    <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
-                                               TextWrapping="Wrap"/>
-
-                                </Grid>
-                            </Button>
-                        </DataTemplate>
-                    </ContentPresenter.ContentTemplate>
-                </ContentPresenter>
+                <ContentPresenter Content="{Binding BigShortcutViewModel}" ContentTemplate="{StaticResource BigShortcutViewModelDataTemplate}"/>
             </Border>
             <Border Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
                 <Border.Style>
@@ -119,21 +121,8 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="MockShortcutCellDataTemplate">
-        <Grid>
-            <Border  Width="86" Height="86" Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
-                        ToolTip="Добавить пустую ячейку"
-                        Command="{Binding AddEmptyCellCommand}">
-                    <Button.Content>
-                        <fa5:FontAwesome Margin="8" Icon="Solid_Plus" Foreground="Lime"/>
-                    </Button.Content>
-                </Button>
-            </Border>
-        </Grid>
-    </DataTemplate>
 
-
+    <!--Шаблон данных обычного ярлыка-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
         <Button Command="{Binding LaunchCommand}" 
                 dd:DragDrop.IsDragSource="True">
@@ -172,5 +161,25 @@
            </Grid>
         </Button>
     </DataTemplate>
+
+
+    <!--Шаблон данных ячейки - добавление пустой ячейкт-->
+    <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="MockShortcutCellDataTemplate">
+        <Grid>
+            <Border  Width="86" Height="86" Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
+                <Button HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        ToolTip="Добавить пустую ячейку"
+                        Command="{Binding AddEmptyCellCommand}">
+                    <Button.Content>
+                        <fa5:FontAwesome Margin="8" Icon="Solid_Plus" Foreground="Lime"/>
+                    </Button.Content>
+                </Button>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+
+
+
 
 </ResourceDictionary>
