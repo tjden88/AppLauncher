@@ -48,9 +48,33 @@ namespace AppLauncher.ViewModels
         #region Image : ImageSource - Изображение ярлыка
 
         /// <summary>Изображение ярлыка</summary>
-        public ImageSource Image => App.ShortcutService.GetIconFromShortcut(ShortcutPath);
+        public ImageSource Image
+        {
+            get
+            {
+                var iconFromShortcut = App.ShortcutService.GetIconFromShortcut(ShortcutPath);
+                HasImage = iconFromShortcut != null;
+                return iconFromShortcut;
+            }
+        }
 
         #endregion
+
+        #region HasImage : bool - Есть ли изображение
+
+        /// <summary>Есть ли изображение</summary>
+        private bool _HasImage;
+
+        /// <summary>Есть ли изображение</summary>
+        public bool HasImage
+        {
+            get => _HasImage;
+            set => Set(ref _HasImage, value);
+        }
+
+        #endregion
+
+        
 
 
         #region Commands

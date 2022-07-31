@@ -89,7 +89,9 @@
                                     </ContextMenu>
                                 </Button.ContextMenu>
                                 <Grid>
+
                                     <Image  Margin="5,5,5,20" Source="{Binding Image}"/>
+                                    <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5,5,5,20" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
                                     <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" FontWeight="Medium" Margin="5" FontSize="12" Text="{Binding Name}"
                                                TextWrapping="Wrap"/>
 
@@ -154,7 +156,10 @@
                     </MenuItem>
                 </ContextMenu>
             </Button.ContextMenu>
-            <Image  Margin="5" Source="{Binding Image}"/>
+           <Grid>
+               <Image  Margin="5" Source="{Binding Image}"/>
+                <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
+           </Grid>
         </Button>
     </DataTemplate>
 
