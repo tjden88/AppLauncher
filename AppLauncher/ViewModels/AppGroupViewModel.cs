@@ -71,6 +71,25 @@ public class AppGroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
+    #region GroupedLinks : ObservableCollection<AppLinkViewModel[]> - Группированные ссылки
+
+    /// <summary>Группированные ссылки</summary>
+    private ObservableCollection<AppLinkViewModel[]> _GroupedLinks;
+
+    /// <summary>Группированные ссылки</summary>
+    public ObservableCollection<AppLinkViewModel[]> GroupedLinks
+    {
+        get => _GroupedLinks;
+        set => Set(ref _GroupedLinks, value);
+    }
+
+    #endregion
+
+    private void MakeLinksGroups()
+    {
+
+    }
+
 
     #region Commands
 

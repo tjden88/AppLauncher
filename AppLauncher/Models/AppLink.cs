@@ -9,5 +9,7 @@
         public string Path { get; set; }
 
         public int GroupId { get; set; }
+
+        public bool IsBigImage { get; set; }
     }
 }
