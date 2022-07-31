@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
-using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -61,12 +59,12 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
-    #region ShortcutCells : ObservableCollection<ShortcutViewModel> - Группированные ссылки
+    #region ShortcutCells : ObservableCollection<ShortcutViewModel> - Ячейки с ярлыками
 
-    /// <summary>Группированные ссылки</summary>
+    /// <summary>Ячейки с ярлыками</summary>
     private ObservableCollection<ShortcutCellViewModel> _ShortcutCells = new();
 
-    /// <summary>Группированные ссылки</summary>
+    /// <summary>Ячейки с ярлыками</summary>
     public ObservableCollection<ShortcutCellViewModel> ShortcutCells
     {
         get => _ShortcutCells;
@@ -77,29 +75,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
     #region Commands
-
-    #region Command LoadLinksCommand - Загрузить ярлыки группы
-
-    /// <summary>Загрузить ярлыки группы</summary>
-    private Command _LoadLinksCommand;
-
-    /// <summary>Загрузить ярлыки группы</summary>
-    public Command LoadLinksCommand => _LoadLinksCommand
-        ??= new Command(OnLoadLinksCommandExecuted, CanLoadLinksCommandExecute, "Загрузить ярлыки группы");
-
-    /// <summary>Проверка возможности выполнения - Загрузить ярлыки группы</summary>
-    private bool CanLoadLinksCommandExecute() => true;
-
-    /// <summary>Логика выполнения - Загрузить ярлыки группы</summary>
-    private void OnLoadLinksCommandExecuted()
-    {
-        var links = App.DataManager.LoadGroupCells(Id).ToArray();
-        var vm = links.Select(l => l.ToViewModel());
-        ShortcutCells = new(vm);
-    }
-
-    #endregion
-
+    
 
     #region Command SelectGroupCommand - Выбрать группу
 
@@ -139,11 +115,12 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         if (!msg) return;
 
-        App.DataManager.DeleteGroup(Id);
         App.MainWindowViewModel.Groups.Remove(this);
+        App.DataManager.SaveData();
     }
 
     #endregion
+
 
     #endregion
 
@@ -152,46 +129,48 @@ public class GroupViewModel : ViewModel, IDropTarget
     public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
 
 
-    public void Drop(IDropInfo dropInfo)
+    public void Drop(IDropInfo dropInfo) => AddShortcuts(DragDropHelper.Drop(dropInfo));
+
+
+    /// <summary> Добавить ярлыки в группу и разложить по новым ячейкам </summary>
+    public void AddShortcuts(ShortcutViewModel[] shortcuts)
     {
-
-        AddLinks(DragDropHelper.Drop(dropInfo));
-    }
-
-    public void AddLinks(Shortcut[] links)
-    {
-
         var currentIndex = 0;
 
-        bool CheckEnd(ShortcutCell group)
+        bool CheckEnd(ShortcutCellViewModel group)
         {
-            if (currentIndex == links.Length)
+            if (currentIndex == shortcuts.Length)
             {
-                ShortcutCells.Add(group.ToViewModel());
+                ShortcutCells.Add(group);
                 return true;
             }
             return false;
         }
 
+        var dataManager = App.DataManager;
 
-        while (currentIndex < links.Length)
+        while (currentIndex < shortcuts.Length)
         {
-            var newGroup = dataManager.AddCell(Id);
+            var newCell = new ShortcutCellViewModel
+            {
+                Id = dataManager.GetNextCellId(),
+                GroupId = Id,
+            };
 
-            newGroup.Link1 = links[currentIndex++];
-            if (CheckEnd(newGroup)) break;
+            newCell.ShortcutViewModel1 = shortcuts[currentIndex++];
+            if (CheckEnd(newCell)) break;
 
-            newGroup.Link2 =links[currentIndex++];
-            if (CheckEnd(newGroup)) break;
+            newCell.ShortcutViewModel2 = shortcuts[currentIndex++];
+            if (CheckEnd(newCell)) break;
 
-            newGroup.Link3 = links[currentIndex++];
-            if (CheckEnd(newGroup)) break;
+            newCell.ShortcutViewModel3 = shortcuts[currentIndex++];
+            if (CheckEnd(newCell)) break;
 
-            newGroup.Link4 = links[currentIndex++];
-            if (CheckEnd(newGroup)) break;
+            newCell.ShortcutViewModel4 = shortcuts[currentIndex++];
+            if (CheckEnd(newCell)) break;
 
-            dataManager.UpdateCell(newGroup);
-            ShortcutCells.Add(newGroup.ToViewModel());
+            ShortcutCells.Add(newCell);
         }
+        dataManager.SaveData();
     }
 }

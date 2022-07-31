@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AppLauncher.Infrastructure.Helpers;
-using AppLauncher.Models;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -215,7 +214,7 @@ namespace AppLauncher.ViewModels
 
             var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 
-            vm.AddLinks(links.Skip(1).ToArray());
+            vm.AddShortcuts(links.Skip(1).ToArray());
 
         } 
 

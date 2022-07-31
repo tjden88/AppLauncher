@@ -163,7 +163,7 @@ namespace AppLauncher.ViewModels
                 Id = dataManager.GetNextGroupId(),
             };
             dataManager.CanSaveData = false;
-            newGroup.AddLinks(links);
+            newGroup.AddShortcuts(links);
             Groups.Add(newGroup);
             dataManager.CanSaveData =true;
             dataManager.SaveData();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using AppLauncher.Models;
+using AppLauncher.ViewModels;
 using GongSolutions.Wpf.DragDrop;
 
 namespace AppLauncher.Infrastructure.Helpers
@@ -23,18 +23,20 @@ namespace AppLauncher.Infrastructure.Helpers
         }
 
 
-        public static Shortcut[] Drop(IDropInfo dropInfo)
+        public static ShortcutViewModel[] Drop(IDropInfo dropInfo)
         {
             var sourceItem = dropInfo.Data;
 
             if (sourceItem is not DataObject dataObject ||
-                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<Shortcut>();
+                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<ShortcutViewModel>();
 
             var shortcutService = App.ShortcutService;
 
-            var list = strArray.Select(shortcutService.CreateShortcut);
+            var vm = strArray
+                .Select(shortcutService.CreateShortcut)
+                .Select(sh => sh.ToViewModel());
 
-            return list.ToArray();
+            return vm.ToArray();
         }
     }
 }
