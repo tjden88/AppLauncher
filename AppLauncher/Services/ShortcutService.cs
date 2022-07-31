@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -95,6 +96,8 @@ namespace AppLauncher.Services
         {
             var path = _ShortcutFullPath(ShortcutPath);
 
+            if (!File.Exists(path)) return;
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = path,
@@ -131,7 +134,17 @@ namespace AppLauncher.Services
         /// <summary> Очистка лишних ярлыков </summary>
         public void CleanNotUsedShortcuts()
         {
+            var usedShortcuts = App.DataManager.LoadGroupsData()
+                .SelectMany(g=>g.Cells)
+                .SelectMany(c=> c.GetAllShortcuts())
+                .Select(sc => Path.Combine(_ShortcutsPath,sc.Path));
 
+            var allShortcuts = Directory.EnumerateFiles(_ShortcutsPath);
+
+            var notUsedFiles = allShortcuts.Except(usedShortcuts);
+
+            foreach (var notUsedFile in notUsedFiles)
+                File.Delete(notUsedFile);
         }
 
         #region Private

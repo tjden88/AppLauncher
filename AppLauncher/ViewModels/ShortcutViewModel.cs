@@ -177,15 +177,19 @@ namespace AppLauncher.ViewModels
             ??= new Command(OnMakeLittleCommandExecuted, CanMakeLittleCommandExecute, "Сделать маленьким");
 
         /// <summary>Проверка возможности выполнения - Сделать маленьким</summary>
-        private bool CanMakeLittleCommandExecute() => Equals(FindCell().BigShortcutViewModel, null);
+        private bool CanMakeLittleCommandExecute() => Equals(FindCell().BigShortcutViewModel, this);
 
         /// <summary>Логика выполнения - Сделать маленьким</summary>
         private void OnMakeLittleCommandExecuted()
         {
-
+            var cell = FindCell();
+            cell.BigShortcutViewModel = null;
+            cell.ShortcutViewModel1 = this;
+            App.DataManager.SaveData();
         }
 
         #endregion
+
 
         #region Command GoToFileCommand - Перейти в расположение файла
 

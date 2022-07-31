@@ -18,5 +18,11 @@ namespace AppLauncher
         public static DataManager DataManager { get; } = new();
 
         public static Window ActiveWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            ShortcutService.CleanNotUsedShortcuts();
+            base.OnExit(e);
+        }
     }
 }
