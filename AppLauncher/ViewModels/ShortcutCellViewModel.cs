@@ -228,40 +228,47 @@ namespace AppLauncher.ViewModels
         {
             var dropped = DragDropHelper.PerformDrop(dropInfo);
 
-            var viewModels = dropped.Shortcuts;
-
-            if (viewModels?.Any() != true) return;
-
-            var firstLink = viewModels[0];
-
-            var linkNumber = ((Border)dropInfo.VisualTarget).Tag as string;
-
-            switch (linkNumber)
+            if (dropped.ShortcutCell is { } shortcutCell)
             {
-                case "1":
-                    ShortcutViewModel1 = firstLink;
-                    break;
-                case "2":
-                    ShortcutViewModel2 = firstLink;
-                    break;
-                case "3":
-                    ShortcutViewModel3 = firstLink;
-                    break;
-                case "4":
-                    ShortcutViewModel4 = firstLink;
-                    break;
-            }
-
-            if (viewModels.Length < 2)
-            {
+                var group = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
+                var index = group.ShortcutCells.IndexOf(this);
+                group.ShortcutCells.Insert(index, shortcutCell);
                 App.DataManager.SaveData();
-                return;
             }
 
-            var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 
-            vm.AddShortcuts(viewModels.Skip(1).ToArray());
+            if (dropped.Shortcuts is {Length: > 0} viewModels)
+            {
+                var firstLink = viewModels[0];
 
+                var linkNumber = ((Border)dropInfo.VisualTarget).Tag as string;
+
+                switch (linkNumber)
+                {
+                    case "1":
+                        ShortcutViewModel1 = firstLink;
+                        break;
+                    case "2":
+                        ShortcutViewModel2 = firstLink;
+                        break;
+                    case "3":
+                        ShortcutViewModel3 = firstLink;
+                        break;
+                    case "4":
+                        ShortcutViewModel4 = firstLink;
+                        break;
+                }
+
+                if (viewModels.Length < 2)
+                {
+                    App.DataManager.SaveData();
+                    return;
+                }
+
+                var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
+
+                vm.AddShortcuts(viewModels.Skip(1).ToArray());
+            }
         }
 
         #endregion

@@ -154,7 +154,24 @@ namespace AppLauncher.ViewModels
 
         public void Drop(IDropInfo dropInfo)
         {
+            var dataManager = App.DataManager;
+
             var dropped = DragDropHelper.PerformDrop(dropInfo);
+
+            if (dropped.ShortcutCell is { } cell)
+            {
+                var newGroup = new GroupViewModel
+                {
+                    Name = "Новая группа",
+                    Id = dataManager.GetNextGroupId(),
+                };
+
+                Groups.Add(newGroup);
+                cell.GroupId = newGroup.Id;
+                newGroup.ShortcutCells.Add(cell);
+                App.DataManager.SaveData();
+            }
+
 
             if (dropped.Group is { } group)
             {
@@ -164,8 +181,7 @@ namespace AppLauncher.ViewModels
 
             if (dropped.Shortcuts is { Length: > 0 } shortcuts)
             {
-                var dataManager = App.DataManager;
-                var newGroup = new GroupViewModel()
+                var newGroup = new GroupViewModel
                 {
                     Name = shortcuts[0].Name,
                     Id = dataManager.GetNextGroupId(),

@@ -180,11 +180,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
 
-    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this,
-        DragDropHelper.DropType.Files |
-        DragDropHelper.DropType.ShortcutViewModel |
-        DragDropHelper.DropType.GroupViewModel |
-        DragDropHelper.DropType.ShortcutCellViewModel);
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this,DragDropHelper.DropType.All);
 
 
     public void Drop(IDropInfo dropInfo)
@@ -192,6 +188,12 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         var dropped = DragDropHelper.PerformDrop(dropInfo);
 
+        if (dropped.ShortcutCell is { } cell)
+        {
+            cell.GroupId = Id;
+            ShortcutCells.Add(cell);
+            App.DataManager.SaveData();
+        }
 
         if (dropped.Group is { } group)
         {

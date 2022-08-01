@@ -61,8 +61,8 @@
 
     <!--Шаблон данных ячейки ярлыков-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutCellViewModel}" x:Key="ShortcutCellDataTemplate">
-        <Grid>
-            
+        <Grid >
+
             <Grid Width="90" Height="90">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -101,7 +101,10 @@
             <Border Width="86" Height="86" Margin="2" Visibility="{Binding IsBigShortcut, Converter={StaticResource BoolToVisibilityConverter}}">
                 <ContentPresenter Content="{Binding BigShortcutViewModel}" ContentTemplate="{StaticResource BigShortcutViewModelDataTemplate}"/>
             </Border>
-            <Border Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border">
+            <Border Margin="2" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Background="#95636363" Name="Border"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True"
+                    dd:DragDrop.DropHandler="{Binding}">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
