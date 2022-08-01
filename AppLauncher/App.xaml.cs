@@ -8,7 +8,7 @@ namespace AppLauncher
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         /// <summary> Вьюмодель главного окна </summary>
         public static MainWindowViewModel MainWindowViewModel { get; } = new();
@@ -24,6 +24,7 @@ namespace AppLauncher
         protected override void OnExit(ExitEventArgs e)
         {
             ShortcutManager.CleanNotUsedShortcuts();
+            SettingsWindowViewModel.SaveData();
             base.OnExit(e);
         }
 
