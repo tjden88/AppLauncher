@@ -148,8 +148,8 @@ namespace AppLauncher.Services
         /// <returns>null, если файл или папка не найдена</returns>
         public ImageSource GetIconFromShortcut(string ShortcutPath)
         {
-            var path = GetFilePath(ShortcutPath) ?? _ShortcutFullPath(ShortcutPath);
-
+            var destPath = GetFilePath(ShortcutPath);
+            var path = File.Exists(destPath) ? destPath : _ShortcutFullPath(ShortcutPath);
 
             return _IconBuilder.GetImage(path);
         }
