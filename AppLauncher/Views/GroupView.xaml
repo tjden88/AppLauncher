@@ -52,7 +52,7 @@
                     </Button.Content>
                 </Button>
 
-                <TextBlock Foreground="White" Background="Transparent" 
+                <TextBlock Foreground="White"
                      Text="{Binding Name}"
                      FontSize="18" Margin="0,10,10,10" />
             </DockPanel>

@@ -16,6 +16,7 @@ namespace AppLauncher.ViewModels
     {
         private bool _IsEmpty() => BigShortcutViewModel == null && ShortcutViewModel1 == null && ShortcutViewModel2 == null && ShortcutViewModel3 == null && ShortcutViewModel4 == null;
 
+
         #region Id : int - Идентификатор
 
         /// <summary>Идентификатор</summary>
@@ -44,7 +45,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
+
         #region BigShortcutViewModel : ShortcutViewModel - Большой ярлык
 
         /// <summary>Большой ярлык</summary>
@@ -149,6 +150,8 @@ namespace AppLauncher.ViewModels
                 BigShortcutViewModel = null;
 
         }
+
+
         #region Commands
 
         #region Command DeleteCommand - Удалить ячейку
@@ -197,14 +200,14 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Добавить пустую ячейку</summary>
         private void OnAddEmptyCellCommandExecuted()
         {
-           
+
             var group = App.MainWindowViewModel.SelectedGroup;
             var cell = new ShortcutCellViewModel()
             {
                 Id = App.DataManager.GetNextCellId(),
                 GroupId = group.Id,
             };
-            group.ShortcutCells.Insert(group.ShortcutCells.Count -1, cell);
+            group.ShortcutCells.Insert(group.ShortcutCells.Count - 1, cell);
             App.DataManager.SaveData();
         }
 
@@ -215,14 +218,18 @@ namespace AppLauncher.ViewModels
 
         #region DragDrop
 
-        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+        public void DragOver(IDropInfo dropInfo) => 
+            DragDropHelper.DragOver(dropInfo, 
+                DragDropHelper.DropType.Files |
+                DragDropHelper.DropType.ShortcutViewModel |
+                DragDropHelper.DropType.ShortcutCellViewModel);
 
 
         public void Drop(IDropInfo dropInfo)
         {
             var viewModels = DragDropHelper.Drop(dropInfo);
 
-            if(!viewModels.Any()) return;
+            if (!viewModels.Any()) return;
 
             var firstLink = viewModels[0];
 
@@ -254,7 +261,7 @@ namespace AppLauncher.ViewModels
 
             vm.AddShortcuts(viewModels.Skip(1).ToArray());
 
-        } 
+        }
 
         #endregion
 

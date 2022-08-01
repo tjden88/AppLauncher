@@ -8,61 +8,96 @@ namespace AppLauncher.Infrastructure.Helpers
 {
     public static class DragDropHelper
     {
-        public static void DragOver(IDropInfo dropInfo, bool AcceptGroup = false)
+
+        [Flags]
+        public enum DropType
         {
-            var sourceItem = dropInfo.Data;
-
-            switch (sourceItem)
-            {
-                case ShortcutViewModel:
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                    dropInfo.Effects = DragDropEffects.Move;
-                    break;
-
-                case GroupViewModel when AcceptGroup:
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                    dropInfo.Effects = DragDropEffects.Move;
-                    break;
-
-                case DataObject dataObject when dataObject.GetData(DataFormats.FileDrop) is string[]:
-                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                    dropInfo.Effects = DragDropEffects.Copy;
-                    break;
-
-                default:
-
-                    dropInfo.Effects = DragDropEffects.None;
-                    break;
-            }
+            None = 0,
+            Files = 1,
+            ShortcutViewModel = 2,
+            ShortcutCellViewModel = 4,
+            GroupViewModel = 8,
         }
 
-        public static GroupViewModel DropGroup(IDropInfo dropInfo)
+        /// <summary>
+        /// Содержит ссылки на перенесённые мышккой объекты
+        /// </summary>
+        public class DroppedObjects
         {
-            if (dropInfo.Data is not GroupViewModel vm) return null;
+            public ShortcutViewModel[] Shortcuts { get; set; }
+            public ShortcutCellViewModel ShortcutCell { get; set; }
+            public GroupViewModel Group { get; set; }
 
-            return App.MainWindowViewModel.Groups.Remove(vm) ? vm : null;
         }
 
-        public static ShortcutViewModel[] Drop(IDropInfo dropInfo)
+        /// <summary>
+        /// Перетаскивание мышью на объектом
+        /// </summary>
+        /// <param name="dropInfo">Инфо</param>
+        /// <param name="AcceptedTypes">Разрешённые типы данных</param>
+        public static void DragOver(IDropInfo dropInfo, DropType AcceptedTypes)
         {
+            if (AcceptedTypes.HasFlag(DropType.None)) return;
+
             var sourceItem = dropInfo.Data;
 
-            if (sourceItem is ShortcutViewModel vm)
+            var accept = sourceItem switch
             {
-                vm.FindCell().Remove(vm);
-                return new[] { vm };
+                ShortcutViewModel => AcceptedTypes.HasFlag(DropType.ShortcutViewModel),
+                ShortcutCellViewModel => AcceptedTypes.HasFlag(DropType.ShortcutCellViewModel),
+                GroupViewModel => AcceptedTypes.HasFlag(DropType.GroupViewModel),
+                DataObject dataObject when dataObject.GetData(DataFormats.FileDrop) is string[] =>
+                    AcceptedTypes.HasFlag(DropType.Files),
+                _ => false
+            };
+
+
+            if (accept)
+            {
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                dropInfo.Effects = DragDropEffects.Copy;
+                return;
+            }
+            dropInfo.Effects = DragDropEffects.None;
+        }
+
+        /// <summary> Подготовить перенесённые мышкой объекты </summary>
+        public static DroppedObjects PerformDrop(IDropInfo dropInfo)
+        {
+            var sourceItem = dropInfo.Data;
+            var droppedObjects = new DroppedObjects();
+
+            if (sourceItem is ShortcutViewModel shortcutViewModel)
+            {
+                shortcutViewModel.FindCell().Remove(shortcutViewModel);
+                droppedObjects.Shortcuts = new[] { shortcutViewModel };
             }
 
-            if (sourceItem is not DataObject dataObject ||
-                dataObject.GetData(DataFormats.FileDrop) is not string[] strArray) return Array.Empty<ShortcutViewModel>();
+            if (dropInfo.Data is GroupViewModel groupViewModel)
+            {
+                App.MainWindowViewModel.Groups.Remove(groupViewModel);
+                droppedObjects.Group = groupViewModel;
+            }
 
-            var shortcutService = App.ShortcutService;
+            if (sourceItem is ShortcutCellViewModel shortcutCellViewModel)
+            {
+                var group = App.MainWindowViewModel.Groups.First(g => g.Id == shortcutCellViewModel.GroupId);
+                group.ShortcutCells.Remove(shortcutCellViewModel);
+                droppedObjects.ShortcutCell = shortcutCellViewModel;
+            }
 
-            var viewModels = strArray
-                .Select(shortcutService.CreateShortcut)
-                .Select(sh => sh.ToViewModel());
+            if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[] strArray)
+            {
+                var shortcutService = App.ShortcutService;
 
-            return viewModels.ToArray();
+                var viewModels = strArray
+                    .Select(shortcutService.CreateShortcut)
+                    .Select(sh => sh.ToViewModel());
+
+                droppedObjects.Shortcuts = viewModels.ToArray();
+            }
+
+            return droppedObjects;
         }
     }
 }
