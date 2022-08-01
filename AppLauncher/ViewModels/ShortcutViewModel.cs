@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using AppLauncher.Views;
 using WPR.MVVM.Commands;
@@ -95,6 +96,10 @@ namespace AppLauncher.ViewModels
         private void OnLaunchCommandExecuted()
         {
             App.ShortcutManager.StartProcess(ShortcutPath);
+
+            if (App.SettingsWindowViewModel.AutoHide && Keyboard.Modifiers != ModifierKeys.Control)
+                App.MainWindowViewModel.IsWindowMinimized = true;
+
         }
 
         #endregion

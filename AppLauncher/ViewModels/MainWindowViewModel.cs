@@ -74,8 +74,22 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
 
+        #region IsWindowMinimized : bool - Окно свёрнуто
+
+        /// <summary>Окно свёрнуто</summary>
+        private bool _IsWindowMinimized;
+
+        /// <summary>Окно свёрнуто</summary>
+        public bool IsWindowMinimized
+        {
+            get => _IsWindowMinimized;
+            set => Set(ref _IsWindowMinimized, value);
+        }
+
+        #endregion
+
+        
 
         #region Commands
 
