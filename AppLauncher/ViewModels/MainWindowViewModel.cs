@@ -87,7 +87,7 @@ namespace AppLauncher.ViewModels
             foreach (var group in Groups)
             {
                 var viewModels = groups
-                    .First(g =>g.Id == group.Id).Cells
+                    .First(g => g.Id == group.Id).Cells
                     .Select(c => c.ToViewModel());
 
                 group.ShortcutCells = new(viewModels);
@@ -150,24 +150,48 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this, DragDropHelper.DropType.All);
 
         public void Drop(IDropInfo dropInfo)
         {
-            var links = DragDropHelper.Drop(dropInfo);
-            if (links.Length == 0) return;
-
             var dataManager = App.DataManager;
-            var newGroup = new GroupViewModel()
+
+            var dropped = DragDropHelper.PerformDrop(dropInfo);
+
+            if (dropped.ShortcutCell is { } cell)
             {
-                Name = links[0].Name,
-                Id = dataManager.GetNextGroupId(),
-            };
-            dataManager.CanSaveData = false;
-            newGroup.AddShortcuts(links);
-            Groups.Add(newGroup);
-            dataManager.CanSaveData =true;
-            dataManager.SaveData();
+                var newGroup = new GroupViewModel
+                {
+                    Name = "Новая группа",
+                    Id = dataManager.GetNextGroupId(),
+                };
+
+                Groups.Add(newGroup);
+                cell.GroupId = newGroup.Id;
+                newGroup.ShortcutCells.Add(cell);
+                App.DataManager.SaveData();
+            }
+
+
+            if (dropped.Group is { } group)
+            {
+                Groups.Add(group);
+                App.DataManager.SaveData();
+            }
+
+            if (dropped.Shortcuts is { Length: > 0 } shortcuts)
+            {
+                var newGroup = new GroupViewModel
+                {
+                    Name = shortcuts[0].Name,
+                    Id = dataManager.GetNextGroupId(),
+                };
+                dataManager.CanSaveData = false;
+                newGroup.AddShortcuts(shortcuts);
+                Groups.Add(newGroup);
+                dataManager.CanSaveData = true;
+                dataManager.SaveData();
+            }
         }
     }
 }

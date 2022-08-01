@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
+using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -42,8 +44,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     public string Name
     {
         get => _Name;
-        set => IfSet(ref _Name, value)
-            .Then(App.DataManager.SaveData);
+        set => IfSet(ref _Name, value);
     }
 
     #endregion
@@ -60,7 +61,7 @@ public class GroupViewModel : ViewModel, IDropTarget
         get => _IsSelected;
         set => IfSet(ref _IsSelected, value).Then(v =>
         {
-            if(v)
+            if (v)
                 ShortcutCells.Add(MockShortcutCellViewModel);
             else
                 ShortcutCells.Remove(MockShortcutCellViewModel);
@@ -86,7 +87,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
     #region Commands
-    
+
 
     #region Command SelectGroupCommand - Выбрать группу
 
@@ -106,6 +107,41 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
+    #region Command RenameCommand - Переименовать группу
+
+    /// <summary>Переименовать группу</summary>
+    private Command _RenameCommand;
+
+    /// <summary>Переименовать группу</summary>
+    public Command RenameCommand => _RenameCommand
+        ??= new Command(OnRenameCommandExecuted, CanRenameCommandExecute, "Переименовать группу");
+
+    /// <summary>Проверка возможности выполнения - Переименовать группу</summary>
+    private bool CanRenameCommandExecute() => true;
+
+    /// <summary>Логика выполнения - Переименовать группу</summary>
+    private void OnRenameCommandExecuted()
+    {
+        var vm = new InputBoxWindowViewModel()
+        {
+            Caption = $"Введите новое имя для группы {Name}:",
+            Result = Name
+        };
+        var wnd = new InputBoxWindow()
+        {
+            Owner = App.ActiveWindow,
+            DataContext = vm,
+        };
+        if (wnd.ShowDialog() != true) return;
+
+        Name = vm.Result;
+
+        App.DataManager.SaveData();
+    }
+
+    #endregion
+
+
     #region Command DeleteGroupCommand - Удалить группу
 
     /// <summary>Удалить группу</summary>
@@ -121,15 +157,16 @@ public class GroupViewModel : ViewModel, IDropTarget
     /// <summary>Логика выполнения - Удалить группу</summary>
     private void OnDeleteGroupCommandExecuted()
     {
-        var msg = ShortcutCells.Count == 0 ||
+
+        var msg = !ShortcutCells.SelectMany(s => s.GetAllShortcuts()).Any() ||
                   MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
 
         if (!msg) return;
 
         foreach (var cell in ShortcutCells)
-           cell.GetAllShortcuts()
-               .ForEach(sc => App.ShortcutService
-                   .DeleteShortcut(sc.ShortcutPath));
+            cell.GetAllShortcuts()
+                .ForEach(sc => App.ShortcutService
+                    .DeleteShortcut(sc.ShortcutPath));
 
 
         App.MainWindowViewModel.Groups.Remove(this);
@@ -143,10 +180,31 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
 
-    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this,DragDropHelper.DropType.All);
 
 
-    public void Drop(IDropInfo dropInfo) => AddShortcuts(DragDropHelper.Drop(dropInfo));
+    public void Drop(IDropInfo dropInfo)
+    {
+
+        var dropped = DragDropHelper.PerformDrop(dropInfo);
+
+        if (dropped.ShortcutCell is { } cell)
+        {
+            cell.GroupId = Id;
+            ShortcutCells.Add(cell);
+            App.DataManager.SaveData();
+        }
+
+        if (dropped.Group is { } group)
+        {
+            var index = App.MainWindowViewModel.Groups.IndexOf(this);
+            App.MainWindowViewModel.Groups.Insert(index, group);
+            App.DataManager.SaveData();
+        }
+
+        if (dropped.Shortcuts is { Length: > 0 } shortcuts)
+            AddShortcuts(shortcuts);
+    }
 
 
     /// <summary> Добавить ярлыки в группу и разложить по новым ячейкам </summary>

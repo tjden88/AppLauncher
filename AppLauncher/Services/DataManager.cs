@@ -60,7 +60,7 @@ namespace AppLauncher.Services
             _NextGroupId = data.Groups.Select(g=> g.Id).DefaultIfEmpty().Max() + 1;
             _NextCellId = data.ShortcutCells.Select(g=> g.Id).DefaultIfEmpty().Max() + 1;
 
-            return data.Groups.OrderBy(g => g.Id);
+            return data.Groups;
         }
 
         /// <summary>Обновить и сохранить данные </summary>

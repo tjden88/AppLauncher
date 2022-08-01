@@ -12,10 +12,11 @@
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
+        Topmost="True"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="MainWindow" Height="720" Width="920">
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadGroupsCommand}"/>
@@ -48,6 +49,12 @@
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
+                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
+                        ToolTip="Скрывать автоматически" Cursor="Hand">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_Thumbtack"/>
+                    </Button.Content>
+                </Button>
                 <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"
                            Foreground="White"
                            Text="{Binding Title}"
@@ -55,24 +62,29 @@
             </DockPanel>
 
             <!--Наполнение-->
-            <Grid Margin="5,0,5,5">
-                <Border  Background="Transparent"
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+
+                <Grid Margin="5,0,5,5">
+                    <Border  Background="Transparent"
                         dd:DragDrop.IsDragSource="True"
                         dd:DragDrop.IsDropTarget="True" 
                         dd:DragDrop.DropHandler="{Binding}" />
-                <ItemsControl  ItemsSource="{Binding Groups}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
-                            <views:GroupView Margin="5" DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Vertical"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </Grid>
+                    <ItemsControl  ItemsSource="{Binding Groups}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:GroupViewModel}">
+                                <views:GroupView Margin="5" DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Grid>
+            </ScrollViewer>
+
         </DockPanel>
     </Grid>
+
 </Window>
