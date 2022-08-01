@@ -22,6 +22,6 @@
         /// Получить ссылку на иконку ярлыка
         /// </summary>
         /// <param name="shortcutPath">Путь к ярлыку</param>
-        public string GetIconLocation(string shortcutPath);
+        public (string, int) GetIconLocation(string shortcutPath);
     }
 }

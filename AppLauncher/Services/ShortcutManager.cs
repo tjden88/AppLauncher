@@ -120,10 +120,12 @@ namespace AppLauncher.Services
         {
             var path = _ShortcutFullPath(ShortcutPath);
 
-            var iconLocation = _ShortcutBuilder.GetIconLocation(ShortcutPath)
-                               ?? _ShortcutBuilder.GetExecutingPath(ShortcutPath);
+            var iconLocation = _ShortcutBuilder.GetIconLocation(ShortcutPath);
+            if(iconLocation.Item1 == null)
 
-            return iconLocation == null ? null : _IconBuilder.GetImage(iconLocation);
+                iconLocation = (_ShortcutBuilder.GetExecutingPath(ShortcutPath), 0);
+
+            return iconLocation.Item1 == null ? null : _IconBuilder.GetImage(iconLocation.Item1, iconLocation.Item2);
         }
 
 

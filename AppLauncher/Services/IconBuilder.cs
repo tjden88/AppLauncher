@@ -11,9 +11,9 @@ namespace AppLauncher.Services
 {
     public class IconBuilder : IIconBuilder
     {
-        public ImageSource GetImage(string Path)
+        public ImageSource GetImage(string Path, int Index)
         {
-            IntPtr hIcon = GetXLIcon(GetIconIndex(FileName));
+            IntPtr hIcon = GetXLIcon(GetIconIndex(Path));
 
             // from native to managed
             using Icon ico = (Icon)Icon.FromHandle(hIcon).Clone();
