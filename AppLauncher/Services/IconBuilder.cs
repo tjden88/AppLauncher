@@ -26,28 +26,7 @@ namespace AppLauncher.Services
 
             return img;
         }
-
-
-        private ImageSource GetImgFromFolder(string Path)
-        {
-            var shinfo = new SHFILEINFO();
-
-            ////Call function with the path to the folder you want the icon for
-            //SHGetFileInfo(Path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
-            //    SHGFI_ICON | SHGFI_LARGEICON);
-
-            using var icon = Icon.FromHandle(shinfo.hIcon);
-
-            //Convert icon to a Bitmap source
-            ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
-                icon.Handle,
-                new Int32Rect(0, 0, icon.Width, icon.Height),
-                BitmapSizeOptions.FromEmptyOptions());
-
-            return img;
-        }
-
-
+        
         int GetIconIndex(string pszFile)
         {
             SHFILEINFO sfi = new SHFILEINFO();
@@ -84,15 +63,6 @@ namespace AppLauncher.Services
 
             return hIcon;
         }
-
-
-
-
-
-
-
-
-
 
 
 
