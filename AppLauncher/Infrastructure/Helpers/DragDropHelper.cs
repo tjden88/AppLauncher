@@ -17,6 +17,7 @@ namespace AppLauncher.Infrastructure.Helpers
             ShortcutViewModel = 2,
             ShortcutCellViewModel = 4,
             GroupViewModel = 8,
+            All = 16,
         }
 
         /// <summary>
@@ -30,27 +31,33 @@ namespace AppLauncher.Infrastructure.Helpers
 
         }
 
+
+        private static bool IsAccepted(DropType CheckedDropType, DropType flag) =>
+            CheckedDropType.HasFlag(flag) || CheckedDropType.HasFlag(DropType.All);
+
         /// <summary>
         /// Перетаскивание мышью на объектом
         /// </summary>
         /// <param name="dropInfo">Инфо</param>
+        /// <param name="Target">Ссылка на объект - приёмник данных</param>
         /// <param name="AcceptedTypes">Разрешённые типы данных</param>
-        public static void DragOver(IDropInfo dropInfo, DropType AcceptedTypes)
+        public static void DragOver(IDropInfo dropInfo, object Target, DropType AcceptedTypes)
         {
-            if (AcceptedTypes.HasFlag(DropType.None)) return;
+            if (AcceptedTypes.Equals(DropType.None)) return;
 
             var sourceItem = dropInfo.Data;
 
+            if(ReferenceEquals(Target, dropInfo.Data))return;
+
             var accept = sourceItem switch
             {
-                ShortcutViewModel => AcceptedTypes.HasFlag(DropType.ShortcutViewModel),
-                ShortcutCellViewModel => AcceptedTypes.HasFlag(DropType.ShortcutCellViewModel),
-                GroupViewModel => AcceptedTypes.HasFlag(DropType.GroupViewModel),
-                DataObject dataObject when dataObject.GetData(DataFormats.FileDrop) is string[] =>
-                    AcceptedTypes.HasFlag(DropType.Files),
+                ShortcutViewModel => IsAccepted(AcceptedTypes, DropType.ShortcutViewModel),
+                ShortcutCellViewModel => IsAccepted(AcceptedTypes, DropType.ShortcutCellViewModel),
+                GroupViewModel => IsAccepted(AcceptedTypes, DropType.GroupViewModel),
+                DataObject dataObject when dataObject.GetData(DataFormats.FileDrop) is string[] => IsAccepted(
+                    AcceptedTypes, DropType.Files),
                 _ => false
             };
-
 
             if (accept)
             {
@@ -66,6 +73,7 @@ namespace AppLauncher.Infrastructure.Helpers
         {
             var sourceItem = dropInfo.Data;
             var droppedObjects = new DroppedObjects();
+
 
             if (sourceItem is ShortcutViewModel shortcutViewModel)
             {

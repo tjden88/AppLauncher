@@ -219,17 +219,18 @@ namespace AppLauncher.ViewModels
         #region DragDrop
 
         public void DragOver(IDropInfo dropInfo) => 
-            DragDropHelper.DragOver(dropInfo, 
-                DragDropHelper.DropType.Files |
-                DragDropHelper.DropType.ShortcutViewModel |
-                DragDropHelper.DropType.ShortcutCellViewModel);
+            DragDropHelper.DragOver(dropInfo, this, DragDropHelper.DropType.Files |
+                                              DragDropHelper.DropType.ShortcutViewModel |
+                                              DragDropHelper.DropType.ShortcutCellViewModel);
 
 
         public void Drop(IDropInfo dropInfo)
         {
-            var viewModels = DragDropHelper.Drop(dropInfo);
+            var dropped = DragDropHelper.PerformDrop(dropInfo);
 
-            if (!viewModels.Any()) return;
+            var viewModels = dropped.Shortcuts;
+
+            if (viewModels?.Any() != true) return;
 
             var firstLink = viewModels[0];
 

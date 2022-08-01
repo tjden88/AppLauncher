@@ -53,6 +53,7 @@
                 </Button>
 
                 <TextBlock Foreground="White"
+                           IsHitTestVisible="False"
                      Text="{Binding Name}"
                      FontSize="18" Margin="0,10,10,10" />
             </DockPanel>

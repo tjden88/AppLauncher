@@ -61,7 +61,7 @@ public class GroupViewModel : ViewModel, IDropTarget
         get => _IsSelected;
         set => IfSet(ref _IsSelected, value).Then(v =>
         {
-            if(v)
+            if (v)
                 ShortcutCells.Add(MockShortcutCellViewModel);
             else
                 ShortcutCells.Remove(MockShortcutCellViewModel);
@@ -87,7 +87,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
     #region Commands
-    
+
 
     #region Command SelectGroupCommand - Выбрать группу
 
@@ -158,15 +158,15 @@ public class GroupViewModel : ViewModel, IDropTarget
     private void OnDeleteGroupCommandExecuted()
     {
 
-        var msg = !ShortcutCells.SelectMany(s=>s.GetAllShortcuts()).Any() ||
+        var msg = !ShortcutCells.SelectMany(s => s.GetAllShortcuts()).Any() ||
                   MessageBox.Show(App.ActiveWindow, $"Удалить группу {Name} и все ярлыки?", "Внимание!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
 
         if (!msg) return;
 
         foreach (var cell in ShortcutCells)
-           cell.GetAllShortcuts()
-               .ForEach(sc => App.ShortcutService
-                   .DeleteShortcut(sc.ShortcutPath));
+            cell.GetAllShortcuts()
+                .ForEach(sc => App.ShortcutService
+                    .DeleteShortcut(sc.ShortcutPath));
 
 
         App.MainWindowViewModel.Groups.Remove(this);
@@ -180,19 +180,28 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
 
-    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, !IsSelected);
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this,
+        DragDropHelper.DropType.Files |
+        DragDropHelper.DropType.ShortcutViewModel |
+        DragDropHelper.DropType.GroupViewModel |
+        DragDropHelper.DropType.ShortcutCellViewModel);
 
 
     public void Drop(IDropInfo dropInfo)
     {
-        if (DragDropHelper.DropGroup(dropInfo) is { } group)
+
+        var dropped = DragDropHelper.PerformDrop(dropInfo);
+
+
+        if (dropped.Group is { } group)
         {
             var index = App.MainWindowViewModel.Groups.IndexOf(this);
             App.MainWindowViewModel.Groups.Insert(index, group);
             App.DataManager.SaveData();
-            return;
         }
-        AddShortcuts(DragDropHelper.Drop(dropInfo));
+
+        if (dropped.Shortcuts is { Length: > 0 } shortcuts)
+            AddShortcuts(shortcuts);
     }
 
 

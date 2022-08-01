@@ -87,7 +87,7 @@ namespace AppLauncher.ViewModels
             foreach (var group in Groups)
             {
                 var viewModels = groups
-                    .First(g =>g.Id == group.Id).Cells
+                    .First(g => g.Id == group.Id).Cells
                     .Select(c => c.ToViewModel());
 
                 group.ShortcutCells = new(viewModels);
@@ -150,32 +150,32 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, true);
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this, DragDropHelper.DropType.All);
 
         public void Drop(IDropInfo dropInfo)
         {
+            var dropped = DragDropHelper.PerformDrop(dropInfo);
 
-            if (DragDropHelper.DropGroup(dropInfo) is { } group)
+            if (dropped.Group is { } group)
             {
                 Groups.Add(group);
                 App.DataManager.SaveData();
-                return;
             }
 
-            var shortcuts = DragDropHelper.Drop(dropInfo);
-            if (shortcuts.Length == 0) return;
-
-            var dataManager = App.DataManager;
-            var newGroup = new GroupViewModel()
+            if (dropped.Shortcuts is { Length: > 0 } shortcuts)
             {
-                Name = shortcuts[0].Name,
-                Id = dataManager.GetNextGroupId(),
-            };
-            dataManager.CanSaveData = false;
-            newGroup.AddShortcuts(shortcuts);
-            Groups.Add(newGroup);
-            dataManager.CanSaveData =true;
-            dataManager.SaveData();
+                var dataManager = App.DataManager;
+                var newGroup = new GroupViewModel()
+                {
+                    Name = shortcuts[0].Name,
+                    Id = dataManager.GetNextGroupId(),
+                };
+                dataManager.CanSaveData = false;
+                newGroup.AddShortcuts(shortcuts);
+                Groups.Add(newGroup);
+                dataManager.CanSaveData = true;
+                dataManager.SaveData();
+            }
         }
     }
 }
