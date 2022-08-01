@@ -150,21 +150,29 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+        public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, true);
 
         public void Drop(IDropInfo dropInfo)
         {
-            var links = DragDropHelper.Drop(dropInfo);
-            if (links.Length == 0) return;
+
+            if (DragDropHelper.DropGroup(dropInfo) is { } group)
+            {
+                Groups.Add(group);
+                App.DataManager.SaveData();
+                return;
+            }
+
+            var shortcuts = DragDropHelper.Drop(dropInfo);
+            if (shortcuts.Length == 0) return;
 
             var dataManager = App.DataManager;
             var newGroup = new GroupViewModel()
             {
-                Name = links[0].Name,
+                Name = shortcuts[0].Name,
                 Id = dataManager.GetNextGroupId(),
             };
             dataManager.CanSaveData = false;
-            newGroup.AddShortcuts(links);
+            newGroup.AddShortcuts(shortcuts);
             Groups.Add(newGroup);
             dataManager.CanSaveData =true;
             dataManager.SaveData();

@@ -155,6 +155,7 @@ public class GroupViewModel : ViewModel, IDropTarget
         {
             var index = App.MainWindowViewModel.Groups.IndexOf(this);
             App.MainWindowViewModel.Groups.Insert(index, group);
+            App.DataManager.SaveData();
             return;
         }
         AddShortcuts(DragDropHelper.Drop(dropInfo));

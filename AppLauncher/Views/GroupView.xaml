@@ -13,8 +13,11 @@
     <d:UserControl.DataContext>
         <viewModels:GroupViewModel/>
     </d:UserControl.DataContext>
-    <Border BorderBrush="Gray" Background="Transparent" CornerRadius="7" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}"
-            dd:DragDrop.IsDragSource="{Binding IsSelected}">
+    <Grid>
+        <Border BorderBrush="Gray" Background="Transparent" CornerRadius="7" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}"
+                dd:DragDrop.IsDragSource="{Binding IsSelected}"
+                dd:DragDrop.IsDropTarget="True"
+                dd:DragDrop.DropHandler="{Binding}"/>
         <Grid>
 
             <Grid.RowDefinitions>
@@ -54,11 +57,8 @@
 
 
             <!--Содержимое-->
-            <Grid  Grid.Row="1">
-                <Border MinHeight="45" Background="Transparent"
-                    dd:DragDrop.IsDragSource="True"
-                    dd:DragDrop.IsDropTarget="True" 
-                    dd:DragDrop.DropHandler="{Binding}" />
+            <Grid Grid.Row="1">
+                <Border MinHeight="45"/>
                 <ItemsControl Margin="10,10,10,10" ItemsSource="{Binding ShortcutCells}">
                     <ItemsControl.ItemTemplateSelector>
                         <styles:ShortcutCellDataTemplateSelector/>
@@ -71,5 +71,6 @@
                 </ItemsControl>
             </Grid>
         </Grid>
-    </Border>
+
+    </Grid>
 </UserControl>
