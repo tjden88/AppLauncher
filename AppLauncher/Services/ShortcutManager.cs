@@ -135,7 +135,8 @@ namespace AppLauncher.Services
             Process.Start(new ProcessStartInfo
             {
                 FileName = path,
-                UseShellExecute = true
+                UseShellExecute = true,
+                WorkingDirectory = _ShortcutsPath,
             });
         }
 

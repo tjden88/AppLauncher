@@ -18,6 +18,7 @@ namespace AppLauncher.Services
                 using var sc = new WindowsShortcut();
                 sc.Path = PathFrom;
                 sc.WorkingDirectory = Path.GetDirectoryName(PathFrom);
+                sc.IconLocation = new(PathFrom);
                 sc.Save(SaveTo);
                 return true;
             }
