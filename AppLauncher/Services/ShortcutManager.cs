@@ -48,35 +48,52 @@ namespace AppLauncher.Services
         public Shortcut CreateShortcut(string FileName)
         {
 
-            var shortcutFileName = GetAvaliableFileName(Path.GetFileNameWithoutExtension(FileName));
+            var fileExtension = Path.GetExtension(FileName).ToLower();
 
-            var cuccess = _ShortcutBuilder.CreateShortcut(FileName, _ShortcutFullPath(shortcutFileName));
+            var shortcutFileName = GetAvaliableFileName(Path.GetFileNameWithoutExtension(FileName), fileExtension == ".url" ? ".url" : ".lnk");
 
-            if (!cuccess) return null;
+            // Копируем готовые ярлыки
+            if (fileExtension is ".lnk" or ".url")
+            {
+                try
+                {
+                    File.Copy(FileName, _ShortcutFullPath(shortcutFileName));
+
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                    return null;
+                }
+            }
+            else
+            {
+                // Создать ярлык из файла/папки
+                var cuccess = _ShortcutBuilder.CreateShortcut(FileName, _ShortcutFullPath(shortcutFileName));
+
+                if (!cuccess) return null;
+            }
 
 
             return new Shortcut
             {
-                Name = Path.GetFileName(FileName),
-                Path = Path.GetFileName(shortcutFileName),
+                Name = Path.GetFileNameWithoutExtension(FileName),
+                Path = shortcutFileName,
             };
-
         }
 
 
         // Получить свободное имя в рабочем каталоге
         // initName - имя без расширения
-        private string GetAvaliableFileName(string initName)
+        private string GetAvaliableFileName(string initName, string extension)
         {
 
-            const string linkExtension = ".lnk";
-
-            var newFileName = Path.Combine(_ShortcutsPath, initName + linkExtension);
+            var newFileName = Path.Combine(_ShortcutsPath, initName + extension);
 
             var intCount = 1;
             while (File.Exists(newFileName))
             {
-                newFileName = Path.Combine(_ShortcutsPath, $"{initName}({intCount++}){linkExtension}");
+                newFileName = Path.Combine(_ShortcutsPath, $"{initName}({intCount++}){extension}");
             }
 
             return newFileName;
@@ -120,12 +137,8 @@ namespace AppLauncher.Services
         {
             var path = _ShortcutFullPath(ShortcutPath);
 
-            var iconLocation = _ShortcutBuilder.GetIconLocation(ShortcutPath);
-            if(iconLocation.Item1 == null)
 
-                iconLocation = (_ShortcutBuilder.GetExecutingPath(ShortcutPath), 0);
-
-            return iconLocation.Item1 == null ? null : _IconBuilder.GetImage(iconLocation.Item1, iconLocation.Item2);
+            return _IconBuilder.GetImage(path);
         }
 
 

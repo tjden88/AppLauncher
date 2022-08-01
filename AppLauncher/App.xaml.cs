@@ -15,7 +15,7 @@ namespace AppLauncher
 
         public static SettingsWindowViewModel SettingsWindowViewModel { get; } = new();
 
-        public static ShortcutManager ShortcutManager { get; } = new ();
+        public static ShortcutManager ShortcutManager { get; } = new (new IconBuilder(), new ShortcutBuilder());
 
         public static DataManager DataManager { get; } = new();
 

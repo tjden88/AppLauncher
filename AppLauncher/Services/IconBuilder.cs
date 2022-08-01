@@ -11,7 +11,7 @@ namespace AppLauncher.Services
 {
     public class IconBuilder : IIconBuilder
     {
-        public ImageSource GetImage(string Path, int Index)
+        public ImageSource GetImage(string Path)
         {
             IntPtr hIcon = GetXLIcon(GetIconIndex(Path));
 

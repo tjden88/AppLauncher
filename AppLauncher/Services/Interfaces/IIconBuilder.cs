@@ -8,6 +8,6 @@ namespace AppLauncher.Services.Interfaces
     public interface IIconBuilder
     {
         /// <summary> Получить изображение из файла / папки </summary>
-        public ImageSource GetImage(string Path, int Index);
+        public ImageSource GetImage(string Path);
     }
 }
