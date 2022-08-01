@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Models;
-using WindowsShortcutFactory;
+using AppLauncher.Services.Interfaces;
 
 namespace AppLauncher.Services
 {
     /// <summary>
     /// Сервис работы с ярлыками
     /// </summary>
-    public class ShortcutService
+    public class ShortcutManager
     {
+        private readonly IIconBuilder _IconBuilder;
+        private readonly IShortcutBuilder _ShortcutBuilder;
         private readonly string _ShortcutsPath = Path.Combine(Environment.CurrentDirectory, "Shortcuts");
+
 
         private string _ShortcutFullPath(string ShortcutPath) => Path.Combine(_ShortcutsPath, ShortcutPath);
 
-        public ShortcutService()
+        public ShortcutManager(IIconBuilder IconBuilder, IShortcutBuilder ShortcutBuilder)
         {
+            _IconBuilder = IconBuilder;
+            _ShortcutBuilder = ShortcutBuilder;
             Directory.CreateDirectory(_ShortcutsPath);
         }
 
@@ -32,17 +31,13 @@ namespace AppLauncher.Services
         /// <summary>
         /// Получить путь до целевого объекта ярлыка
         /// </summary>
-        /// <param name="ShortcutsPath">Путь ярлыка</param>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
         /// <returns></returns>
-        public string GetFilePath(string ShortcutsPath)
+        public string GetFilePath(string ShortcutPath)
         {
-            var path = _ShortcutFullPath(ShortcutsPath);
+            var path = _ShortcutFullPath(ShortcutPath);
 
-            if (!File.Exists(path)) return null;
-
-            using var sc = WindowsShortcut.Load(path);
-
-            return sc.Path;
+            return _ShortcutBuilder.GetExecutingPath(path);
         }
 
 
@@ -84,10 +79,8 @@ namespace AppLauncher.Services
         /// Удалить ярлык из рабочей папки
         /// </summary>
         /// <param name="ShortcutPath">Путь ярлыка</param>
-        public void DeleteShortcut(string ShortcutPath)
-        {
-            File.Delete(_ShortcutFullPath(ShortcutPath));
-        }
+        public void DeleteShortcut(string ShortcutPath) => File.Delete(_ShortcutFullPath(ShortcutPath));
+
 
         /// <summary>
         /// Запустить ярлык
@@ -116,20 +109,10 @@ namespace AppLauncher.Services
         {
             var path = _ShortcutFullPath(ShortcutPath);
 
-            if (!File.Exists(path)) return null;
+            var iconLocation = _ShortcutBuilder.GetIconLocation(ShortcutPath) 
+                               ?? _ShortcutBuilder.GetExecutingPath(ShortcutPath);
 
-            using var sc = WindowsShortcut.Load(path);
-
-            var pathToIconFile = sc.IconLocation.Path;
-            if (string.IsNullOrEmpty(pathToIconFile))
-                pathToIconFile = sc.Path;
-
-            if (File.Exists(pathToIconFile) || Directory.Exists(pathToIconFile))
-            {
-                return GetImgFromFileOrFolder(pathToIconFile);
-            }
-
-            return null;
+            return iconLocation == null ? null : _IconBuilder.GetImage(iconLocation);
         }
 
         /// <summary> Очистка лишних ярлыков </summary>
@@ -182,62 +165,7 @@ namespace AppLauncher.Services
             }
 
         }
-
-        private readonly IconHelper _IconHelper = new();
-
-        private ImageSource GetImgFromFileOrFolder(string Path)
-        {
-            if (File.Exists(Path))
-                return _IconHelper.GetIcon(Path);
-
-            return GetImgFromFolder(Path);
-        }
-
-
-        private ImageSource GetImgFromFolder(string Path)
-        {
-            var shinfo = new SHFILEINFO();
-
-            //Call function with the path to the folder you want the icon for
-            SHGetFileInfo(Path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
-                SHGFI_ICON | SHGFI_LARGEICON);
-
-            using var icon = Icon.FromHandle(shinfo.hIcon);
-
-            //Convert icon to a Bitmap source
-            ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
-                icon.Handle,
-                new Int32Rect(0, 0, icon.Width, icon.Height),
-                BitmapSizeOptions.FromEmptyOptions());
-
-            return img;
-        }
-
-        #region Interop
-
-        //Struct used by SHGetFileInfo function
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SHFILEINFO
-        {
-            public IntPtr hIcon;
-            public int iIcon;
-            public uint dwAttributes;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szDisplayName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-            public string szTypeName;
-        };
-
-        //Constants flags for SHGetFileInfo 
-        public const uint SHGFI_ICON = 0x100;
-        public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
-
-        //Import SHGetFileInfo functio
-        [DllImport("shell32.dll")]
-        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
-
-        #endregion
-
+        
         #endregion
 
     }

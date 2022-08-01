@@ -12,10 +12,10 @@
         public string Description { get; set; }
 
         /// <summary> Путь для запуска </summary>
-        public string ExecutingPath { get; set; }
+        public string Path { get; set; }
 
         /// <summary> Данные изображения </summary>
-        public byte[] Image { get; set; }
+        public byte[] UserImageData { get; set; }
 
     }
 }

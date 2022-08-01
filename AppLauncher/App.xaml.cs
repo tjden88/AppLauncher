@@ -15,7 +15,7 @@ namespace AppLauncher
 
         public static SettingsWindowViewModel SettingsWindowViewModel { get; } = new();
 
-        public static ShortcutService ShortcutService { get; } = new ();
+        public static ShortcutManager ShortcutManager { get; } = new ();
 
         public static DataManager DataManager { get; } = new();
 
@@ -23,7 +23,7 @@ namespace AppLauncher
 
         protected override void OnExit(ExitEventArgs e)
         {
-            ShortcutService.CleanNotUsedShortcuts();
+            ShortcutManager.CleanNotUsedShortcuts();
             base.OnExit(e);
         }
 

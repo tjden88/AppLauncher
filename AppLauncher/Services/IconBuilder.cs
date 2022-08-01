@@ -5,12 +5,13 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AppLauncher.Services.Interfaces;
 
-namespace AppLauncher.Infrastructure.Helpers
+namespace AppLauncher.Services
 {
-    class IconHelper
+    public class IconBuilder : IIconBuilder
     {
-        public ImageSource GetIcon(string FileName)
+        public ImageSource GetImage(string Path)
         {
             IntPtr hIcon = GetXLIcon(GetIconIndex(FileName));
 
@@ -25,6 +26,27 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return img;
         }
+
+
+        private ImageSource GetImgFromFolder(string Path)
+        {
+            var shinfo = new SHFILEINFO();
+
+            ////Call function with the path to the folder you want the icon for
+            //SHGetFileInfo(Path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo),
+            //    SHGFI_ICON | SHGFI_LARGEICON);
+
+            using var icon = Icon.FromHandle(shinfo.hIcon);
+
+            //Convert icon to a Bitmap source
+            ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
+                icon.Handle,
+                new Int32Rect(0, 0, icon.Width, icon.Height),
+                BitmapSizeOptions.FromEmptyOptions());
+
+            return img;
+        }
+
 
         int GetIconIndex(string pszFile)
         {
@@ -62,6 +84,17 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return hIcon;
         }
+
+
+
+
+
+
+
+
+
+
+
 
 
         [Flags]
@@ -163,9 +196,9 @@ namespace AppLauncher.Infrastructure.Helpers
             public int Unused2;
             public RECT rcImage;
         }
-        [ComImportAttribute()]
-        [GuidAttribute("46EB5926-582E-4017-9FDF-E8998DAA0950")]
-        [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport()]
+        [Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         public interface IImageList
         {
             [PreserveSig]
@@ -359,5 +392,6 @@ namespace AppLauncher.Infrastructure.Helpers
             );
         }
 
+     
     }
 }

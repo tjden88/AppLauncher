@@ -4,7 +4,7 @@ using AppLauncher.Services.Interfaces;
 
 namespace AppLauncher.Services
 {
-    public class LnkShortcutManager : IShortcutManager
+    public class LnkShortcutBuilder : IShortcutBuilder
     {
         public Shortcut CreateShortcut(string Path)
         {
@@ -12,7 +12,7 @@ namespace AppLauncher.Services
         }
     }
 
-    public class UrlShortcutManager : IShortcutManager
+    public class UrlShortcutBuilder : IShortcutBuilder
     {
         public Shortcut CreateShortcut(string Path)
         {
@@ -20,7 +20,7 @@ namespace AppLauncher.Services
         }
     }
 
-    public class FileFolderShortcutManager : IShortcutManager
+    public class FileFolderShortcutBuilder : IShortcutBuilder
     {
         public Shortcut CreateShortcut(string Path)
         {

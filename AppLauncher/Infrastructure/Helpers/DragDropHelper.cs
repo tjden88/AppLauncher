@@ -96,7 +96,7 @@ namespace AppLauncher.Infrastructure.Helpers
 
             if (sourceItem is DataObject dataObject && dataObject.GetData(DataFormats.FileDrop) is string[] strArray)
             {
-                var shortcutService = App.ShortcutService;
+                var shortcutService = App.ShortcutManager;
 
                 var viewModels = strArray
                     .Select(shortcutService.CreateShortcut)
