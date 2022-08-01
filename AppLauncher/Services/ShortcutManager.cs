@@ -47,10 +47,20 @@ namespace AppLauncher.Services
         /// <returns>Созданный ярлык, или null</returns>
         public Shortcut CreateShortcut(string FileName)
         {
+            if (!File.Exists(FileName) && !Directory.Exists(FileName))
+                return null;
+
+            var shortcutName = Path.GetFileNameWithoutExtension(FileName);
+
+            if (string.IsNullOrEmpty(shortcutName)) // Корневые каталоги
+            {
+                var drive = new DriveInfo(FileName[0].ToString());
+                shortcutName = $"{drive.VolumeLabel} ({drive.Name})";
+            }
 
             var fileExtension = Path.GetExtension(FileName).ToLower();
 
-            var shortcutFileName = GetAvaliableFileName(Path.GetFileNameWithoutExtension(FileName), fileExtension == ".url" ? ".url" : ".lnk");
+            var shortcutFileName = GetAvaliableFileName(shortcutName, fileExtension == ".url" ? ".url" : ".lnk");
 
             // Копируем готовые ярлыки
             if (fileExtension is ".lnk" or ".url")
@@ -66,18 +76,16 @@ namespace AppLauncher.Services
                     return null;
                 }
             }
-            else
+            else // Создать ярлык из файла/папки
             {
-                // Создать ярлык из файла/папки
-                var cuccess = _ShortcutBuilder.CreateShortcut(FileName, _ShortcutFullPath(shortcutFileName));
-
-                if (!cuccess) return null;
+                if (!_ShortcutBuilder.CreateShortcut(FileName, _ShortcutFullPath(shortcutFileName)))
+                    return null;
             }
 
 
             return new Shortcut
             {
-                Name = Path.GetFileNameWithoutExtension(FileName),
+                Name = shortcutName,
                 Path = shortcutFileName,
             };
         }
@@ -88,7 +96,12 @@ namespace AppLauncher.Services
         private string GetAvaliableFileName(string initName, string extension)
         {
 
+            initName = Path.GetInvalidFileNameChars()
+                .Aggregate(initName, (current, c) => current
+                    .Replace(c.ToString(), string.Empty));
+
             var newFileName = Path.Combine(_ShortcutsPath, initName + extension);
+
 
             var intCount = 1;
             while (File.Exists(newFileName))
