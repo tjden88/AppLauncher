@@ -165,7 +165,7 @@ public class GroupViewModel : ViewModel, IDropTarget
 
         foreach (var cell in ShortcutCells)
             cell.GetAllShortcuts()
-                .ForEach(sc => App.ShortcutService
+                .ForEach(sc => App.ShortcutManager
                     .DeleteShortcut(sc.ShortcutPath));
 
 

@@ -52,7 +52,7 @@ namespace AppLauncher.ViewModels
         {
             get
             {
-                var iconFromShortcut = App.ShortcutService.GetIconFromShortcut(ShortcutPath);
+                var iconFromShortcut = App.ShortcutManager.GetIconFromShortcut(ShortcutPath);
                 HasImage = iconFromShortcut != null;
                 return iconFromShortcut;
             }
@@ -94,7 +94,7 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Запуск</summary>
         private void OnLaunchCommandExecuted()
         {
-            App.ShortcutService.StartProcess(ShortcutPath);
+            App.ShortcutManager.StartProcess(ShortcutPath);
         }
 
         #endregion
@@ -151,7 +151,7 @@ namespace AppLauncher.ViewModels
         private void OnDeleteCommandExecuted()
         {
             var cell = FindCell();
-            App.ShortcutService.DeleteShortcut(ShortcutPath);
+            App.ShortcutManager.DeleteShortcut(ShortcutPath);
             cell.Remove(this);
             App.DataManager.SaveData();
         }
@@ -231,7 +231,7 @@ namespace AppLauncher.ViewModels
         {
             var path = PathToDirectory();
 
-            var argument = "/select, \"" + App.ShortcutService.GetFilePath(ShortcutPath) + "\"";
+            var argument = "/select, \"" + App.ShortcutManager.GetFilePath(ShortcutPath) + "\"";
 
             Process.Start(new ProcessStartInfo("explorer.exe", argument)
             {
@@ -261,7 +261,7 @@ namespace AppLauncher.ViewModels
 
         private string PathToDirectory()
         {
-            var path = App.ShortcutService.GetFilePath(ShortcutPath);
+            var path = App.ShortcutManager.GetFilePath(ShortcutPath);
 
             var directoryName = Directory.Exists(path) ? path : Path.GetDirectoryName(path);
             return directoryName;

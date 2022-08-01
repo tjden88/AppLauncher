@@ -5,14 +5,15 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AppLauncher.Services.Interfaces;
 
-namespace AppLauncher.Infrastructure.Helpers
+namespace AppLauncher.Services
 {
-    class IconHelper
+    public class IconBuilder : IIconBuilder
     {
-        public ImageSource GetIcon(string FileName)
+        public ImageSource GetImage(string Path)
         {
-            IntPtr hIcon = GetXLIcon(GetIconIndex(FileName));
+            IntPtr hIcon = GetXLIcon(GetIconIndex(Path));
 
             // from native to managed
             using Icon ico = (Icon)Icon.FromHandle(hIcon).Clone();
@@ -25,7 +26,7 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return img;
         }
-
+        
         int GetIconIndex(string pszFile)
         {
             SHFILEINFO sfi = new SHFILEINFO();
@@ -62,6 +63,8 @@ namespace AppLauncher.Infrastructure.Helpers
 
             return hIcon;
         }
+
+
 
 
         [Flags]
@@ -163,9 +166,9 @@ namespace AppLauncher.Infrastructure.Helpers
             public int Unused2;
             public RECT rcImage;
         }
-        [ComImportAttribute()]
-        [GuidAttribute("46EB5926-582E-4017-9FDF-E8998DAA0950")]
-        [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+        [ComImport()]
+        [Guid("46EB5926-582E-4017-9FDF-E8998DAA0950")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         public interface IImageList
         {
             [PreserveSig]
@@ -359,5 +362,6 @@ namespace AppLauncher.Infrastructure.Helpers
             );
         }
 
+     
     }
 }
