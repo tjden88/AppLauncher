@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="Настройки" Height="180" Width="365">
+        Title="Настройки" Height="200" Width="365">
     <d:Window.DataContext>
         <viewModels:SettingsWindowViewModel/>
     </d:Window.DataContext>
@@ -16,6 +16,7 @@
 
         <Button Content="Сохранить"
                 Command="{Binding SaveSettingsCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 IsDefault="True" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="10" Padding="10,6" Foreground="Black" Cursor="Hand"></Button>
 
         <StackPanel Orientation="Vertical" Margin="10">

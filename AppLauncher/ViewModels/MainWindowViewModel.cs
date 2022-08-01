@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
+using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -89,7 +90,6 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
 
         #region Commands
 
@@ -194,6 +194,32 @@ namespace AppLauncher.ViewModels
 
         /// <summary>Логика выполнения - Изменить позицию окна</summary>
         private void OnChangeTopMostCommandExecuted() => IsTopMost = !IsTopMost;
+
+        #endregion
+
+
+        #region Command ShowSettingsWindowCommand - Показать окно настроек
+
+        /// <summary>Показать окно настроек</summary>
+        private Command _ShowSettingsWindowCommand;
+
+        /// <summary>Показать окно настроек</summary>
+        public Command ShowSettingsWindowCommand => _ShowSettingsWindowCommand
+            ??= new Command(OnShowSettingsWindowCommandExecuted, CanShowSettingsWindowCommandExecute, "Показать окно настроек");
+
+        /// <summary>Проверка возможности выполнения - Показать окно настроек</summary>
+        private bool CanShowSettingsWindowCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Показать окно настроек</summary>
+        private void OnShowSettingsWindowCommandExecuted()
+        {
+            var wnd = new SettingsWindow
+            {
+                Owner = App.ActiveWindow,
+                DataContext = App.SettingsWindowViewModel
+            };
+            wnd.ShowDialog();
+        }
 
         #endregion
 

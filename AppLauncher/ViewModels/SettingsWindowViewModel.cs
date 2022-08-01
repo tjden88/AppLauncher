@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 using WPR.Tools;
@@ -125,7 +126,6 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-
         #region Command SaveSettingsCommand - Сохранить настройки
 
         /// <summary>Сохранить настройки</summary>
@@ -136,10 +136,15 @@ namespace AppLauncher.ViewModels
             ??= new Command(OnSaveSettingsCommandExecuted, CanSaveSettingsCommandExecute, "Сохранить настройки");
 
         /// <summary>Проверка возможности выполнения - Сохранить настройки</summary>
-        private bool CanSaveSettingsCommandExecute() => true;
+        private bool CanSaveSettingsCommandExecute(object p) => p is Window;
 
         /// <summary>Логика выполнения - Сохранить настройки</summary>
-        private void OnSaveSettingsCommandExecuted() => SaveData();
+        private void OnSaveSettingsCommandExecuted(object p)
+        {
+            SaveData();
+            ((Window)p).DialogResult = true;
+
+        }
 
         #endregion
     }

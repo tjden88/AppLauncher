@@ -72,6 +72,13 @@
                         </fa5:FontAwesome>
                     </Button.Content>
                 </Button>
+                <Button DockPanel.Dock="Left" Margin="5" Padding="5,2"
+                        ToolTip="Настройки"
+                        Command="{Binding ShowSettingsWindowCommand}" Cursor="Hand">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_Cog"/>
+                    </Button.Content>
+                </Button>
                 <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"
                            Foreground="White"
                            Text="{Binding Title}"
