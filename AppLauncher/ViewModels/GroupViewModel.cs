@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Automation;
 using AppLauncher.Infrastructure.Helpers;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
@@ -143,10 +144,19 @@ public class GroupViewModel : ViewModel, IDropTarget
 
 
 
-    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo);
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, !IsSelected);
 
 
-    public void Drop(IDropInfo dropInfo) => AddShortcuts(DragDropHelper.Drop(dropInfo));
+    public void Drop(IDropInfo dropInfo)
+    {
+        if (DragDropHelper.DropGroup(dropInfo) is { } group)
+        {
+            var index = App.MainWindowViewModel.Groups.IndexOf(this);
+            App.MainWindowViewModel.Groups.Insert(index, group);
+            return;
+        }
+        AddShortcuts(DragDropHelper.Drop(dropInfo));
+    }
 
 
     /// <summary> Добавить ярлыки в группу и разложить по новым ячейкам </summary>

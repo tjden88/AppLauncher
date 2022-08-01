@@ -8,13 +8,18 @@ namespace AppLauncher.Infrastructure.Helpers
 {
     public static class DragDropHelper
     {
-        public static void DragOver(IDropInfo dropInfo)
+        public static void DragOver(IDropInfo dropInfo, bool AcceptGroup = false)
         {
             var sourceItem = dropInfo.Data;
 
             switch (sourceItem)
             {
                 case ShortcutViewModel:
+                    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                    dropInfo.Effects = DragDropEffects.Move;
+                    break;
+
+                case GroupViewModel when AcceptGroup:
                     dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                     dropInfo.Effects = DragDropEffects.Move;
                     break;
@@ -31,6 +36,12 @@ namespace AppLauncher.Infrastructure.Helpers
             }
         }
 
+        public static GroupViewModel DropGroup(IDropInfo dropInfo)
+        {
+            if (dropInfo.Data is not GroupViewModel vm) return null;
+
+            return App.MainWindowViewModel.Groups.Remove(vm) ? vm : null;
+        }
 
         public static ShortcutViewModel[] Drop(IDropInfo dropInfo)
         {

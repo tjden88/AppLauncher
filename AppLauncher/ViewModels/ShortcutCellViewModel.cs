@@ -220,10 +220,11 @@ namespace AppLauncher.ViewModels
 
         public void Drop(IDropInfo dropInfo)
         {
-            var links = DragDropHelper.Drop(dropInfo);
+            var viewModels = DragDropHelper.Drop(dropInfo);
 
+            if(!viewModels.Any()) return;
 
-            var firstLink = links[0];
+            var firstLink = viewModels[0];
 
             var linkNumber = ((Border)dropInfo.VisualTarget).Tag as string;
 
@@ -243,7 +244,7 @@ namespace AppLauncher.ViewModels
                     break;
             }
 
-            if (links.Length < 2)
+            if (viewModels.Length < 2)
             {
                 App.DataManager.SaveData();
                 return;
@@ -251,7 +252,7 @@ namespace AppLauncher.ViewModels
 
             var vm = App.MainWindowViewModel.Groups.First(g => g.Id == GroupId);
 
-            vm.AddShortcuts(links.Skip(1).ToArray());
+            vm.AddShortcuts(viewModels.Skip(1).ToArray());
 
         } 
 

@@ -13,7 +13,8 @@
     <d:UserControl.DataContext>
         <viewModels:GroupViewModel/>
     </d:UserControl.DataContext>
-    <Border BorderBrush="Gray" CornerRadius="7" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}">
+    <Border BorderBrush="Gray" Background="Transparent" CornerRadius="7" BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}"
+            dd:DragDrop.IsDragSource="{Binding IsSelected}">
         <Grid>
 
             <Grid.RowDefinitions>
@@ -23,7 +24,7 @@
 
             <!--Заголовок-->
             <DockPanel>
-                <fa5:FontAwesome Icon="Solid_CircleNotch" Margin="10" VerticalAlignment="Center" FontSize="16" Cursor="Hand" Background="Transparent"
+                <fa5:FontAwesome Icon="Solid_Bars" Margin="10" VerticalAlignment="Center" FontSize="12" Cursor="Hand" Background="Transparent"
                              ToolTip="Редактировать группу">
                     <fa5:FontAwesome.ContextMenu>
                         <ContextMenu>
