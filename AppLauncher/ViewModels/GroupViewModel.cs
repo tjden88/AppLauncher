@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Automation;
 using AppLauncher.Infrastructure.Helpers;
+using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -44,8 +44,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     public string Name
     {
         get => _Name;
-        set => IfSet(ref _Name, value)
-            .Then(App.DataManager.SaveData);
+        set => IfSet(ref _Name, value);
     }
 
     #endregion
@@ -104,6 +103,41 @@ public class GroupViewModel : ViewModel, IDropTarget
 
     /// <summary>Логика выполнения - Выбрать группу</summary>
     private void OnSelectGroupCommandExecuted() => App.MainWindowViewModel.SelectedGroup = !IsSelected ? this : null;
+
+    #endregion
+
+
+    #region Command RenameCommand - Переименовать группу
+
+    /// <summary>Переименовать группу</summary>
+    private Command _RenameCommand;
+
+    /// <summary>Переименовать группу</summary>
+    public Command RenameCommand => _RenameCommand
+        ??= new Command(OnRenameCommandExecuted, CanRenameCommandExecute, "Переименовать группу");
+
+    /// <summary>Проверка возможности выполнения - Переименовать группу</summary>
+    private bool CanRenameCommandExecute() => true;
+
+    /// <summary>Логика выполнения - Переименовать группу</summary>
+    private void OnRenameCommandExecuted()
+    {
+        var vm = new InputBoxWindowViewModel()
+        {
+            Caption = $"Введите новое имя для группы {Name}:",
+            Result = Name
+        };
+        var wnd = new InputBoxWindow()
+        {
+            Owner = App.ActiveWindow,
+            DataContext = vm,
+        };
+        if (wnd.ShowDialog() != true) return;
+
+        Name = vm.Result;
+
+        App.DataManager.SaveData();
+    }
 
     #endregion
 

@@ -29,26 +29,30 @@
             <DockPanel>
                 <fa5:FontAwesome Icon="Solid_Bars" Margin="10" VerticalAlignment="Center" FontSize="12" Cursor="Hand" Background="Transparent"
                              ToolTip="Редактировать группу">
-                    <fa5:FontAwesome.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Удалить группу" Command="{Binding DeleteGroupCommand}">
-                                <MenuItem.Icon>
-                                    <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </ContextMenu>
-                    </fa5:FontAwesome.ContextMenu>
                     <fa5:FontAwesome.InputBindings>
                         <MouseBinding MouseAction="LeftClick" Command="{Binding SelectGroupCommand}"/>
                     </fa5:FontAwesome.InputBindings>
                 </fa5:FontAwesome>
 
-                <TextBox Foreground="White" Background="Transparent" 
-                     CaretBrush="White"
-                     Focusable="{Binding IsSelected}"
-                     IsHitTestVisible="{Binding IsSelected}"
-                     BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToIntConverter}}" 
-                     BorderBrush="White"
+                <Button DockPanel.Dock="Right" Padding="7,5" VerticalAlignment="Center" Margin="5"
+                        ToolTip="Удалить группу"
+                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Command="{Binding DeleteGroupCommand}">
+                    <Button.Content>
+                        <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+                    </Button.Content>
+                </Button>
+
+                <Button DockPanel.Dock="Right" Padding="5" VerticalAlignment="Center" Margin="5"
+                        ToolTip="Изменить имя"
+                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Command="{Binding RenameCommand}" Cursor="Hand">
+                    <Button.Content>
+                        <fa5:FontAwesome Icon="Solid_FileSignature"/>
+                    </Button.Content>
+                </Button>
+
+                <TextBlock Foreground="White" Background="Transparent" 
                      Text="{Binding Name}"
                      FontSize="18" Margin="0,10,10,10" />
             </DockPanel>
