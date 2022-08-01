@@ -12,7 +12,7 @@
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
-        Topmost="True"
+        Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
@@ -50,9 +50,24 @@
                     </Button.Content>
                 </Button>
                 <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
-                        ToolTip="Скрывать автоматически" Cursor="Hand">
+                        Command="{Binding ChangeTopMostCommand}"
+                        ToolTip="Поверх всех окон" Cursor="Hand">
                     <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_Thumbtack"/>
+                        <fa5:FontAwesome Icon="Solid_Thumbtack">
+                            <fa5:FontAwesome.RenderTransform>
+                                <RotateTransform/>
+                            </fa5:FontAwesome.RenderTransform>
+                            <fa5:FontAwesome.Style>
+                                <Style TargetType="fa5:FontAwesome">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsTopMost}" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="Rotation" Value="45" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </fa5:FontAwesome.Style>
+                        </fa5:FontAwesome>
                     </Button.Content>
                 </Button>
                 <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"

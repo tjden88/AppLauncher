@@ -32,6 +32,10 @@ namespace AppLauncher.ViewModels
         private void LoadData()
         {
             _Settings = DataSerializer.LoadFromFile<AppSettings>(_SettingsFileName) ?? new AppSettings();
+            WindowWidth = _Settings.WindowWidth;
+            WindowHeight = _Settings.WindowHeight;
+            AutoHide = _Settings.AutoHide;
+            IsTopMost = _Settings.IsTopMost;
         }
 
         public void SaveData()

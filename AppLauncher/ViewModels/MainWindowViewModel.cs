@@ -58,6 +58,25 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region IsTopMost : bool - Поверх всех окон
+
+        /// <summary>Поверх всех окон</summary>
+        public bool IsTopMost
+        {
+            get => App.SettingsWindowViewModel.IsTopMost;
+            set
+            {
+                if(Equals(value, App.SettingsWindowViewModel.IsTopMost)) return;
+                App.SettingsWindowViewModel.IsTopMost = value;
+                OnPropertyChanged(nameof(IsTopMost));
+            }
+        }
+
+        #endregion
+
+        
+
+
         #region Commands
 
 
@@ -143,6 +162,24 @@ namespace AppLauncher.ViewModels
         {
             Application.Current.Shutdown();
         }
+
+        #endregion
+
+
+        #region Command ChangeTopMostCommand - Изменить позицию окна
+
+        /// <summary>Изменить позицию окна</summary>
+        private Command _ChangeTopMostCommand;
+
+        /// <summary>Изменить позицию окна</summary>
+        public Command ChangeTopMostCommand => _ChangeTopMostCommand
+            ??= new Command(OnChangeTopMostCommandExecuted, CanChangeTopMostCommandExecute, "Изменить позицию окна");
+
+        /// <summary>Проверка возможности выполнения - Изменить позицию окна</summary>
+        private bool CanChangeTopMostCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Изменить позицию окна</summary>
+        private void OnChangeTopMostCommandExecuted() => IsTopMost = !IsTopMost;
 
         #endregion
 
