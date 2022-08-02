@@ -13,5 +13,10 @@ namespace AppLauncher.Infrastructure.Converters
         {
             return v is true ? WindowState.Minimized : WindowState.Normal;
         }
+
+        protected override object ConvertBack(object v, Type t, object p, CultureInfo c)
+        {
+            return v is not WindowState.Normal;
+        }
     }
 }

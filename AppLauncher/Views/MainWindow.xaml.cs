@@ -101,8 +101,6 @@ namespace AppLauncher.Views
 
             // According to some sources these steps gurantee that an app will be brought to foreground.
             Activate();
-            Topmost = true;
-            Topmost = false;
             Focus();
         }
     }
