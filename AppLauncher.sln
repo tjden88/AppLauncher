@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLauncher", "AppLauncher\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppLauncher.TestConsole", "AppLauncher.TestConsole\AppLauncher.TestConsole.csproj", "{5A39131A-53D5-4839-8E87-C79AF169A58A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppLauncherStarter", "AppLauncherStarter\AppLauncherStarter.csproj", "{587F2205-8361-4E3F-A457-04C623A5ED1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Launcher", "AppLauncherStarter\Launcher.csproj", "{587F2205-8361-4E3F-A457-04C623A5ED1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

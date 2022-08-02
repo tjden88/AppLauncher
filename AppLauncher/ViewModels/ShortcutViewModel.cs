@@ -276,6 +276,24 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        #region Command RefreshIconCommand - Обновить значок
+
+        /// <summary>Обновить значок</summary>
+        private Command _RefreshIconCommand;
+
+        /// <summary>Обновить значок</summary>
+        public Command RefreshIconCommand => _RefreshIconCommand
+            ??= new Command(OnRefreshIconCommandExecuted, CanRefreshIconCommandExecute, "Обновить значок");
+
+        /// <summary>Проверка возможности выполнения - Обновить значок</summary>
+        private bool CanRefreshIconCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Обновить значок</summary>
+        private void OnRefreshIconCommandExecuted() => OnPropertyChanged(nameof(Image));
+
+        #endregion
+
         #endregion
 
 

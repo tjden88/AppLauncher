@@ -24,12 +24,17 @@
                     <ContextMenu>
                         <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
                             <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                                <fa5:FontAwesome Icon="Solid_SearchLocation"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Расположение ярлыка" Command="{Binding GoToShortcutCommand}">
                             <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                                <fa5:FontAwesome Icon="Solid_Share"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Обновить значок" Command="{Binding RefreshIconCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Sync"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator Margin="0,8,10,8"/>
@@ -143,12 +148,17 @@
                     <ContextMenu>
                         <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
                             <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                                <fa5:FontAwesome Icon="Solid_SearchLocation"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Расположение ярлыка" Command="{Binding GoToShortcutCommand}">
                             <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileUpload"/>
+                                <fa5:FontAwesome Icon="Solid_Share"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Обновить значок" Command="{Binding RefreshIconCommand}">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Sync"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator Margin="0,8,10,8"/>

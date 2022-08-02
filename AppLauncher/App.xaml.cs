@@ -125,7 +125,7 @@ namespace AppLauncher
                 reader.BaseStream.Position = 0;
                 var message = reader.ReadString();
                 if (message == "Activate")
-                    MainWindowViewModel.IsHidden = false;
+                    MainWindowViewModel.IsHidden = !MainWindowViewModel.IsHidden;
                 mutex.ReleaseMutex();
             }
         }

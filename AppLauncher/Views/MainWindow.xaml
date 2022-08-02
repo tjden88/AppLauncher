@@ -13,6 +13,7 @@
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
+        ResizeMode="NoResize"
         Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
