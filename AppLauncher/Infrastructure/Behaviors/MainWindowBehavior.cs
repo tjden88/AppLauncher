@@ -29,7 +29,7 @@ namespace AppLauncher.Infrastructure.Behaviors
             AssociatedObject.RootGrid.RenderTransform = _ScaleTransform;
             AssociatedObject.RootGrid.RenderTransformOrigin = new Point(0.5, 1);
 
-            var duration = TimeSpan.FromSeconds(0.3);
+            var duration = TimeSpan.FromSeconds(0.23);
 
             // Подготовка анимации
             _StoryboardShow.Children.Add(new DoubleAnimation(0, 1, duration) { EasingFunction = _CircleEase });
