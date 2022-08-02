@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
@@ -48,6 +51,9 @@ namespace AppLauncher
             }
 
             SingleInstance();
+
+            Task.Run(Consumer);
+
         }
 
         #region Constants and Fields
@@ -102,6 +108,27 @@ namespace AppLauncher
 
             // Terminate this instance.
             Shutdown();
+        }
+
+        static void Consumer()
+        {
+            using (var mmf = MemoryMappedFile.CreateOrOpen("MyMapName", 1024))
+            using (var view = mmf.CreateViewStream())
+            {
+                var reader = new BinaryReader(view);
+                var signal = new EventWaitHandle(false, EventResetMode.AutoReset, "MyEventName");
+                var mutex = new Mutex(false, "MyMutex");
+
+                while (true)
+                {
+                    signal.WaitOne();
+                    mutex.WaitOne();
+                    reader.BaseStream.Position = 0;
+                    var message = reader.ReadString();
+                    MessageBox.Show(message);
+                    mutex.ReleaseMutex();
+                }
+            }
         }
 
         #endregion
