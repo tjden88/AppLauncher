@@ -89,5 +89,21 @@ namespace AppLauncher.Views
         {
             DragMove();
         }
+
+        /// <summary>Brings main window to foreground.</summary>
+        public void BringToForeground()
+        {
+            if (WindowState == WindowState.Minimized || Visibility == Visibility.Hidden)
+            {
+                Show();
+                WindowState = WindowState.Normal;
+            }
+
+            // According to some sources these steps gurantee that an app will be brought to foreground.
+            Activate();
+            Topmost = true;
+            Topmost = false;
+            Focus();
+        }
     }
 }
