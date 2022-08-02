@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
-using AppLauncher.Views;
 
 namespace AppLauncher
 {
@@ -70,7 +69,7 @@ namespace AppLauncher
                         while (_EventWaitHandle.WaitOne())
                         {
                             Current.Dispatcher.BeginInvoke(
-                                (Action)(() => ((MainWindow)Current.MainWindow).BringToForeground()));
+                                (Action)(() => MainWindowViewModel.IsHidden = false));
                         }
                     })
                 {

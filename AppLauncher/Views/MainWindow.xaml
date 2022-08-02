@@ -9,16 +9,18 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
+        xmlns:behaviors="clr-namespace:AppLauncher.Infrastructure.Behaviors"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
-        WindowState="{Binding IsWindowMinimized, Converter={converters:BoolToMinimizedWindowStateConverter}}"
         Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         Title="MainWindow" Height="720" Width="920">
+    <b:Interaction.Behaviors>
+        <behaviors:MainWindowBehavior IsHidden="{Binding IsHidden}"/>
+    </b:Interaction.Behaviors>
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadGroupsCommand}"/>
