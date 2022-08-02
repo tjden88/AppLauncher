@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using System.Security.AccessControl;
 using System.Windows;
 using Microsoft.Win32;
 using WPR.MVVM.Commands;
