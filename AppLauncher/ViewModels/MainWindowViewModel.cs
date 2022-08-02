@@ -174,7 +174,8 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Закрыть или свернуть окно</summary>
         private void OnCloseWindowCommandExecuted()
         {
-            Application.Current.Shutdown();
+            IsHidden = true;
+            //Application.Current.Shutdown();
         }
 
         #endregion
