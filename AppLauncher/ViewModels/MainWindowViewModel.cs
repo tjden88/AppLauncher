@@ -159,27 +159,29 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region Command CloseWindowCommand - Закрыть или свернуть окно
+        #region Command CloseWindowCommand : bool - Закрыть или свернуть окно
 
         /// <summary>Закрыть или свернуть окно</summary>
-        private Command _CloseWindowCommand;
+        private Command<string> _CloseWindowCommand;
 
         /// <summary>Закрыть или свернуть окно</summary>
-        public Command CloseWindowCommand => _CloseWindowCommand
-            ??= new Command(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно");
+        public Command<string> CloseWindowCommand => _CloseWindowCommand
+            ??= new Command<string>(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно") {CanExecuteWithNullParameter = true};
 
         /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
-        private bool CanCloseWindowCommandExecute() => true;
+        private bool CanCloseWindowCommandExecute(string p) => true;
 
-        /// <summary>Логика выполнения - Закрыть или свернуть окно</summary>
-        private void OnCloseWindowCommandExecuted()
+        /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
+        private void OnCloseWindowCommandExecuted(string p)
         {
-            IsHidden = true;
-            //Application.Current.Shutdown();
+            if (p == "1")
+                Application.Current.Shutdown();
+            else
+                IsHidden = true;
         }
 
         #endregion
-
+        
 
         #region Command ChangeTopMostCommand - Изменить позицию окна
 

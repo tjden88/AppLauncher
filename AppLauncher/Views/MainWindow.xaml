@@ -37,23 +37,47 @@
             <!--Заголовок-->
             <DockPanel DockPanel.Dock="Top" 
                        MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent">
+                <Menu Background="Transparent" Margin="5">
+                    <MenuItem Foreground="White" ToolTip="Меню" Cursor="Hand">
+                        <MenuItem.Header>
+                            <fa5:FontAwesome Icon="Solid_Rocket" FontSize="18"/>
+                        </MenuItem.Header>
+                        <MenuItem Background="Black" Foreground="White"
+                                  Height="50"
+                                  Command="{Binding AddGroupCommand}"
+                                  Header="Добавить группу">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Plus" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Background="Black" Foreground="White"
+                                  Height="50"
+                                  Command="{Binding ShowSettingsWindowCommand}"
+                                  Header="Настройки">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Cog" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Background="Black" Foreground="White" Margin="0,2"
+                                  Height="50"
+                                  Command="{Binding CloseWindowCommand}"
+                                  CommandParameter="1"
+                                  Header="Выход">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_SignOutAlt" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
 
-                <Button DockPanel.Dock="Left" Margin="5" Padding="5,2"
-                        ToolTip="Добавить группу"
-                        Command="{Binding AddGroupCommand}" Cursor="Hand">
-                    <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_Plus"/>
-                    </Button.Content>
-                </Button>
-
-                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
+                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
                         ToolTip="Закрыть окно"
                         Command="{Binding CloseWindowCommand}" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
-                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
+                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
                         Command="{Binding ChangeTopMostCommand}"
                         ToolTip="Поверх всех окон" Cursor="Hand">
                     <Button.Content>
@@ -72,13 +96,6 @@
                                 </Style>
                             </fa5:FontAwesome.Style>
                         </fa5:FontAwesome>
-                    </Button.Content>
-                </Button>
-                <Button DockPanel.Dock="Left" Margin="5" Padding="5,2"
-                        ToolTip="Настройки"
-                        Command="{Binding ShowSettingsWindowCommand}" Cursor="Hand">
-                    <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_Cog"/>
                     </Button.Content>
                 </Button>
                 <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"
