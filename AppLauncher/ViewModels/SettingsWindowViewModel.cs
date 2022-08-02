@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+using System.Security.AccessControl;
 using System.Windows;
+using Microsoft.Win32;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
 using WPR.Tools;
@@ -29,6 +32,7 @@ namespace AppLauncher.ViewModels
         public SettingsWindowViewModel()
         {
             LoadData();
+            StartWithWindows = CheckAutoLaunch();
         }
 
 
@@ -53,6 +57,13 @@ namespace AppLauncher.ViewModels
                 IsTopMost = IsTopMost,
             };
             DataSerializer.SaveToFile(sett, _SettingsFileName);
+
+            if (CheckAutoLaunch() == StartWithWindows) return;
+
+            if(StartWithWindows)
+                SetAutoLaunch();
+            else
+                RemoveAutoLaunch();
         }
 
         #region WindowWidth : int - Ширина окна
@@ -129,15 +140,13 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-        
 
+        #region StartWithWindows : bool - Запускать с системой
 
-        #region StartWithWindows : bool - Запускаться с системой
-
-        /// <summary>Запускаться с системой</summary>
+        /// <summary>Запускать с системой</summary>
         private bool _StartWithWindows;
 
-        /// <summary>Запускаться с системой</summary>
+        /// <summary>Запускать с системой</summary>
         public bool StartWithWindows
         {
             get => _StartWithWindows;
@@ -145,6 +154,8 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
+
+        
 
 
         #region Command SaveSettingsCommand - Сохранить настройки
@@ -166,6 +177,38 @@ namespace AppLauncher.ViewModels
             ((Window)p).DialogResult = true;
 
         }
+
+        #endregion
+
+
+        #region AutoLaunch
+
+        private readonly string _ExeStartupValue = System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName + " -hide";
+
+
+        private bool CheckAutoLaunch()
+        {
+            using var regKey =
+                Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run\");
+            var appKey = regKey?.GetValue("AppLauncher")?.ToString();
+            return appKey == _ExeStartupValue;
+        }
+
+        private void SetAutoLaunch()
+        {
+            using var regKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run\");
+            if (regKey == null) return;
+            regKey.SetValue("AppLauncher", _ExeStartupValue);
+            regKey.Close();
+        }
+
+        private void RemoveAutoLaunch()
+        {
+            using var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run\", true);
+            if (regKey == null) return;
+            regKey.DeleteValue("AppLauncher");
+            regKey.Close();
+        } 
 
         #endregion
     }
