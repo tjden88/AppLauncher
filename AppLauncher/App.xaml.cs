@@ -14,7 +14,7 @@ namespace AppLauncher
     public partial class App
     {
         /// <summary> Вьюмодель главного окна </summary>
-        public static MainWindowViewModel MainWindowViewModel { get; } = new();
+        public static MainWindowViewModel MainWindowViewModel { get; } = new() {IsHidden = true};
 
         public static SettingsWindowViewModel SettingsWindowViewModel { get; } = new();
 
@@ -39,7 +39,6 @@ namespace AppLauncher
             var wnd = new MainWindow();
             if (e.Args.Length > 0 && e.Args.Contains("-hide"))
             {
-                MainWindowViewModel.IsHidden = true;
                 wnd.Show();
             }
             else

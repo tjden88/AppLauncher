@@ -78,7 +78,7 @@ namespace AppLauncher.ViewModels
         #region IsHidden : bool - Окно свёрнуто
 
         /// <summary>Окно свёрнуто</summary>
-        private bool _IsHidden = true;
+        private bool _IsHidden;
 
         /// <summary>Окно свёрнуто</summary>
         public bool IsHidden

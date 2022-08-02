@@ -5,7 +5,7 @@
     },
     "Hided": {
       "commandName": "Project",
-      "commandLineArgs": "hide"
+      "commandLineArgs": "-hide"
     }
   }
 }

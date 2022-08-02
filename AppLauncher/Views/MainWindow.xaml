@@ -17,7 +17,7 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="720" Width="920">
+        Title="MainWindow" Height="750" Width="920">
     <b:Interaction.Behaviors>
         <behaviors:MainWindowBehavior IsHidden="{Binding IsHidden}"/>
     </b:Interaction.Behaviors>
@@ -30,17 +30,17 @@
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
 
-    <Grid Name="RootGrid" Opacity="0">
+    <Grid Name="RootGrid">
         <Border CornerRadius="10" Background="#99000000"/>
         <DockPanel>
 
             <!--Заголовок-->
             <DockPanel DockPanel.Dock="Top" 
                        MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent">
-                <Menu Background="Transparent" Margin="5">
+                <Menu Background="Transparent" Margin="5,0">
                     <MenuItem Foreground="White" ToolTip="Меню" Cursor="Hand">
                         <MenuItem.Header>
-                            <fa5:FontAwesome Icon="Solid_Rocket" FontSize="18"/>
+                            <fa5:FontAwesome Icon="Solid_Rocket" FontSize="16"/>
                         </MenuItem.Header>
                         <MenuItem Background="Black" Foreground="White"
                                   Height="50"
@@ -70,14 +70,14 @@
                     </MenuItem>
                 </Menu>
 
-                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
+                <Button DockPanel.Dock="Right" Margin="5" Padding="8,2"
                         ToolTip="Закрыть окно"
                         Command="{Binding CloseWindowCommand}" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
-                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
+                <Button DockPanel.Dock="Right" Margin="5" Padding="8,2"
                         Command="{Binding ChangeTopMostCommand}"
                         ToolTip="Поверх всех окон" Cursor="Hand">
                     <Button.Content>
