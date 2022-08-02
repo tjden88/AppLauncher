@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Normal": {
+      "commandName": "Project"
+    },
+    "Hided": {
+      "commandName": "Project",
+      "commandLineArgs": "hide"
+    }
+  }
+}

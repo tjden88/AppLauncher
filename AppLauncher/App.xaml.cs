@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
+using AppLauncher.Views;
 
 namespace AppLauncher
 {
@@ -17,7 +18,7 @@ namespace AppLauncher
 
         public static SettingsWindowViewModel SettingsWindowViewModel { get; } = new();
 
-        public static ShortcutManager ShortcutManager { get; } = new (new IconBuilder(), new ShortcutBuilder());
+        public static ShortcutManager ShortcutManager { get; } = new(new IconBuilder(), new ShortcutBuilder());
 
         public static DataManager DataManager { get; } = new();
 
@@ -30,6 +31,25 @@ namespace AppLauncher
             base.OnExit(e);
         }
 
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            var wnd = new MainWindow();
+            if (e.Args.Length > 0 && e.Args.Contains("-hide"))
+            {
+                MainWindowViewModel.IsHidden = true;
+                wnd.Show();
+            }
+            else
+            {
+                wnd.Show();
+                MainWindowViewModel.IsHidden = false;
+            }
+
+            SingleInstance();
+        }
 
         #region Constants and Fields
 
@@ -49,10 +69,7 @@ namespace AppLauncher
 
         #region Methods
 
-        /// <summary>The app on startup.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The e.</param>
-        private void AppOnStartup(object sender, StartupEventArgs e)
+        private void SingleInstance()
         {
             _Mutex = new Mutex(true, UniqueMutexName, out var isOwned);
             _EventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, UniqueEventName);

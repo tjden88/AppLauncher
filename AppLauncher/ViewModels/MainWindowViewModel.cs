@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
@@ -79,7 +78,7 @@ namespace AppLauncher.ViewModels
         #region IsHidden : bool - Окно свёрнуто
 
         /// <summary>Окно свёрнуто</summary>
-        private bool _IsHidden;
+        private bool _IsHidden = true;
 
         /// <summary>Окно свёрнуто</summary>
         public bool IsHidden

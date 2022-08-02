@@ -13,7 +13,7 @@ namespace AppLauncher.Infrastructure.Behaviors
     /// </summary>
     public class MainWindowBehavior : Behavior<MainWindow>
     {
-        private readonly ScaleTransform _ScaleTransform = new();
+        private readonly ScaleTransform _ScaleTransform = new(0,0);
         private readonly CircleEase _CircleEase = new() { EasingMode = EasingMode.EaseIn };
 
         private readonly Storyboard _StoryboardShow = new();
@@ -27,6 +27,7 @@ namespace AppLauncher.Infrastructure.Behaviors
         private void OnLoad(object Sender, RoutedEventArgs E)
         {
             AssociatedObject.RootGrid.RenderTransform = _ScaleTransform;
+            AssociatedObject.RootGrid.Opacity = 1;
             AssociatedObject.RootGrid.RenderTransformOrigin = new Point(0.5, 1);
 
             var duration = TimeSpan.FromSeconds(0.23);

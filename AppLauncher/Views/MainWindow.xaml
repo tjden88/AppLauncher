@@ -30,7 +30,7 @@
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
 
-    <Grid Name="RootGrid">
+    <Grid Name="RootGrid" Opacity="0">
         <Border CornerRadius="10" Background="#99000000"/>
         <DockPanel>
 

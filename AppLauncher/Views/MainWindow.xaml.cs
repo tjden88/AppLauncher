@@ -130,7 +130,7 @@ namespace AppLauncher.Views
             exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
 
-            EnableBlur();
+            //EnableBlur();
         }
 
         internal void EnableBlur()
