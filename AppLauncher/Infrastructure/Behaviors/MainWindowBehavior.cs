@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Views;
 using Microsoft.Xaml.Behaviors;
 
@@ -59,6 +60,7 @@ namespace AppLauncher.Infrastructure.Behaviors
 
         private void Show()
         {
+            WindowPositionHelper.SetMainWindowPosition();
             _StoryboardShow.Begin(AssociatedObject.RootGrid);
         }
 
