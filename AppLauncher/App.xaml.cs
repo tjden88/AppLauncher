@@ -52,7 +52,7 @@ namespace AppLauncher
 
             SingleInstance();
 
-            Task.Run(Consumer);
+            Task.Run(ListenCommands);
 
         }
 
@@ -110,24 +110,23 @@ namespace AppLauncher
             Shutdown();
         }
 
-        static void Consumer()
+        static void ListenCommands()
         {
-            using (var mmf = MemoryMappedFile.CreateOrOpen("MyMapName", 1024))
-            using (var view = mmf.CreateViewStream())
-            {
-                var reader = new BinaryReader(view);
-                var signal = new EventWaitHandle(false, EventResetMode.AutoReset, "MyEventName");
-                var mutex = new Mutex(false, "MyMutex");
+            using var mmf = MemoryMappedFile.CreateOrOpen("AppLauncherMap", 1024);
+            using var view = mmf.CreateViewStream();
+            var reader = new BinaryReader(view);
+            var signal = new EventWaitHandle(false, EventResetMode.AutoReset, "ShowAppEvent");
+            var mutex = new Mutex(false, "AppLauncherMutex");
 
-                while (true)
-                {
-                    signal.WaitOne();
-                    mutex.WaitOne();
-                    reader.BaseStream.Position = 0;
-                    var message = reader.ReadString();
-                    MessageBox.Show(message);
-                    mutex.ReleaseMutex();
-                }
+            while (true)
+            {
+                signal.WaitOne();
+                mutex.WaitOne();
+                reader.BaseStream.Position = 0;
+                var message = reader.ReadString();
+                if (message == "Activate")
+                    MainWindowViewModel.IsHidden = false;
+                mutex.ReleaseMutex();
             }
         }
 
