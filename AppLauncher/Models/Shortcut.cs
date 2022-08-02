@@ -11,8 +11,5 @@
         /// <summary> Путь для запуска </summary>
         public string Path { get; set; }
 
-        /// <summary> Данные изображения </summary>
-        public byte[] UserImageData { get; set; }
-
     }
 }
