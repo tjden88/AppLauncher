@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
+using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -57,6 +57,41 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        #region IsTopMost : bool - Поверх всех окон
+
+        /// <summary>Поверх всех окон</summary>
+        public bool IsTopMost
+        {
+            get => App.SettingsWindowViewModel.IsTopMost;
+            set
+            {
+                if (Equals(value, App.SettingsWindowViewModel.IsTopMost)) return;
+                App.SettingsWindowViewModel.IsTopMost = value;
+                OnPropertyChanged(nameof(IsTopMost));
+            }
+        }
+
+        #endregion
+
+
+        #region IsHidden : bool - Окно свёрнуто
+
+        /// <summary>Окно свёрнуто</summary>
+        private bool _IsHidden = true;
+
+        /// <summary>Окно свёрнуто</summary>
+        public bool IsHidden
+        {
+            get => _IsHidden;
+            set => Set(ref _IsHidden, value);
+        }
+
+        #endregion
+
+
+        /// <summary> Закрыть приложение после сворачивания </summary>
+        public bool CloseWhenHide { get; private set; }
 
         #region Commands
 
@@ -126,22 +161,67 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region Command CloseWindowCommand - Закрыть или свернуть окно
+        #region Command CloseWindowCommand : bool - Закрыть или свернуть окно
 
         /// <summary>Закрыть или свернуть окно</summary>
-        private Command _CloseWindowCommand;
+        private Command<string> _CloseWindowCommand;
 
         /// <summary>Закрыть или свернуть окно</summary>
-        public Command CloseWindowCommand => _CloseWindowCommand
-            ??= new Command(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно");
+        public Command<string> CloseWindowCommand => _CloseWindowCommand
+            ??= new Command<string>(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно") { CanExecuteWithNullParameter = true };
 
         /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
-        private bool CanCloseWindowCommandExecute() => true;
+        private bool CanCloseWindowCommandExecute(string p) => true;
 
-        /// <summary>Логика выполнения - Закрыть или свернуть окно</summary>
-        private void OnCloseWindowCommandExecuted()
+        /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
+        private void OnCloseWindowCommandExecuted(string p)
         {
-            Application.Current.Shutdown();
+            CloseWhenHide = p == "1" || !App.SettingsWindowViewModel.HideWhenClosing;
+            IsHidden = true;
+        }
+
+        #endregion
+
+
+        #region Command ChangeTopMostCommand - Изменить позицию окна
+
+        /// <summary>Изменить позицию окна</summary>
+        private Command _ChangeTopMostCommand;
+
+        /// <summary>Изменить позицию окна</summary>
+        public Command ChangeTopMostCommand => _ChangeTopMostCommand
+            ??= new Command(OnChangeTopMostCommandExecuted, CanChangeTopMostCommandExecute, "Изменить позицию окна");
+
+        /// <summary>Проверка возможности выполнения - Изменить позицию окна</summary>
+        private bool CanChangeTopMostCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Изменить позицию окна</summary>
+        private void OnChangeTopMostCommandExecuted() => IsTopMost = !IsTopMost;
+
+        #endregion
+
+
+        #region Command ShowSettingsWindowCommand - Показать окно настроек
+
+        /// <summary>Показать окно настроек</summary>
+        private Command _ShowSettingsWindowCommand;
+
+        /// <summary>Показать окно настроек</summary>
+        public Command ShowSettingsWindowCommand => _ShowSettingsWindowCommand
+            ??= new Command(OnShowSettingsWindowCommandExecuted, CanShowSettingsWindowCommandExecute, "Показать окно настроек");
+
+        /// <summary>Проверка возможности выполнения - Показать окно настроек</summary>
+        private bool CanShowSettingsWindowCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Показать окно настроек</summary>
+        private void OnShowSettingsWindowCommandExecuted()
+        {
+            var wnd = new SettingsWindow
+            {
+                Owner = App.ActiveWindow,
+                DataContext = App.SettingsWindowViewModel
+            };
+            wnd.ShowDialog();
         }
 
         #endregion

@@ -6,11 +6,45 @@
         xmlns:local="clr-namespace:AppLauncher.Views"
         xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="450" Width="800">
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        Title="Настройки" Height="260" Width="365">
     <d:Window.DataContext>
         <viewModels:SettingsWindowViewModel/>
     </d:Window.DataContext>
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+
+        <Button Content="Сохранить"
+                Command="{Binding SaveSettingsCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                IsDefault="True" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="10" Padding="10,6" Foreground="Black" Cursor="Hand"></Button>
+
+        <StackPanel Orientation="Vertical" Margin="10">
+            <CheckBox IsChecked="{Binding AutoHide}">
+                <CheckBox.Content>
+                    <StackPanel>
+                        <TextBlock Text="Скрывать автоматически при запуске ярлыка" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="* При зажатой клавише CTRL окно не будет закрыто" Margin="0,5"></TextBlock>
+                    </StackPanel>
+                </CheckBox.Content>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding HideWhenClosing}">
+                <CheckBox.Content>
+                    <StackPanel>
+                        <TextBlock Text="Скрывать окно вместо выхода" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="* При нажатии кнопки закрытия окна программа останется запущенной для ускорения следующего запуска" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                    </StackPanel>
+                </CheckBox.Content>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding StartWithWindows}" Margin="0,10">
+                <CheckBox.Content>
+                    <StackPanel>
+                        <TextBlock Text="Загружать данные при старте системы" FontWeight="Bold"></TextBlock>
+                    </StackPanel>
+                </CheckBox.Content>
+            </CheckBox>
+        </StackPanel>
+    </DockPanel>
 </Window>

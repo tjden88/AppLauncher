@@ -9,14 +9,18 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:behaviors="clr-namespace:AppLauncher.Infrastructure.Behaviors"
         Loaded="MainWindow_OnLoaded"
         AllowsTransparency="True"
         WindowStyle="None"
-        Topmost="True"
+        Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         Title="MainWindow" Height="720" Width="920">
+    <b:Interaction.Behaviors>
+        <behaviors:MainWindowBehavior IsHidden="{Binding IsHidden}"/>
+    </b:Interaction.Behaviors>
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadGroupsCommand}"/>
@@ -26,33 +30,72 @@
         <viewModels:MainWindowViewModel/>
     </d:Window.DataContext>
 
-    <Grid>
+    <Grid Name="RootGrid" Opacity="0">
         <Border CornerRadius="10" Background="#99000000"/>
         <DockPanel>
 
             <!--Заголовок-->
             <DockPanel DockPanel.Dock="Top" 
                        MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent">
+                <Menu Background="Transparent" Margin="5">
+                    <MenuItem Foreground="White" ToolTip="Меню" Cursor="Hand">
+                        <MenuItem.Header>
+                            <fa5:FontAwesome Icon="Solid_Rocket" FontSize="18"/>
+                        </MenuItem.Header>
+                        <MenuItem Background="Black" Foreground="White"
+                                  Height="50"
+                                  Command="{Binding AddGroupCommand}"
+                                  Header="Добавить группу">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Plus" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Background="Black" Foreground="White"
+                                  Height="50"
+                                  Command="{Binding ShowSettingsWindowCommand}"
+                                  Header="Настройки">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_Cog" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Background="Black" Foreground="White" Margin="0,2"
+                                  Height="50"
+                                  Command="{Binding CloseWindowCommand}"
+                                  CommandParameter="1"
+                                  Header="Выход">
+                            <MenuItem.Icon>
+                                <fa5:FontAwesome Icon="Solid_SignOutAlt" FontSize="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
 
-                <Button DockPanel.Dock="Left" Margin="5" Padding="5,2"
-                        ToolTip="Добавить группу"
-                        Command="{Binding AddGroupCommand}" Cursor="Hand">
-                    <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_Plus"/>
-                    </Button.Content>
-                </Button>
-
-                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
+                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
                         ToolTip="Закрыть окно"
                         Command="{Binding CloseWindowCommand}" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Times"/>
                     </Button.Content>
                 </Button>
-                <Button DockPanel.Dock="Right" Margin="5" Padding="5,2"
-                        ToolTip="Скрывать автоматически" Cursor="Hand">
+                <Button DockPanel.Dock="Right" Margin="5" Padding="10,2"
+                        Command="{Binding ChangeTopMostCommand}"
+                        ToolTip="Поверх всех окон" Cursor="Hand">
                     <Button.Content>
-                        <fa5:FontAwesome Icon="Solid_Thumbtack"/>
+                        <fa5:FontAwesome Icon="Solid_Thumbtack">
+                            <fa5:FontAwesome.RenderTransform>
+                                <RotateTransform/>
+                            </fa5:FontAwesome.RenderTransform>
+                            <fa5:FontAwesome.Style>
+                                <Style TargetType="fa5:FontAwesome">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsTopMost}" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="Rotation" Value="45" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </fa5:FontAwesome.Style>
+                        </fa5:FontAwesome>
                     </Button.Content>
                 </Button>
                 <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"

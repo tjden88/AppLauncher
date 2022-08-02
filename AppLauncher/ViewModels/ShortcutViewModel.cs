@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using AppLauncher.Views;
 using WPR.MVVM.Commands;
@@ -60,7 +61,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-   
+
         #region HasImage : bool - Есть ли изображение
 
         /// <summary>Есть ли изображение</summary>
@@ -95,6 +96,10 @@ namespace AppLauncher.ViewModels
         private void OnLaunchCommandExecuted()
         {
             App.ShortcutManager.StartProcess(ShortcutPath);
+
+            if (App.SettingsWindowViewModel.AutoHide && Keyboard.Modifiers != ModifierKeys.Control)
+                App.MainWindowViewModel.IsHidden = true;
+
         }
 
         #endregion
@@ -232,6 +237,36 @@ namespace AppLauncher.ViewModels
             var path = PathToDirectory();
 
             var argument = "/select, \"" + App.ShortcutManager.GetFilePath(ShortcutPath) + "\"";
+
+            Process.Start(new ProcessStartInfo("explorer.exe", argument)
+            {
+                UseShellExecute = true
+            });
+        }
+
+        #endregion
+
+
+        #region Command GoToShortcutCommand - Перейти к ярлыку
+
+        /// <summary>Перейти к ярлыку</summary>
+        private Command _GoToShortcutCommand;
+
+        /// <summary>Перейти к ярлыку</summary>
+        public Command GoToShortcutCommand => _GoToShortcutCommand
+            ??= new Command(OnGoToShortcutCommandExecuted, CanGoToShortcutCommandExecute, "Перейти к ярлыку");
+
+        /// <summary>Проверка возможности выполнения - Перейти к ярлыку</summary>
+        private bool CanGoToShortcutCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Перейти к ярлыку</summary>
+        private void OnGoToShortcutCommandExecuted()
+        {
+            var shortcutManager = App.ShortcutManager;
+
+            var path = shortcutManager.GetShortcutFullPath(ShortcutPath);
+
+            var argument = "/select, \"" + path + "\"";
 
             Process.Start(new ProcessStartInfo("explorer.exe", argument)
             {
