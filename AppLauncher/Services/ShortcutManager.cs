@@ -27,7 +27,12 @@ namespace AppLauncher.Services
             Directory.CreateDirectory(_ShortcutsPath);
         }
 
-        private string _ShortcutFullPath(string ShortcutPath) =>
+        /// <summary>
+        /// Получить путь к файлу ярлыка
+        /// </summary>
+        /// <param name="ShortcutPath">Путь ярлыка</param>
+        /// <returns></returns>
+        public string GetShortcutFullPath(string ShortcutPath) =>
             Path.Combine(_ShortcutsPath, ShortcutPath);
 
 
@@ -37,7 +42,8 @@ namespace AppLauncher.Services
         /// <param name="ShortcutPath">Путь ярлыка</param>
         /// <returns></returns>
         public string GetFilePath(string ShortcutPath) =>
-            _ShortcutBuilder.GetExecutingPath(_ShortcutFullPath(ShortcutPath));
+            _ShortcutBuilder.GetExecutingPath(GetShortcutFullPath(ShortcutPath));
+
 
 
         /// <summary>
@@ -67,7 +73,7 @@ namespace AppLauncher.Services
             {
                 try
                 {
-                    File.Copy(FileName, _ShortcutFullPath(shortcutFileName));
+                    File.Copy(FileName, GetShortcutFullPath(shortcutFileName));
 
                 }
                 catch (Exception e)
@@ -78,7 +84,7 @@ namespace AppLauncher.Services
             }
             else // Создать ярлык из файла/папки
             {
-                if (!_ShortcutBuilder.CreateShortcut(FileName, _ShortcutFullPath(shortcutFileName)))
+                if (!_ShortcutBuilder.CreateShortcut(FileName, GetShortcutFullPath(shortcutFileName)))
                     return null;
             }
 
@@ -118,7 +124,7 @@ namespace AppLauncher.Services
         /// </summary>
         /// <param name="ShortcutPath">Путь ярлыка</param>
         public void DeleteShortcut(string ShortcutPath) =>
-            File.Delete(_ShortcutFullPath(ShortcutPath));
+            File.Delete(GetShortcutFullPath(ShortcutPath));
 
 
 
@@ -128,7 +134,7 @@ namespace AppLauncher.Services
         /// <param name="ShortcutPath">Путь ярлыка</param>
         public void StartProcess(string ShortcutPath)
         {
-            var path = _ShortcutFullPath(ShortcutPath);
+            var path = GetShortcutFullPath(ShortcutPath);
 
             if (!File.Exists(path)) return;
 
@@ -150,7 +156,7 @@ namespace AppLauncher.Services
         public ImageSource GetIconFromShortcut(string ShortcutPath)
         {
             var destPath = GetFilePath(ShortcutPath);
-            var path = File.Exists(destPath) ? destPath : _ShortcutFullPath(ShortcutPath);
+            var path = File.Exists(destPath) ? destPath : GetShortcutFullPath(ShortcutPath);
 
             return _IconBuilder.GetImage(path);
         }
