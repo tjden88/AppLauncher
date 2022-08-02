@@ -37,9 +37,9 @@ namespace AppLauncher.Infrastructure.Behaviors
 
             Storyboard.SetTargetProperty(_StoryboardShow.Children[0], new PropertyPath("RenderTransform.ScaleX"));
             Storyboard.SetTargetProperty(_StoryboardShow.Children[1], new PropertyPath("RenderTransform.ScaleY"));
-            _StoryboardShow.Completed += (_, _) => AssociatedObject.EnableBlur();
 
-
+            _StoryboardShow.Completed += (_, _) =>
+                AssociatedObject.EnableBlur();
 
 
             _StoryboardHide.Children.Add(new DoubleAnimation(1, 0, duration) { EasingFunction = _CircleEase });
@@ -47,6 +47,12 @@ namespace AppLauncher.Infrastructure.Behaviors
 
             Storyboard.SetTargetProperty(_StoryboardHide.Children[0], new PropertyPath("RenderTransform.ScaleX"));
             Storyboard.SetTargetProperty(_StoryboardHide.Children[1], new PropertyPath("RenderTransform.ScaleY"));
+
+            _StoryboardHide.Completed += (_, _) =>
+            {
+                if(App.MainWindowViewModel.CloseWhenHide)
+                    Application.Current.Shutdown();
+            };
 
         }
 

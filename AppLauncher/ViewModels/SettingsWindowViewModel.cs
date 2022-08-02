@@ -17,6 +17,8 @@ namespace AppLauncher.ViewModels
 
             public bool AutoHide { get; set; }
 
+            public bool HideWhenClosing { get; set; }
+
             public int WindowWidth { get; set; }
 
             public int WindowHeight { get; set; }
@@ -36,6 +38,7 @@ namespace AppLauncher.ViewModels
             WindowWidth = _Settings.WindowWidth;
             WindowHeight = _Settings.WindowHeight;
             AutoHide = _Settings.AutoHide;
+            HideWhenClosing = _Settings.HideWhenClosing;
             IsTopMost = _Settings.IsTopMost;
         }
 
@@ -46,6 +49,7 @@ namespace AppLauncher.ViewModels
                 WindowWidth = WindowWidth,
                 WindowHeight = WindowHeight,
                 AutoHide = AutoHide,
+                HideWhenClosing = HideWhenClosing,
                 IsTopMost = IsTopMost,
             };
             DataSerializer.SaveToFile(sett, _SettingsFileName);
@@ -109,6 +113,23 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
+
+
+        #region HideWhenClosing : bool - Сворачивать вместо выхода
+
+        /// <summary>Сворачивать вместо выхода</summary>
+        private bool _HideWhenClosing = true;
+
+        /// <summary>Сворачивать вместо выхода</summary>
+        public bool HideWhenClosing
+        {
+            get => _HideWhenClosing;
+            set => Set(ref _HideWhenClosing, value);
+        }
+
+        #endregion
+
+        
 
 
         #region StartWithWindows : bool - Запускаться с системой

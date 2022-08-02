@@ -67,7 +67,7 @@ namespace AppLauncher.ViewModels
             get => App.SettingsWindowViewModel.IsTopMost;
             set
             {
-                if(Equals(value, App.SettingsWindowViewModel.IsTopMost)) return;
+                if (Equals(value, App.SettingsWindowViewModel.IsTopMost)) return;
                 App.SettingsWindowViewModel.IsTopMost = value;
                 OnPropertyChanged(nameof(IsTopMost));
             }
@@ -90,6 +90,9 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        /// <summary> Закрыть приложение после сворачивания </summary>
+        public bool CloseWhenHide { get; private set; }
 
         #region Commands
 
@@ -166,7 +169,7 @@ namespace AppLauncher.ViewModels
 
         /// <summary>Закрыть или свернуть окно</summary>
         public Command<string> CloseWindowCommand => _CloseWindowCommand
-            ??= new Command<string>(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно") {CanExecuteWithNullParameter = true};
+            ??= new Command<string>(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute, "Закрыть или свернуть окно") { CanExecuteWithNullParameter = true };
 
         /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
         private bool CanCloseWindowCommandExecute(string p) => true;
@@ -174,14 +177,12 @@ namespace AppLauncher.ViewModels
         /// <summary>Проверка возможности выполнения - Закрыть или свернуть окно</summary>
         private void OnCloseWindowCommandExecuted(string p)
         {
-            if (p == "1")
-                Application.Current.Shutdown();
-            else
-                IsHidden = true;
+            CloseWhenHide = p == "1" || !App.SettingsWindowViewModel.HideWhenClosing;
+            IsHidden = true;
         }
 
         #endregion
-        
+
 
         #region Command ChangeTopMostCommand - Изменить позицию окна
 
