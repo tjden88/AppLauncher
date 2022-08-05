@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppLauncher.Views"
         xmlns:viewModels="clr-namespace:AppLauncher.ViewModels"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
@@ -14,18 +15,17 @@
         <viewModels:SettingsWindowViewModel/>
     </d:Window.DataContext>
     <DockPanel VerticalAlignment="Top">
-
         <Button Content="Сохранить"
                 Command="{Binding SaveSettingsCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                IsDefault="True" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="10" Padding="10,6" Foreground="Black" Cursor="Hand"></Button>
+                IsDefault="True" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="10" Padding="10,6" Foreground="Black" Cursor="Hand"/>
 
         <StackPanel Orientation="Vertical" VerticalAlignment="Top" >
             <CheckBox IsChecked="{Binding AutoHide}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
-                        <TextBlock Text="Скрывать автоматически при запуске ярлыка" FontWeight="Bold"></TextBlock>
-                        <TextBlock Text="* При зажатой клавише CTRL окно не будет закрыто" Margin="0,5"></TextBlock>
+                        <TextBlock Text="Скрывать автоматически при запуске ярлыка" FontWeight="Bold"/>
+                        <TextBlock Text="* При зажатой клавише CTRL окно не будет закрыто" Margin="0,5"/>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>
@@ -33,8 +33,8 @@
             <CheckBox IsChecked="{Binding HideWhenClosing}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
-                        <TextBlock Text="Скрывать окно вместо выхода" FontWeight="Bold"></TextBlock>
-                        <TextBlock Text="При нажатии кнопки закрытия окна программа останется запущенной для ускорения следующего запуска" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                        <TextBlock Text="Скрывать окно вместо выхода" FontWeight="Bold"/>
+                        <TextBlock Text="При нажатии кнопки закрытия окна программа останется запущенной для ускорения следующего запуска" TextWrapping="WrapWithOverflow" Margin="0,5"/>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>
@@ -42,8 +42,8 @@
             <CheckBox IsChecked="{Binding HideWhenLostFocus}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
-                        <TextBlock Text="Скрывать окно при потере фокуса" FontWeight="Bold"></TextBlock>
-                        <TextBlock Text="При клике вне окна, оно будет свёрнуто" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                        <TextBlock Text="Скрывать окно при потере фокуса" FontWeight="Bold"/>
+                        <TextBlock Text="При клике вне окна, оно будет свёрнуто" TextWrapping="WrapWithOverflow" Margin="0,5"/>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>
@@ -51,11 +51,42 @@
             <CheckBox IsChecked="{Binding StartWithWindows}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
-                        <TextBlock Text="Запускать с Windows" FontWeight="Bold"></TextBlock>
-                        <TextBlock Text="При старте системы программа загрузиь данные и запустится в свёрнутом режиме" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                        <TextBlock Text="Запускать с Windows" FontWeight="Bold"/>
+                        <TextBlock Text="При старте системы программа загрузит данные и запустится в свёрнутом режиме" TextWrapping="WrapWithOverflow" Margin="0,5"/>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>
+            <Separator/>
+
+            <TextBlock Text="Версия" Margin="10,5"></TextBlock>
+
+            <Button HorizontalAlignment="Left" Margin="5" FontSize="14" Foreground="#FF353535"
+                    Command="{Binding GoToHomepageCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <fa5:FontAwesome Icon="Brands_Github"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Страница проекта" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button HorizontalAlignment="Left" Margin="5" FontSize="14" Foreground="#FF353535"
+                    Command="{Binding ReportProblemCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <fa5:FontAwesome Icon="Solid_Bug"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Сообщить о проблеме" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button HorizontalAlignment="Left" Margin="5" FontSize="14" Foreground="#FF353535"
+                    Command="{Binding MakeDonateCommand}" Cursor="Hand">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <fa5:FontAwesome Icon="Solid_Gift"  VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Поддержать разработчика" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
         </StackPanel>
     </DockPanel>
 </Window>
