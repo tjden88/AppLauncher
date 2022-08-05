@@ -18,7 +18,7 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="750" Width="920">
+        Title="MainWindow" Height="500" Width="920">
     <b:Interaction.Behaviors>
         <behaviors:MainWindowBehavior IsHidden="{Binding IsHidden}"/>
     </b:Interaction.Behaviors>

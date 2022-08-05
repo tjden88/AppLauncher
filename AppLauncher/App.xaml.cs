@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
 using AppLauncher.Views;

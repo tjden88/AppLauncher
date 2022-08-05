@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using Microsoft.Win32;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -60,24 +61,24 @@ namespace AppLauncher.ViewModels
         private void LoadData()
         {
             _Settings = DataSerializer.LoadFromFile<AppSettings>(_SettingsFileName) ?? new AppSettings();
-            WindowHeight = _Settings.WindowHeight;
             AutoHide = _Settings.AutoHide;
             HideWhenClosing = _Settings.HideWhenClosing;
             HideWhenLostFocus = _Settings.HideWhenLostFocus;
             IsTopMost = _Settings.IsTopMost;
             StartPosition = _Settings.StartPosition;
+            WindowHeight = _Settings.WindowHeight;
         }
 
         public void SaveData()
         {
             var sett = new AppSettings
             {
-                WindowHeight = WindowHeight,
                 AutoHide = AutoHide,
                 HideWhenClosing = HideWhenClosing,
                 HideWhenLostFocus = HideWhenLostFocus,
                 IsTopMost = IsTopMost,
                 StartPosition = StartPosition,
+                WindowHeight = WindowHeight,
             };
 
             DataSerializer.SaveToFile(sett, _SettingsFileName);
@@ -206,10 +207,9 @@ namespace AppLauncher.ViewModels
             get => _WindowHeight;
             set
             {
-                if(Equals(value, _WindowHeight)) return;
+                if (Equals(value, _WindowHeight)) return;
 
-                _WindowHeight = Math.Min(200, Math.Max(value, 1000));
-
+                _WindowHeight = Math.Max(200, Math.Min(value, 1500));
                 OnPropertyChanged(nameof(WindowHeight));
             }
         }
@@ -219,7 +219,10 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+
         #region Commands
+
 
         #region Command SaveSettingsCommand - Сохранить настройки
 
@@ -237,11 +240,14 @@ namespace AppLauncher.ViewModels
         private void OnSaveSettingsCommandExecuted(object p)
         {
             SaveData();
+            WindowPositionHelper.SetMainWindowSize();
+
             ((Window)p).DialogResult = true;
 
         }
 
         #endregion
+
 
         #region Command GoToHomepageCommand - Перейти на страницу проекта
 
@@ -260,6 +266,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
         #region Command ReportProblemCommand - Сообщить о проблеме
 
         /// <summary>Сообщить о проблеме</summary>
@@ -276,6 +283,7 @@ namespace AppLauncher.ViewModels
         private void OnReportProblemCommandExecuted() => OpenWebPage(ReportProblemAddress);
 
         #endregion
+
 
         #region Command MakeDonateCommand - Поддержать разработчика
 
@@ -334,7 +342,7 @@ namespace AppLauncher.ViewModels
             if (regKey == null) return;
             regKey.DeleteValue("AppLauncher");
             regKey.Close();
-        } 
+        }
 
         #endregion
     }

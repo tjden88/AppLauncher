@@ -39,5 +39,13 @@ namespace AppLauncher.Infrastructure.Helpers
             mainWindow.Left = left;
             mainWindow.Top = top;
         }
+
+        public static void SetMainWindowSize()
+        {
+            var mainWindow = Application.Current.MainWindow;
+            if (mainWindow == null) return;
+
+            mainWindow.Height = App.SettingsWindowViewModel.WindowHeight;
+        }
     }
 }
