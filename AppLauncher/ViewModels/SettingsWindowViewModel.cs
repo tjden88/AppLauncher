@@ -40,7 +40,7 @@ namespace AppLauncher.ViewModels
 
             public bool HideWhenLostFocus { get; set; }
 
-            public int GroupWidth { get; set; }
+            public int GroupWidth { get; set; } = 3;
 
             public int ColumnsCount { get; set; } = 3;
 
@@ -67,6 +67,8 @@ namespace AppLauncher.ViewModels
             IsTopMost = _Settings.IsTopMost;
             StartPosition = _Settings.StartPosition;
             WindowHeight = _Settings.WindowHeight;
+            ColumnsCount = _Settings.ColumnsCount;
+            GroupWidth = _Settings.GroupWidth;
         }
 
         public void SaveData()
@@ -79,6 +81,8 @@ namespace AppLauncher.ViewModels
                 IsTopMost = IsTopMost,
                 StartPosition = StartPosition,
                 WindowHeight = WindowHeight,
+                ColumnsCount = ColumnsCount,
+                GroupWidth = GroupWidth,
             };
 
             DataSerializer.SaveToFile(sett, _SettingsFileName);
@@ -178,6 +182,8 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+
         #region SizeProp
 
 
@@ -217,6 +223,40 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        public int[] ColumnsCounts => new[] {2, 3, 4, 5, 6};
+
+        #region ColumnsCount : int - Количество колонок
+
+        /// <summary>Количество колонок</summary>
+        private int _ColumnsCount;
+
+        /// <summary>Количество колонок</summary>
+        public int ColumnsCount
+        {
+            get => _ColumnsCount;
+            set => Set(ref _ColumnsCount, value);
+        }
+
+        #endregion
+
+
+        public int[] GroupWidths => new[] {2, 3, 4, 5};
+
+        #region GroupWidth : int - Ширина группы
+
+        /// <summary>Ширина группы</summary>
+        private int _GroupWidth;
+
+        /// <summary>Ширина группы</summary>
+        public int GroupWidth
+        {
+            get => _GroupWidth;
+            set => Set(ref _GroupWidth, value);
+        }
+
+        #endregion
+
+
         #endregion
 
 
@@ -240,7 +280,13 @@ namespace AppLauncher.ViewModels
         private void OnSaveSettingsCommandExecuted(object p)
         {
             SaveData();
+
             WindowPositionHelper.SetMainWindowSize();
+            var groups = App.MainWindowViewModel.Groups;
+            foreach (var group in groups)
+            {
+                group.UpdateWidth();
+            }
 
             ((Window)p).DialogResult = true;
 

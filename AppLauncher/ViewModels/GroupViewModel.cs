@@ -86,6 +86,11 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
+    public int Width => WindowPositionHelper.GetGroupWidth();
+
+
+
+
     #region Commands
 
 
@@ -151,6 +156,7 @@ public class GroupViewModel : ViewModel, IDropTarget
     public Command DeleteGroupCommand => _DeleteGroupCommand
         ??= new Command(OnDeleteGroupCommandExecuted, CanDeleteGroupCommandExecute, "Удалить группу");
 
+
     /// <summary>Проверка возможности выполнения - Удалить группу</summary>
     private bool CanDeleteGroupCommandExecute() => true;
 
@@ -179,8 +185,9 @@ public class GroupViewModel : ViewModel, IDropTarget
     #endregion
 
 
+    #region DragDrop
 
-    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this,DragDropHelper.DropType.All);
+    public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this, DragDropHelper.DropType.All);
 
 
     public void Drop(IDropInfo dropInfo)
@@ -206,6 +213,7 @@ public class GroupViewModel : ViewModel, IDropTarget
             AddShortcuts(shortcuts);
     }
 
+    #endregion
 
     /// <summary> Добавить ярлыки в группу и разложить по новым ячейкам </summary>
     public void AddShortcuts(ShortcutViewModel[] shortcuts)
@@ -247,5 +255,10 @@ public class GroupViewModel : ViewModel, IDropTarget
             ShortcutCells.Add(newCell);
         }
         dataManager.SaveData();
+    }
+
+    public void UpdateWidth()
+    {
+        OnPropertyChanged(nameof(Width));
     }
 }

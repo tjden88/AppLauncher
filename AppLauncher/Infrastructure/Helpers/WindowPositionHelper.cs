@@ -45,7 +45,19 @@ namespace AppLauncher.Infrastructure.Helpers
             var mainWindow = Application.Current.MainWindow;
             if (mainWindow == null) return;
 
-            mainWindow.Height = App.SettingsWindowViewModel.WindowHeight;
+            var settingsWindowViewModel = App.SettingsWindowViewModel;
+
+            mainWindow.Height = settingsWindowViewModel.WindowHeight;
+            mainWindow.Width = (GetGroupWidth() + 10) * settingsWindowViewModel.ColumnsCount + 10;
+        }
+
+
+        /// <summary> Рассчитать ширину группы </summary>
+        public static int GetGroupWidth()
+        {
+            var cellCount = App.SettingsWindowViewModel.GroupWidth;
+            // Ширина ячейки * кол-во ячеек + отступы
+            return 90 * cellCount + 22;
         }
     }
 }
