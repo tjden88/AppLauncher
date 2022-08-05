@@ -14,6 +14,7 @@
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="NoResize"
+        Deactivated="MainWindow_OnDeactivated"
         Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"

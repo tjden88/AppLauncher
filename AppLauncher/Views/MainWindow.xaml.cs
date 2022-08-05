@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -123,14 +124,12 @@ namespace AppLauncher.Views
 
         private void MainWindow_OnLoaded(object Sender, RoutedEventArgs E)
         {
-            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+            var wndHelper = new WindowInteropHelper(this);
 
-            int exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
+            var exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
 
             exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW;
             SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
-
-            //EnableBlur();
         }
 
         internal void EnableBlur()
@@ -189,6 +188,11 @@ namespace AppLauncher.Views
         private void TitleDockPanel_OnMouseLeftButtonDown(object Sender, MouseButtonEventArgs E)
         {
             DragMove();
+        }
+
+        private void MainWindow_OnDeactivated(object Sender, EventArgs E)
+        {
+            Debug.WriteLine("Deactivated");
         }
     }
 }

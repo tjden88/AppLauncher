@@ -139,6 +139,21 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region HideWhenLostFocus : bool - Скрывать окно при потере фокуса
+
+        /// <summary>Скрывать окно при потере фокуса</summary>
+        private bool _HideWhenLostFocus;
+
+        /// <summary>Скрывать окно при потере фокуса</summary>
+        public bool HideWhenLostFocus
+        {
+            get => _HideWhenLostFocus;
+            set => Set(ref _HideWhenLostFocus, value);
+        }
+
+        #endregion
+
+
         #region StartWithWindows : bool - Запускать с системой
 
         /// <summary>Запускать с системой</summary>
@@ -152,8 +167,6 @@ namespace AppLauncher.ViewModels
         }
 
         #endregion
-
-        
 
 
         #region Command SaveSettingsCommand - Сохранить настройки
