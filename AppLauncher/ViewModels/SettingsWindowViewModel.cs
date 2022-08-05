@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using Microsoft.Win32;
 using WPR.MVVM.Commands;
 using WPR.MVVM.ViewModels;
@@ -8,9 +10,25 @@ using WPR.Tools;
 
 namespace AppLauncher.ViewModels
 {
+    public enum WindowsStartPosition
+    {
+        Center,
+        BottomCenter,
+        BottomLeft
+    }
+
     public class SettingsWindowViewModel : ViewModel
     {
         private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Settings.json");
+
+        private const string DonateLink = "https://www.tinkoff.ru/rm/dultsev.denis1/G2APs2254";
+
+        private const string HomeUrl = "https://github.com/tjden88/AppLauncher";
+
+        private const string ReportProblemAddress = "https://github.com/tjden88/AppLauncher/issues";
+
+
+        #region SettingsData
 
         private class AppSettings
         {
@@ -22,9 +40,13 @@ namespace AppLauncher.ViewModels
 
             public bool HideWhenLostFocus { get; set; }
 
-            public int WindowWidth { get; set; }
+            public int GroupWidth { get; set; } = 3;
 
-            public int WindowHeight { get; set; }
+            public int ColumnsCount { get; set; } = 3;
+
+            public int WindowHeight { get; set; } = 750;
+
+            public WindowsStartPosition StartPosition { get; set; } = WindowsStartPosition.BottomCenter;
         }
 
         private AppSettings _Settings;
@@ -39,64 +61,50 @@ namespace AppLauncher.ViewModels
         private void LoadData()
         {
             _Settings = DataSerializer.LoadFromFile<AppSettings>(_SettingsFileName) ?? new AppSettings();
-            WindowWidth = _Settings.WindowWidth;
-            WindowHeight = _Settings.WindowHeight;
             AutoHide = _Settings.AutoHide;
             HideWhenClosing = _Settings.HideWhenClosing;
             HideWhenLostFocus = _Settings.HideWhenLostFocus;
             IsTopMost = _Settings.IsTopMost;
+            StartPosition = _Settings.StartPosition;
+            WindowHeight = _Settings.WindowHeight;
+            ColumnsCount = _Settings.ColumnsCount;
+            GroupWidth = _Settings.GroupWidth;
         }
 
         public void SaveData()
         {
             var sett = new AppSettings
             {
-                WindowWidth = WindowWidth,
-                WindowHeight = WindowHeight,
                 AutoHide = AutoHide,
                 HideWhenClosing = HideWhenClosing,
                 HideWhenLostFocus = HideWhenLostFocus,
                 IsTopMost = IsTopMost,
+                StartPosition = StartPosition,
+                WindowHeight = WindowHeight,
+                ColumnsCount = ColumnsCount,
+                GroupWidth = GroupWidth,
             };
+
             DataSerializer.SaveToFile(sett, _SettingsFileName);
 
             if (CheckAutoLaunch() == StartWithWindows) return;
 
-            if(StartWithWindows)
+            if (StartWithWindows)
                 SetAutoLaunch();
             else
                 RemoveAutoLaunch();
         }
 
-        #region WindowWidth : int - Ширина окна
-
-        /// <summary>Ширина окна</summary>
-        private int _WindowWidth;
-
-        /// <summary>Ширина окна</summary>
-        public int WindowWidth
-        {
-            get => _WindowWidth;
-            set => Set(ref _WindowWidth, value);
-        }
 
         #endregion
 
 
-        #region WindowHeight : int - Высота окна
+        /// <summary> Текущая версия приложения </summary>
+        public string VersionInfo => "Версия программы: " + App.AppVersion;
 
-        /// <summary>Высота окна</summary>
-        private int _WindowHeight;
 
-        /// <summary>Высота окна</summary>
-        public int WindowHeight
-        {
-            get => _WindowHeight;
-            set => Set(ref _WindowHeight, value);
-        }
 
-        #endregion
-
+        #region BehaviorProps
 
         #region IsTopMost : bool - Поверх всех окон
 
@@ -172,6 +180,89 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+        #endregion
+
+
+
+        #region SizeProp
+
+
+        #region StartPosition : WindowsStartPosition - Позиция при запуске
+
+        /// <summary>Позиция при запуске</summary>
+        private WindowsStartPosition _StartPosition;
+
+        /// <summary>Позиция при запуске</summary>
+        public WindowsStartPosition StartPosition
+        {
+            get => _StartPosition;
+            set => Set(ref _StartPosition, value);
+        }
+
+        #endregion
+
+
+        #region WindowHeight : int - Высота окна
+
+        /// <summary>Высота окна</summary>
+        private int _WindowHeight;
+
+        /// <summary>Высота окна</summary>
+        public int WindowHeight
+        {
+            get => _WindowHeight;
+            set
+            {
+                if (Equals(value, _WindowHeight)) return;
+
+                _WindowHeight = Math.Max(200, Math.Min(value, 1500));
+                OnPropertyChanged(nameof(WindowHeight));
+            }
+        }
+
+        #endregion
+
+
+        public int[] ColumnsCounts => new[] {2, 3, 4, 5, 6};
+
+        #region ColumnsCount : int - Количество колонок
+
+        /// <summary>Количество колонок</summary>
+        private int _ColumnsCount;
+
+        /// <summary>Количество колонок</summary>
+        public int ColumnsCount
+        {
+            get => _ColumnsCount;
+            set => Set(ref _ColumnsCount, value);
+        }
+
+        #endregion
+
+
+        public int[] GroupWidths => new[] {2, 3, 4, 5};
+
+        #region GroupWidth : int - Ширина группы
+
+        /// <summary>Ширина группы</summary>
+        private int _GroupWidth;
+
+        /// <summary>Ширина группы</summary>
+        public int GroupWidth
+        {
+            get => _GroupWidth;
+            set => Set(ref _GroupWidth, value);
+        }
+
+        #endregion
+
+
+        #endregion
+
+
+
+        #region Commands
+
 
         #region Command SaveSettingsCommand - Сохранить настройки
 
@@ -189,11 +280,85 @@ namespace AppLauncher.ViewModels
         private void OnSaveSettingsCommandExecuted(object p)
         {
             SaveData();
+
+            WindowPositionHelper.SetMainWindowSize();
+            var groups = App.MainWindowViewModel.Groups;
+            foreach (var group in groups)
+            {
+                group.UpdateWidth();
+            }
+
             ((Window)p).DialogResult = true;
 
         }
 
         #endregion
+
+
+        #region Command GoToHomepageCommand - Перейти на страницу проекта
+
+        /// <summary>Перейти на страницу проекта</summary>
+        private Command _GoToHomepageCommand;
+
+        /// <summary>Перейти на страницу проекта</summary>
+        public Command GoToHomepageCommand => _GoToHomepageCommand
+            ??= new Command(OnGoToHomepageCommandExecuted, CanGoToHomepageCommandExecute, "Перейти на страницу проекта");
+
+        /// <summary>Проверка возможности выполнения - Перейти на страницу проекта</summary>
+        private bool CanGoToHomepageCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Перейти на страницу проекта</summary>
+        private void OnGoToHomepageCommandExecuted() => OpenWebPage(HomeUrl);
+
+        #endregion
+
+
+        #region Command ReportProblemCommand - Сообщить о проблеме
+
+        /// <summary>Сообщить о проблеме</summary>
+        private Command _ReportProblemCommand;
+
+        /// <summary>Сообщить о проблеме</summary>
+        public Command ReportProblemCommand => _ReportProblemCommand
+            ??= new Command(OnReportProblemCommandExecuted, CanReportProblemCommandExecute, "Сообщить о проблеме");
+
+        /// <summary>Проверка возможности выполнения - Сообщить о проблеме</summary>
+        private bool CanReportProblemCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Сообщить о проблеме</summary>
+        private void OnReportProblemCommandExecuted() => OpenWebPage(ReportProblemAddress);
+
+        #endregion
+
+
+        #region Command MakeDonateCommand - Поддержать разработчика
+
+        /// <summary>Поддержать разработчика</summary>
+        private Command _MakeDonateCommand;
+
+        /// <summary>Поддержать разработчика</summary>
+        public Command MakeDonateCommand => _MakeDonateCommand
+            ??= new Command(OnMakeDonateCommandExecuted, CanMakeDonateCommandExecute, "Поддержать разработчика");
+
+        /// <summary>Проверка возможности выполнения - Поддержать разработчика</summary>
+        private bool CanMakeDonateCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Поддержать разработчика</summary>
+        private void OnMakeDonateCommandExecuted() => OpenWebPage(DonateLink);
+
+        #endregion
+
+        #endregion
+
+
+        private void OpenWebPage(string Address)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = Address,
+                UseShellExecute = true
+            });
+        }
 
 
         #region AutoLaunch
@@ -223,7 +388,7 @@ namespace AppLauncher.ViewModels
             if (regKey == null) return;
             regKey.DeleteValue("AppLauncher");
             regKey.Close();
-        } 
+        }
 
         #endregion
     }

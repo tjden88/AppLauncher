@@ -18,7 +18,7 @@
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
-        Title="MainWindow" Height="750" Width="920">
+        Title="MainWindow" Height="500" Width="920">
     <b:Interaction.Behaviors>
         <behaviors:MainWindowBehavior IsHidden="{Binding IsHidden}"/>
     </b:Interaction.Behaviors>
@@ -35,7 +35,9 @@
     </d:Window.DataContext>
 
     <Grid Name="RootGrid">
-        <Border CornerRadius="10" Background="#99000000"/>
+        <Border CornerRadius="10" Background="#99000000" BorderBrush="#FF464646" BorderThickness="1"
+                UseLayoutRounding="False"
+                SnapsToDevicePixels="False"/>
         <DockPanel>
 
             <!--Заголовок-->
@@ -44,7 +46,7 @@
                 <Menu Background="Transparent" Margin="5,0">
                     <MenuItem Foreground="White" ToolTip="Меню" Cursor="Hand">
                         <MenuItem.Header>
-                            <fa5:FontAwesome Icon="Solid_Rocket" FontSize="16"/>
+                            <fa5:FontAwesome Icon="Brands_Windows" FontSize="16"/>
                         </MenuItem.Header>
                         <MenuItem Background="Black" Foreground="White"
                                   Height="50"

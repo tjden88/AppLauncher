@@ -11,6 +11,8 @@ namespace AppLauncher.ViewModels
 {
     public class MainWindowViewModel : ViewModel, IDropTarget
     {
+        #region Props
+
 
         #region Groups : ObservableCollection<GroupViewModel> - Группы с ярлыками приложений
 
@@ -94,6 +96,9 @@ namespace AppLauncher.ViewModels
         /// <summary> Закрыть приложение после сворачивания </summary>
         public bool CloseWhenHide { get; private set; }
 
+
+        #endregion
+
         #region Commands
 
 
@@ -129,6 +134,9 @@ namespace AppLauncher.ViewModels
                 group.ShortcutCells = new(viewModels);
             }
             App.DataManager.CanSaveData = true;
+
+            WindowPositionHelper.SetMainWindowSize();
+
 
         }
 
@@ -254,6 +262,7 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+        #region DragDrop
 
         public void DragOver(IDropInfo dropInfo) => DragDropHelper.DragOver(dropInfo, this, DragDropHelper.DropType.All);
 
@@ -297,6 +306,10 @@ namespace AppLauncher.ViewModels
                 dataManager.CanSaveData = true;
                 dataManager.SaveData();
             }
-        }
+        } 
+
+        #endregion
+        
+
     }
 }

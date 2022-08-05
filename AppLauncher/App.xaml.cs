@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Services;
 using AppLauncher.ViewModels;
 using AppLauncher.Views;
@@ -16,6 +17,8 @@ namespace AppLauncher
     /// </summary>
     public partial class App
     {
+        public const string AppVersion = "1.0";
+
         /// <summary> Вьюмодель главного окна </summary>
         public static MainWindowViewModel MainWindowViewModel { get; } = new() {IsHidden = true};
 
