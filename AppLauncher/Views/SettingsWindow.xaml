@@ -8,19 +8,20 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Title="Настройки" Height="260" Width="365">
+        SizeToContent="Height"
+        Title="Настройки" Width="365" Height="Auto">
     <d:Window.DataContext>
         <viewModels:SettingsWindowViewModel/>
     </d:Window.DataContext>
-    <DockPanel>
+    <DockPanel VerticalAlignment="Top">
 
         <Button Content="Сохранить"
                 Command="{Binding SaveSettingsCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 IsDefault="True" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="10" Padding="10,6" Foreground="Black" Cursor="Hand"></Button>
 
-        <StackPanel Orientation="Vertical" Margin="10">
-            <CheckBox IsChecked="{Binding AutoHide}">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top" >
+            <CheckBox IsChecked="{Binding AutoHide}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
                         <TextBlock Text="Скрывать автоматически при запуске ярлыка" FontWeight="Bold"></TextBlock>
@@ -29,19 +30,29 @@
                 </CheckBox.Content>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding HideWhenClosing}">
+            <CheckBox IsChecked="{Binding HideWhenClosing}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
                         <TextBlock Text="Скрывать окно вместо выхода" FontWeight="Bold"></TextBlock>
-                        <TextBlock Text="* При нажатии кнопки закрытия окна программа останется запущенной для ускорения следующего запуска" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                        <TextBlock Text="При нажатии кнопки закрытия окна программа останется запущенной для ускорения следующего запуска" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding StartWithWindows}" Margin="0,10">
+            <CheckBox IsChecked="{Binding HideWhenClosing}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
-                        <TextBlock Text="Загружать данные при старте системы" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="Скрывать окно при потере фокуса" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="При клике вне окна, оно будет свёрнуто" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
+                    </StackPanel>
+                </CheckBox.Content>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding StartWithWindows}" Margin="10">
+                <CheckBox.Content>
+                    <StackPanel>
+                        <TextBlock Text="Запускать с Windows" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="При старте системы программа загрузиь данные и запустится в свёрнутом режиме" TextWrapping="WrapWithOverflow" Margin="0,5"></TextBlock>
                     </StackPanel>
                 </CheckBox.Content>
             </CheckBox>

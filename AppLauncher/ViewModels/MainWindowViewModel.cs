@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using AppLauncher.Infrastructure.Helpers;
 using AppLauncher.Views;
 using GongSolutions.Wpf.DragDrop;
@@ -222,6 +223,30 @@ namespace AppLauncher.ViewModels
                 DataContext = App.SettingsWindowViewModel
             };
             wnd.ShowDialog();
+        }
+
+        #endregion
+
+
+        #region Command DeactivateWindowCommand - Команда при декативации главного окна
+
+        /// <summary>Команда при декативации главного окна</summary>
+        private Command _DeactivateWindowCommand;
+
+        /// <summary>Команда при декативации главного окна</summary>
+        public Command DeactivateWindowCommand => _DeactivateWindowCommand
+            ??= new Command(OnDeactivateWindowCommandExecuted, CanDeactivateWindowCommandExecute, "Команда при декативации главного окна");
+
+        /// <summary>Проверка возможности выполнения - Команда при декативации главного окна</summary>
+        private bool CanDeactivateWindowCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Команда при декативации главного окна</summary>
+        private void OnDeactivateWindowCommandExecuted()
+        {
+            if (!App.SettingsWindowViewModel.HideWhenLostFocus) return;
+            var wnd = Application.Current.MainWindow;
+            if(wnd?.OwnedWindows.Count > 0)  return;
+            IsHidden = true;
         }
 
         #endregion

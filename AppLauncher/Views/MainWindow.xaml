@@ -14,7 +14,6 @@
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Deactivated="MainWindow_OnDeactivated"
         Topmost="{Binding IsTopMost}"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
@@ -26,6 +25,9 @@
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadGroupsCommand}"/>
+        </b:EventTrigger>
+        <b:EventTrigger EventName="Deactivated">
+            <b:InvokeCommandAction Command="{Binding DeactivateWindowCommand}"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
     <d:Window.DataContext>

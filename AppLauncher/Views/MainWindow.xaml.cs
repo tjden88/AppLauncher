@@ -185,14 +185,6 @@ namespace AppLauncher.Views
             Marshal.FreeHGlobal(accentPtr);
         }
 
-        private void TitleDockPanel_OnMouseLeftButtonDown(object Sender, MouseButtonEventArgs E)
-        {
-            DragMove();
-        }
-
-        private void MainWindow_OnDeactivated(object Sender, EventArgs E)
-        {
-            Debug.WriteLine("Deactivated");
-        }
+        private void TitleDockPanel_OnMouseLeftButtonDown(object Sender, MouseButtonEventArgs E) => DragMove();
     }
 }

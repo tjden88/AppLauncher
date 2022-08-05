@@ -20,6 +20,8 @@ namespace AppLauncher.ViewModels
 
             public bool HideWhenClosing { get; set; }
 
+            public bool HideWhenLostFocus { get; set; }
+
             public int WindowWidth { get; set; }
 
             public int WindowHeight { get; set; }
@@ -41,6 +43,7 @@ namespace AppLauncher.ViewModels
             WindowHeight = _Settings.WindowHeight;
             AutoHide = _Settings.AutoHide;
             HideWhenClosing = _Settings.HideWhenClosing;
+            HideWhenLostFocus = _Settings.HideWhenLostFocus;
             IsTopMost = _Settings.IsTopMost;
         }
 
@@ -52,6 +55,7 @@ namespace AppLauncher.ViewModels
                 WindowHeight = WindowHeight,
                 AutoHide = AutoHide,
                 HideWhenClosing = HideWhenClosing,
+                HideWhenLostFocus = HideWhenLostFocus,
                 IsTopMost = IsTopMost,
             };
             DataSerializer.SaveToFile(sett, _SettingsFileName);
@@ -142,7 +146,7 @@ namespace AppLauncher.ViewModels
         #region HideWhenLostFocus : bool - Скрывать окно при потере фокуса
 
         /// <summary>Скрывать окно при потере фокуса</summary>
-        private bool _HideWhenLostFocus;
+        private bool _HideWhenLostFocus = true;
 
         /// <summary>Скрывать окно при потере фокуса</summary>
         public bool HideWhenLostFocus
