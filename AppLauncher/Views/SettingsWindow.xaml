@@ -39,7 +39,7 @@
                 </CheckBox.Content>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding HideWhenClosing}" Margin="10">
+            <CheckBox IsChecked="{Binding HideWhenLostFocus}" Margin="10">
                 <CheckBox.Content>
                     <StackPanel>
                         <TextBlock Text="Скрывать окно при потере фокуса" FontWeight="Bold"></TextBlock>
