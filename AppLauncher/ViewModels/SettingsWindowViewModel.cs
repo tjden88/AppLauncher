@@ -181,7 +181,7 @@ namespace AppLauncher.ViewModels
 
         #region AutoLaunch
 
-        private readonly string _ExeStartupValue = Path.Combine(Environment.CurrentDirectory, "Launcher.exe") + " -hide";
+        private readonly string _ExeStartupValue = Path.Combine(Environment.CurrentDirectory, "AppLauncher.exe") + " -hide";
 
 
         private bool CheckAutoLaunch()
