@@ -31,4 +31,8 @@
     <PackageReference Include="WPR.Tools" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>
