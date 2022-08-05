@@ -44,6 +44,8 @@ namespace AppLauncher.ViewModels
             public int ColumnsCount { get; set; } = 3;
 
             public int WindowHeight { get; set; } = 750;
+
+            public WindowsStartPosition StartPosition { get; set; } = WindowsStartPosition.BottomCenter;
         }
 
         private AppSettings _Settings;
@@ -63,6 +65,7 @@ namespace AppLauncher.ViewModels
             HideWhenClosing = _Settings.HideWhenClosing;
             HideWhenLostFocus = _Settings.HideWhenLostFocus;
             IsTopMost = _Settings.IsTopMost;
+            StartPosition = _Settings.StartPosition;
         }
 
         public void SaveData()
@@ -74,7 +77,9 @@ namespace AppLauncher.ViewModels
                 HideWhenClosing = HideWhenClosing,
                 HideWhenLostFocus = HideWhenLostFocus,
                 IsTopMost = IsTopMost,
+                StartPosition = StartPosition,
             };
+
             DataSerializer.SaveToFile(sett, _SettingsFileName);
 
             if (CheckAutoLaunch() == StartWithWindows) return;

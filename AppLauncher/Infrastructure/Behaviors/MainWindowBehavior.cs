@@ -60,7 +60,7 @@ namespace AppLauncher.Infrastructure.Behaviors
 
         private void Show()
         {
-            WindowPositionHelper.SetMainWindowPosition();
+            WindowPositionHelper.SetMainWindowPosition(App.SettingsWindowViewModel.StartPosition);
             AssociatedObject.Activate();
             _StoryboardShow.Begin(AssociatedObject.RootGrid);
         }
