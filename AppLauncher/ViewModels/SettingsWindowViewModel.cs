@@ -82,6 +82,9 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        /// <summary> Текущая версия приложения </summary>
+        public string VersionInfo => "Версия программы: " + App.AppVersion;
+
         #region WindowWidth : int - Ширина окна
 
         /// <summary>Ширина окна</summary>

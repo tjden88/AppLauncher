@@ -58,7 +58,7 @@
             </CheckBox>
             <Separator/>
 
-            <TextBlock Text="Версия" Margin="10,5"></TextBlock>
+            <TextBlock Text="{Binding VersionInfo}" Margin="10,5"/>
 
             <Button HorizontalAlignment="Left" Margin="5" FontSize="14" Foreground="#FF353535"
                     Command="{Binding GoToHomepageCommand}">
