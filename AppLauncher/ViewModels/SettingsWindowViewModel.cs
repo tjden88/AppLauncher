@@ -9,6 +9,13 @@ using WPR.Tools;
 
 namespace AppLauncher.ViewModels
 {
+    public enum WindowsStartPosition
+    {
+        Center,
+        BottomCenter,
+        BottomLeft
+    }
+
     public class SettingsWindowViewModel : ViewModel
     {
         private readonly string _SettingsFileName = Path.Combine(Environment.CurrentDirectory, "Settings.json");
@@ -32,9 +39,11 @@ namespace AppLauncher.ViewModels
 
             public bool HideWhenLostFocus { get; set; }
 
-            public int WindowWidth { get; set; }
+            public int GroupWidth { get; set; }
 
-            public int WindowHeight { get; set; }
+            public int ColumnsCount { get; set; } = 3;
+
+            public int WindowHeight { get; set; } = 750;
         }
 
         private AppSettings _Settings;
@@ -49,7 +58,6 @@ namespace AppLauncher.ViewModels
         private void LoadData()
         {
             _Settings = DataSerializer.LoadFromFile<AppSettings>(_SettingsFileName) ?? new AppSettings();
-            WindowWidth = _Settings.WindowWidth;
             WindowHeight = _Settings.WindowHeight;
             AutoHide = _Settings.AutoHide;
             HideWhenClosing = _Settings.HideWhenClosing;
@@ -61,7 +69,6 @@ namespace AppLauncher.ViewModels
         {
             var sett = new AppSettings
             {
-                WindowWidth = WindowWidth,
                 WindowHeight = WindowHeight,
                 AutoHide = AutoHide,
                 HideWhenClosing = HideWhenClosing,
@@ -85,35 +92,9 @@ namespace AppLauncher.ViewModels
         /// <summary> Текущая версия приложения </summary>
         public string VersionInfo => "Версия программы: " + App.AppVersion;
 
-        #region WindowWidth : int - Ширина окна
-
-        /// <summary>Ширина окна</summary>
-        private int _WindowWidth;
-
-        /// <summary>Ширина окна</summary>
-        public int WindowWidth
-        {
-            get => _WindowWidth;
-            set => Set(ref _WindowWidth, value);
-        }
-
-        #endregion
 
 
-        #region WindowHeight : int - Высота окна
-
-        /// <summary>Высота окна</summary>
-        private int _WindowHeight;
-
-        /// <summary>Высота окна</summary>
-        public int WindowHeight
-        {
-            get => _WindowHeight;
-            set => Set(ref _WindowHeight, value);
-        }
-
-        #endregion
-
+        #region BehaviorProps
 
         #region IsTopMost : bool - Поверх всех окон
 
@@ -189,8 +170,50 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
-   
-        
+        #endregion
+
+        #region SizeProp
+
+
+        #region StartPosition : WindowsStartPosition - Позиция при запуске
+
+        /// <summary>Позиция при запуске</summary>
+        private WindowsStartPosition _StartPosition;
+
+        /// <summary>Позиция при запуске</summary>
+        public WindowsStartPosition StartPosition
+        {
+            get => _StartPosition;
+            set => Set(ref _StartPosition, value);
+        }
+
+        #endregion
+
+
+        #region WindowHeight : int - Высота окна
+
+        /// <summary>Высота окна</summary>
+        private int _WindowHeight;
+
+        /// <summary>Высота окна</summary>
+        public int WindowHeight
+        {
+            get => _WindowHeight;
+            set
+            {
+                if(Equals(value, _WindowHeight)) return;
+
+                _WindowHeight = Math.Min(200, Math.Max(value, 1000));
+
+                OnPropertyChanged(nameof(WindowHeight));
+            }
+        }
+
+        #endregion
+
+
+        #endregion
+
         #region Commands
 
         #region Command SaveSettingsCommand - Сохранить настройки
