@@ -64,16 +64,7 @@ namespace AppLauncher.ViewModels
         #region IsTopMost : bool - Поверх всех окон
 
         /// <summary>Поверх всех окон</summary>
-        public bool IsTopMost
-        {
-            get => App.SettingsWindowViewModel.IsTopMost;
-            set
-            {
-                if (Equals(value, App.SettingsWindowViewModel.IsTopMost)) return;
-                App.SettingsWindowViewModel.IsTopMost = value;
-                OnPropertyChanged(nameof(IsTopMost));
-            }
-        }
+        public bool IsTopMost => App.SettingsWindowViewModel.IsTopMost;
 
         #endregion
 
@@ -92,6 +83,22 @@ namespace AppLauncher.ViewModels
 
         #endregion
 
+
+        #region KeepOpen : bool - Держать окно открытым
+
+        /// <summary>Держать окно открытым</summary>
+        private bool _KeepOpen;
+
+        /// <summary>Держать окно открытым</summary>
+        public bool KeepOpen
+        {
+            get => _KeepOpen;
+            set => Set(ref _KeepOpen, value);
+        }
+
+        #endregion
+
+        
 
         /// <summary> Закрыть приложение после сворачивания </summary>
         public bool CloseWhenHide { get; private set; }
@@ -192,20 +199,20 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
-        #region Command ChangeTopMostCommand - Изменить позицию окна
+        #region Command ChangeKeepOpenCommand - Изменить позицию окна
 
         /// <summary>Изменить позицию окна</summary>
         private Command _ChangeTopMostCommand;
 
         /// <summary>Изменить позицию окна</summary>
-        public Command ChangeTopMostCommand => _ChangeTopMostCommand
+        public Command ChangeKeepOpenCommand => _ChangeTopMostCommand
             ??= new Command(OnChangeTopMostCommandExecuted, CanChangeTopMostCommandExecute, "Изменить позицию окна");
 
         /// <summary>Проверка возможности выполнения - Изменить позицию окна</summary>
         private bool CanChangeTopMostCommandExecute() => true;
 
         /// <summary>Логика выполнения - Изменить позицию окна</summary>
-        private void OnChangeTopMostCommandExecuted() => IsTopMost = !IsTopMost;
+        private void OnChangeTopMostCommandExecuted() => KeepOpen = !KeepOpen;
 
         #endregion
 
@@ -251,7 +258,7 @@ namespace AppLauncher.ViewModels
         /// <summary>Логика выполнения - Команда при декативации главного окна</summary>
         private void OnDeactivateWindowCommandExecuted()
         {
-            if (!App.SettingsWindowViewModel.HideWhenLostFocus) return;
+            if (!App.SettingsWindowViewModel.HideWhenLostFocus || KeepOpen) return;
             var wnd = Application.Current.MainWindow;
             if(wnd?.OwnedWindows.Count > 0)  return;
             IsHidden = true;

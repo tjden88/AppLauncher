@@ -126,7 +126,10 @@ namespace AppLauncher.ViewModels
         {
             App.ShortcutManager.StartProcess(ShortcutPath);
 
-            if (App.SettingsWindowViewModel.AutoHide && Keyboard.Modifiers != ModifierKeys.Control)
+            if (App.SettingsWindowViewModel.AutoHide &&
+                Keyboard.Modifiers != ModifierKeys.Control &&
+                !App.MainWindowViewModel.KeepOpen)
+
                 App.MainWindowViewModel.IsHidden = true;
 
         }

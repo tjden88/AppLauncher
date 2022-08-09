@@ -44,7 +44,7 @@
 
             <!--Заголовок-->
             <DockPanel DockPanel.Dock="Top" 
-                       MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent">
+                       MouseLeftButtonDown="TitleDockPanel_OnMouseLeftButtonDown" Background="Transparent" Cursor="Hand">
                 <Menu Background="Transparent" Margin="5,0">
                     <MenuItem Foreground="White" ToolTip="Меню" Cursor="Hand">
                         <MenuItem.Header>
@@ -86,8 +86,8 @@
                     </Button.Content>
                 </Button>
                 <Button DockPanel.Dock="Right" Margin="5" Padding="8,2"
-                        Command="{Binding ChangeTopMostCommand}"
-                        ToolTip="Поверх всех окон" Cursor="Hand">
+                        Command="{Binding ChangeKeepOpenCommand}"
+                        ToolTip="Держать открытым" Cursor="Hand">
                     <Button.Content>
                         <fa5:FontAwesome Icon="Solid_Thumbtack">
                             <fa5:FontAwesome.RenderTransform>
@@ -96,7 +96,7 @@
                             <fa5:FontAwesome.Style>
                                 <Style TargetType="fa5:FontAwesome">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsTopMost}" Value="False">
+                                        <DataTrigger Binding="{Binding KeepOpen}" Value="False">
                                             <Setter Property="Opacity" Value="0.5" />
                                             <Setter Property="Rotation" Value="45" />
                                         </DataTrigger>
