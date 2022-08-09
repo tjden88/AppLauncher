@@ -39,9 +39,13 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator Margin="0,8,10,8"/>
-            <MenuItem IsCheckable="True" Header="Источник значка: по умолчанию" IsChecked="{Binding IsDefineIconDefault, Mode=OneWay}">
+            <MenuItem IsCheckable="True" Header="Источник значка: по умолчанию" 
+                      Command="{Binding SetDefautIconSourceCommand}"
+                      IsChecked="{Binding IsDefineIconDefault}">
             </MenuItem>
-            <MenuItem IsCheckable="True" Header="Источник значка: ярлык"  IsChecked="{Binding IsDefineIconFromShortcut, Mode=OneWay}">
+            <MenuItem IsCheckable="True" Header="Источник значка: ярлык" 
+                      Command="{Binding SetShortcutIconSourceCommand}"
+                      IsChecked="{Binding IsDefineIconFromShortcut}">
 
             </MenuItem>
         </MenuItem>

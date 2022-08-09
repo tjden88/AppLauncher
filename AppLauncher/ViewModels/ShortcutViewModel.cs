@@ -85,7 +85,7 @@ namespace AppLauncher.ViewModels
         public bool IsDefineIconDefault
         {
             get => !_IsDefineIconFromShortcut;
-            set => Set(ref _IsDefineIconFromShortcut, !value);
+            set => IsDefineIconFromShortcut = !value;
         }
 
         #endregion
@@ -320,6 +320,42 @@ namespace AppLauncher.ViewModels
 
         /// <summary>Логика выполнения - Обновить значок</summary>
         private void OnRefreshIconCommandExecuted() => OnPropertyChanged(nameof(Image));
+
+        #endregion
+
+
+        #region Command SetDefautIconSourceCommand - Установить источник иконки по умолчанию
+
+        /// <summary>Установить источник иконки по умолчанию</summary>
+        private Command _SetDefautIconSourceCommand;
+
+        /// <summary>Установить источник иконки по умолчанию</summary>
+        public Command SetDefautIconSourceCommand => _SetDefautIconSourceCommand
+            ??= new Command(OnSetDefautIconSourceCommandExecuted, CanSetDefautIconSourceCommandExecute, "Установить источник иконки по умолчанию");
+
+        /// <summary>Проверка возможности выполнения - Установить источник иконки по умолчанию</summary>
+        private bool CanSetDefautIconSourceCommandExecute() => !IsDefineIconDefault;
+
+        /// <summary>Логика выполнения - Установить источник иконки по умолчанию</summary>
+        private void OnSetDefautIconSourceCommandExecuted() => IsDefineIconDefault = true;
+
+        #endregion
+
+
+        #region Command SetShortcutIconSourceCommand - Установить источником иконки данные ярлыка
+
+        /// <summary>Установить источником иконки данные ярлыка</summary>
+        private Command _SetShortcutIconSourceCommand;
+
+        /// <summary>Установить источником иконки данные ярлыка</summary>
+        public Command SetShortcutIconSourceCommand => _SetShortcutIconSourceCommand
+            ??= new Command(OnSetShortcutIconSourceCommandExecuted, CanSetShortcutIconSourceCommandExecute, "Установить источником иконки данные ярлыка");
+
+        /// <summary>Проверка возможности выполнения - Установить источником иконки данные ярлыка</summary>
+        private bool CanSetShortcutIconSourceCommandExecute() => !IsDefineIconFromShortcut;
+
+        /// <summary>Логика выполнения - Установить источником иконки данные ярлыка</summary>
+        private void OnSetShortcutIconSourceCommandExecuted() => IsDefineIconFromShortcut = true;
 
         #endregion
 
