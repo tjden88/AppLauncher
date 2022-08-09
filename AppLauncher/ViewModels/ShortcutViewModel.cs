@@ -337,7 +337,11 @@ namespace AppLauncher.ViewModels
         private bool CanSetDefautIconSourceCommandExecute() => !IsDefineIconDefault;
 
         /// <summary>Логика выполнения - Установить источник иконки по умолчанию</summary>
-        private void OnSetDefautIconSourceCommandExecuted() => IsDefineIconDefault = true;
+        private void OnSetDefautIconSourceCommandExecuted()
+        {
+            IsDefineIconDefault = true;
+            App.DataManager.SaveData();
+        }
 
         #endregion
 
@@ -355,7 +359,11 @@ namespace AppLauncher.ViewModels
         private bool CanSetShortcutIconSourceCommandExecute() => !IsDefineIconFromShortcut;
 
         /// <summary>Логика выполнения - Установить источником иконки данные ярлыка</summary>
-        private void OnSetShortcutIconSourceCommandExecuted() => IsDefineIconFromShortcut = true;
+        private void OnSetShortcutIconSourceCommandExecuted()
+        {
+            IsDefineIconFromShortcut = true;
+            App.DataManager.SaveData();
+        }
 
         #endregion
 

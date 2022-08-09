@@ -39,25 +39,27 @@ namespace AppLauncher.Infrastructure.Helpers
                 GroupId = LinkGroup.GroupId,
             };
 
-        public static ShortcutViewModel ToViewModel(this Shortcut Link)
+        public static ShortcutViewModel ToViewModel(this Shortcut shortcut)
         {
-            if (Link == null) return null;
+            if (shortcut == null) return null;
 
             return new ShortcutViewModel
             {
-                ShortcutPath = Link.Path,
-                Name = Link.Name,
+                ShortcutPath = shortcut.Path,
+                Name = shortcut.Name,
+                IsDefineIconFromShortcut = shortcut.IsDefineIconFromShortcut,
             };
         }
 
-        public static Shortcut ToModel(this ShortcutViewModel Link)
+        public static Shortcut ToModel(this ShortcutViewModel vm)
         {
-            if (Link == null) return null;
+            if (vm == null) return null;
 
             return new Shortcut
             {
-                Path = Link.ShortcutPath,
-                Name = Link.Name,
+                Path = vm.ShortcutPath,
+                Name = vm.Name,
+                IsDefineIconFromShortcut = vm.IsDefineIconFromShortcut,
             };
         }
 
