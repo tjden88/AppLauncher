@@ -280,6 +280,7 @@ namespace AppLauncher.ViewModels
         private void OnSaveSettingsCommandExecuted(object p)
         {
             SaveData();
+            App.MainWindowViewModel.IsTopMost = IsTopMost;
 
             WindowPositionHelper.SetMainWindowSize();
             var groups = App.MainWindowViewModel.Groups;

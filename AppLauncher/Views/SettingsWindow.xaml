@@ -65,21 +65,30 @@
                             </StackPanel>
                         </CheckBox.Content>
                     </CheckBox>
+
+                    <CheckBox IsChecked="{Binding IsTopMost}" Margin="10">
+                        <CheckBox.Content>
+                            <StackPanel>
+                                <TextBlock Text="Поверх всех окон" FontWeight="Bold"/>
+                                <TextBlock Text="Установить позицию окна поверх других окон" TextWrapping="WrapWithOverflow" Margin="0,5"/>
+                            </StackPanel>
+                        </CheckBox.Content>
+                    </CheckBox>
                 </StackPanel>
             </GroupBox>
 
-            <StackPanel Grid.Column="1">
-                <StackPanel.Resources>
+            <DockPanel Grid.Column="1">
+                <DockPanel.Resources>
                     <ObjectDataProvider x:Key="enumValues"
                                         MethodName="GetValues" ObjectType="{x:Type System:Enum}">
                         <ObjectDataProvider.MethodParameters>
                             <x:Type TypeName="viewModels:WindowsStartPosition"/>
                         </ObjectDataProvider.MethodParameters>
                     </ObjectDataProvider>
-                </StackPanel.Resources>
-                <GroupBox Margin="5" Header="Размер и положение">
+                </DockPanel.Resources>
+                <GroupBox Margin="5" Header="Размер и положение" DockPanel.Dock="Top" VerticalAlignment="Top">
 
-                    <StackPanel Margin="5">
+                    <StackPanel Margin="5" >
                         <DockPanel >
                             <TextBlock Text="Положение при запуске:" VerticalAlignment="Center" Margin="5"/>
                             <ComboBox ItemsSource="{Binding Source={StaticResource enumValues}}"
@@ -110,10 +119,12 @@
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="О программе" Margin="5">
-                    <StackPanel DockPanel.Dock="Bottom">
 
-                        <TextBlock Text="{Binding VersionInfo}" Margin="10,5"/>
+
+                <GroupBox Header="О программе" Margin="5" DockPanel.Dock="Bottom">
+                    <StackPanel >
+
+                        <TextBlock Text="{Binding VersionInfo}" Margin="10,20,0,10"/>
 
                         <Button HorizontalAlignment="Left" Margin="5" FontSize="14" Foreground="#FF353535"
                                 Command="{Binding GoToHomepageCommand}">
@@ -145,7 +156,7 @@
                     </StackPanel>
 
                 </GroupBox>
-            </StackPanel>
+            </DockPanel>
         </Grid>
     </DockPanel>
 </Window>

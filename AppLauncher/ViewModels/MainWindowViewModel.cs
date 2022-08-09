@@ -64,10 +64,17 @@ namespace AppLauncher.ViewModels
         #region IsTopMost : bool - Поверх всех окон
 
         /// <summary>Поверх всех окон</summary>
-        public bool IsTopMost => App.SettingsWindowViewModel.IsTopMost;
+        private bool _IsTopMost;
+
+        /// <summary>Поверх всех окон</summary>
+        public bool IsTopMost
+        {
+            get => _IsTopMost;
+            set => Set(ref _IsTopMost, value);
+        }
 
         #endregion
-
+        
 
         #region IsHidden : bool - Окно свёрнуто
 
@@ -144,6 +151,7 @@ namespace AppLauncher.ViewModels
 
             WindowPositionHelper.SetMainWindowSize();
 
+            IsTopMost = App.SettingsWindowViewModel.IsTopMost;
 
         }
 

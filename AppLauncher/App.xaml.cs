@@ -16,7 +16,7 @@ namespace AppLauncher
     /// </summary>
     public partial class App
     {
-        public const string AppVersion = "1.0";
+        public const string AppVersion = "1.1";
 
         /// <summary> Вьюмодель главного окна </summary>
         public static MainWindowViewModel MainWindowViewModel { get; } = new() {IsHidden = true};
