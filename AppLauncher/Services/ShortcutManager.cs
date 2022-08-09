@@ -147,14 +147,25 @@ namespace AppLauncher.Services
         }
 
 
-
         /// <summary>
         /// Получить значок из ярлыка
         /// </summary>
         /// <param name="ShortcutPath">Путь к ярлыку</param>
+        /// <param name="FromShortcut">Из ярлыка</param>
         /// <returns>null, если файл или папка не найдена</returns>
-        public ImageSource GetIconFromShortcut(string ShortcutPath)
+        public ImageSource GetIconFromShortcut(string ShortcutPath, bool FromShortcut)
         {
+            if (FromShortcut)
+            {
+                var iconLocation = _ShortcutBuilder.GetIconLocation(GetShortcutFullPath(ShortcutPath));
+
+                if (iconLocation.Item1 != null)
+                {
+                    var icon = _IconBuilder.GetImageByIndex(iconLocation.Item1, iconLocation.Item2);
+                    if (icon != null) return icon;
+                }
+            }
+
             var destPath = GetFilePath(ShortcutPath);
             var path = File.Exists(destPath) ? destPath : GetShortcutFullPath(ShortcutPath);
 

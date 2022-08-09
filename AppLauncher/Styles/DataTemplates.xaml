@@ -5,6 +5,9 @@
                     xmlns:converters="clr-namespace:AppLauncher.Infrastructure.Converters"
                     xmlns:fa5="http://schemas.fontawesome.com/icons/"
                     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    mc:Ignorable="d"
                     xmlns:behaviors="clr-namespace:AppLauncher.Infrastructure.Behaviors">
 
     <converters:ValueIsNotNullConverter x:Key="ValueIsNotNullConverter"/>
@@ -12,53 +15,75 @@
     <converters:BoolToIntConverter x:Key="BoolToIntConverter"/>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
+    <ContextMenu x:Key="ShortcutMenu">
+        <d:ContextMenu.DataContext>
+            <viewModels:ShortcutViewModel/>
+        </d:ContextMenu.DataContext>
+        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_SearchLocation"/>
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Расположение ярлыка" Command="{Binding GoToShortcutCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_Share"/>
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Значок">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_Icons"/>
+            </MenuItem.Icon>
+            <MenuItem Header="Обновить значок" Command="{Binding RefreshIconCommand}">
+                <MenuItem.Icon>
+                    <fa5:FontAwesome Icon="Solid_Sync"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator Margin="0,8,10,8"/>
+            <MenuItem  Header="Источник значка: по умолчанию" 
+                      Command="{Binding SetDefautIconSourceCommand}"
+                      IsChecked="{Binding IsDefineIconDefault}">
+            </MenuItem>
+            <MenuItem  Header="Источник значка: ярлык" 
+                      Command="{Binding SetShortcutIconSourceCommand}"
+                      IsChecked="{Binding IsDefineIconFromShortcut}">
+
+            </MenuItem>
+        </MenuItem>
+
+        <Separator Margin="0,8,10,8"/>
+        <MenuItem Header="Увеличить размер" Command="{Binding MakeBigShortcutCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_Expand"/>
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_Compress"/>
+            </MenuItem.Icon>
+        </MenuItem>
+        <Separator Margin="0,8,10,8"/>
+        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Icon="Solid_FileSignature"/>
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
+            <MenuItem.Icon>
+                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
 
     <!--Шаблон данных большого ярлыка-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}" x:Key="BigShortcutViewModelDataTemplate">
         <Border  dd:DragDrop.IsDragSource="True">
-            <Button Command="{Binding LaunchCommand}">
+            <Button Command="{Binding LaunchCommand}" ContextMenu="{StaticResource ShortcutMenu}">
                 <b:Interaction.Behaviors>
                     <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
                 </b:Interaction.Behaviors>
-                <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_SearchLocation"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Расположение ярлыка" Command="{Binding GoToShortcutCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Share"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Обновить значок" Command="{Binding RefreshIconCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Sync"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator Margin="0,8,10,8"/>
-                        <MenuItem Header="Уменьшить размер" Command="{Binding MakeLittleCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Compress"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator Margin="0,8,10,8"/>
-                        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileSignature"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </Button.ContextMenu>
                 <Grid>
 
-                    <Image RenderOptions.BitmapScalingMode="HighQuality"  Margin="10,5,10,30" Source="{Binding Image}"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality"  RenderOptions.EdgeMode="Aliased" Margin="10,5,10,30" Source="{Binding Image}"/>
                     <fa5:ImageAwesome Icon="Solid_Dizzy"  Margin="15,5,15,35" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>
                     <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" TextAlignment="Center" FontWeight="Medium" Margin="5" FontSize="11" Text="{Binding Name}"
                                                TextWrapping="Wrap"/>
@@ -140,46 +165,10 @@
     <!--Шаблон данных обычного ярлыка-->
     <DataTemplate DataType="{x:Type viewModels:ShortcutViewModel}">
         <Border dd:DragDrop.IsDragSource="True">
-            <Button Command="{Binding LaunchCommand}">
+            <Button Command="{Binding LaunchCommand}" ContextMenu="{StaticResource ShortcutMenu}">
                 <b:Interaction.Behaviors>
                     <behaviors:ShortcutButtonMouseOverBehavior Text="{Binding Name}"/>
                 </b:Interaction.Behaviors>
-                <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Расположение файла" Command="{Binding GoToFileCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_SearchLocation"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Расположение ярлыка" Command="{Binding GoToShortcutCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Share"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Обновить значок" Command="{Binding RefreshIconCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Sync"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator Margin="0,8,10,8"/>
-                        <MenuItem Header="Увеличить размер" Command="{Binding MakeBigShortcutCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_Expand"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator Margin="0,8,10,8"/>
-                        <MenuItem Header="Переименовать" Command="{Binding RenameCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Icon="Solid_FileSignature"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Удалить" Command="{Binding DeleteCommand}">
-                            <MenuItem.Icon>
-                                <fa5:FontAwesome Foreground="Red" Icon="Solid_TrashAlt"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </Button.ContextMenu>
                 <Grid>
                     <Image  Margin="5" Source="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
                     <fa5:ImageAwesome Icon="Solid_Dizzy" Margin="5" Foreground="LightGray" Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=!}"/>

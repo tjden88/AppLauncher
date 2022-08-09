@@ -53,7 +53,7 @@ namespace AppLauncher.ViewModels
         {
             get
             {
-                var iconFromShortcut = App.ShortcutManager.GetIconFromShortcut(ShortcutPath);
+                var iconFromShortcut = App.ShortcutManager.GetIconFromShortcut(ShortcutPath, IsDefineIconFromShortcut);
                 HasImage = iconFromShortcut != null;
                 return iconFromShortcut;
             }
@@ -62,6 +62,35 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region IsDefineIconFromShortcut : bool - Сначала определить иконку из свойств ярлыка
+
+        /// <summary>Сначала определить иконку из свойств ярлыка</summary>
+        private bool _IsDefineIconFromShortcut;
+
+        /// <summary>Сначала определить иконку из свойств ярлыка</summary>
+        public bool IsDefineIconFromShortcut
+        {
+            get => _IsDefineIconFromShortcut;
+            set => IfSet(ref _IsDefineIconFromShortcut, value)
+                .CallPropertyChanged(nameof(Image))
+                .CallPropertyChanged(nameof(IsDefineIconDefault));
+        }
+
+        #endregion
+
+
+        #region IsDefineIconDefault : bool - Источник значка - по умолчанию
+
+        /// <summary>Источник значка - по умолчанию</summary>
+        public bool IsDefineIconDefault
+        {
+            get => !_IsDefineIconFromShortcut;
+            set => IsDefineIconFromShortcut = !value;
+        }
+
+        #endregion
+
+        
         #region HasImage : bool - Есть ли изображение
 
         /// <summary>Есть ли изображение</summary>
@@ -291,6 +320,50 @@ namespace AppLauncher.ViewModels
 
         /// <summary>Логика выполнения - Обновить значок</summary>
         private void OnRefreshIconCommandExecuted() => OnPropertyChanged(nameof(Image));
+
+        #endregion
+
+
+        #region Command SetDefautIconSourceCommand - Установить источник иконки по умолчанию
+
+        /// <summary>Установить источник иконки по умолчанию</summary>
+        private Command _SetDefautIconSourceCommand;
+
+        /// <summary>Установить источник иконки по умолчанию</summary>
+        public Command SetDefautIconSourceCommand => _SetDefautIconSourceCommand
+            ??= new Command(OnSetDefautIconSourceCommandExecuted, CanSetDefautIconSourceCommandExecute, "Установить источник иконки по умолчанию");
+
+        /// <summary>Проверка возможности выполнения - Установить источник иконки по умолчанию</summary>
+        private bool CanSetDefautIconSourceCommandExecute() => !IsDefineIconDefault;
+
+        /// <summary>Логика выполнения - Установить источник иконки по умолчанию</summary>
+        private void OnSetDefautIconSourceCommandExecuted()
+        {
+            IsDefineIconDefault = true;
+            App.DataManager.SaveData();
+        }
+
+        #endregion
+
+
+        #region Command SetShortcutIconSourceCommand - Установить источником иконки данные ярлыка
+
+        /// <summary>Установить источником иконки данные ярлыка</summary>
+        private Command _SetShortcutIconSourceCommand;
+
+        /// <summary>Установить источником иконки данные ярлыка</summary>
+        public Command SetShortcutIconSourceCommand => _SetShortcutIconSourceCommand
+            ??= new Command(OnSetShortcutIconSourceCommandExecuted, CanSetShortcutIconSourceCommandExecute, "Установить источником иконки данные ярлыка");
+
+        /// <summary>Проверка возможности выполнения - Установить источником иконки данные ярлыка</summary>
+        private bool CanSetShortcutIconSourceCommandExecute() => !IsDefineIconFromShortcut;
+
+        /// <summary>Логика выполнения - Установить источником иконки данные ярлыка</summary>
+        private void OnSetShortcutIconSourceCommandExecuted()
+        {
+            IsDefineIconFromShortcut = true;
+            App.DataManager.SaveData();
+        }
 
         #endregion
 

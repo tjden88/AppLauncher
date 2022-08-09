@@ -26,7 +26,35 @@ namespace AppLauncher.Services
 
             return img;
         }
-        
+
+
+        [DllImport("Shell32")]
+        public static extern int ExtractIconEx(
+            string sFile,
+            int iIndex,
+            out IntPtr piLargeVersion,
+            out IntPtr piSmallVersion,
+            int amountIcons);
+
+        public ImageSource GetImageByIndex(string PathToFile, int IconIndex)
+        {
+            ExtractIconEx(PathToFile, 0, out var large, out var small, 1);
+
+            if (large == IntPtr.Zero) return null;
+            // from native to managed
+            using Icon ico = (Icon)Icon.FromHandle(large).Clone();
+
+            ImageSource img = Imaging.CreateBitmapSourceFromHIcon(
+                ico.Handle,
+                new Int32Rect(0, 0, ico.Width, ico.Height),
+                BitmapSizeOptions.FromEmptyOptions());
+
+            Shell32.DestroyIcon(large); // don't forget to cleanup
+            Shell32.DestroyIcon(small); // don't forget to cleanup
+
+            return img;
+        }
+
         int GetIconIndex(string pszFile)
         {
             SHFILEINFO sfi = new SHFILEINFO();
