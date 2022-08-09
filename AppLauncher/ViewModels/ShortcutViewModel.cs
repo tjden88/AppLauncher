@@ -53,7 +53,7 @@ namespace AppLauncher.ViewModels
         {
             get
             {
-                var iconFromShortcut = App.ShortcutManager.GetIconFromShortcut(ShortcutPath);
+                var iconFromShortcut = App.ShortcutManager.GetIconFromShortcut(ShortcutPath, IsDefineIconFromShortcut);
                 HasImage = iconFromShortcut != null;
                 return iconFromShortcut;
             }
@@ -62,6 +62,35 @@ namespace AppLauncher.ViewModels
         #endregion
 
 
+        #region IsDefineIconFromShortcut : bool - Сначала определить иконку из свойств ярлыка
+
+        /// <summary>Сначала определить иконку из свойств ярлыка</summary>
+        private bool _IsDefineIconFromShortcut;
+
+        /// <summary>Сначала определить иконку из свойств ярлыка</summary>
+        public bool IsDefineIconFromShortcut
+        {
+            get => _IsDefineIconFromShortcut;
+            set => IfSet(ref _IsDefineIconFromShortcut, value)
+                .CallPropertyChanged(nameof(Image))
+                .CallPropertyChanged(nameof(IsDefineIconDefault));
+        }
+
+        #endregion
+
+
+        #region IsDefineIconDefault : bool - Источник значка - по умолчанию
+
+        /// <summary>Источник значка - по умолчанию</summary>
+        public bool IsDefineIconDefault
+        {
+            get => !_IsDefineIconFromShortcut;
+            set => Set(ref _IsDefineIconFromShortcut, !value);
+        }
+
+        #endregion
+
+        
         #region HasImage : bool - Есть ли изображение
 
         /// <summary>Есть ли изображение</summary>
